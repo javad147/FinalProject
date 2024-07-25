@@ -1,0 +1,95 @@
+﻿#cart-products {
+    padding-bottom: 500px;
+}
+
+table img {
+    width: 100px;
+    height: 100px;
+}
+
+table i {
+    color: red;
+    cursor: pointer;
+}
+
+table .minus {
+    width: 15px;
+    height: 15px;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    border-radius: 50%;
+}
+
+table .plus {
+    width: 15px;
+    height: 15px;
+    background-color: black;
+    color: white;
+    font-size: 10px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+table input {
+    width: 30px;
+}
+
+table .qty .count {
+    color: #000;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 30px;
+    padding: 0 2px;
+    min-width: 35px;
+    text-align: center;
+}
+
+table .qty .plus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial, sans-serif;
+    text-align: center;
+    border-radius: 50%;
+}
+
+table .qty .minus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial, sans-serif;
+    text-align: center;
+    border-radius: 50%;
+    background-clip: padding-box;
+}
+
+.grand-total span:first-child {
+    font-size: 40px;
+    color: red;
+    padding-right: 10px;
+}
+
+.grand-total span {
+    font-size: 40px;
+    color: black;
+    font-weight: 700;
+}
+
+.grand-total{
+    margin-bottom: 30px;
+}
+/*# sourceMappingURL=cart.css.map */
