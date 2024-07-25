@@ -1,0 +1,139 @@
+﻿@using TamVaxti.ViewModels.Company
+@model CompanyVM
+@{
+    ViewBag.PageName = "Company Profile";
+}
+@using (Html.BeginForm("Index", "Company", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Company Profile
+                            <small>Update Company Information</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a href="index.html">
+                                <i data-feather="home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Company</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row product-adding">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>General</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            @if (@Model != null && !string.IsNullOrEmpty(@Model.LogoUrl))
+                            {
+                                <div class="profile-details text-center">
+                                    <img src="~/img/@Model.LogoUrl" alt="@Model.Name" style="background:#e8e5e5" class="img-fluid blur-up lazyloaded">
+                                </div>
+                            }
+
+                            @Html.HiddenFor(model => model.Id)
+                            @Html.HiddenFor(model => model.LogoUrl)
+                            <div class="form-group">
+                                @if (@Model != null && !string.IsNullOrEmpty(@Model.LogoUrl))
+                                {
+                                    <label class="col-form-label pt-0">Change Company Logo (Image size 179x34)</label>
+                                }
+                                else
+                                {
+                                    <label class="col-form-label pt-0">Upload Company Logo (Image size 179x34)</label>
+                                }
+                                @Html.TextBoxFor(model => model.ImageFile, new { type = "file", @class = "form-control" })
+                                <span class="text-danger" asp-validation-for="ImageFile"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom01" class="col-form-label pt-0">
+                                    <span>*</span>
+                                    Name
+                                </label>
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    <span>*</span>
+                                    Address Line 1
+                                </label>
+                                @Html.EditorFor(model => model.AddressLineOne, new { htmlAttributes = new { @class = "form-control" } })
+                                <span asp-validation-for="AddressLineOne" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    Address Line 2
+                                </label>
+                                @Html.EditorFor(model => model.AddressLineTwo, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label for="validationCustom05" class="col-form-label pt-0">
+                                    Fax
+                                </label>
+                                @Html.EditorFor(model => model.Fax, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span>Contact No</label>
+                                @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                <span asp-validation-for="ContactNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Alternate No</label>
+                                @Html.EditorFor(model => model.AlternateNumber, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span>Email Id</label>
+                                @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control" } })
+                                <span asp-validation-for="EmailId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-form-label">Support Email Id</label>
+                                @Html.EditorFor(model => model.SupportEmailId, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group mb-0">
+                <div class="product-buttons">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+}

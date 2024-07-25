@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TamVaxti.Data;
+using TamVaxti.Models;
+using TamVaxti.Services.Interfaces;
+using TamVaxti.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,8 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
     options.JsonSerializerOptions.MaxDepth = 64; // Increase the max depth if needed
 });
 
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+                                                     .AddDefaultTokenProviders();
 builder.Services.Configure<IdentityOptions>(opt =>
 {
     opt.Password.RequiredUniqueChars = 1;
@@ -26,7 +31,7 @@ builder.Services.Configure<IdentityOptions>(opt =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var app = builder.Build();
 
