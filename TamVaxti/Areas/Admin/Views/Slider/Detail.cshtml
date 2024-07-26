@@ -1,0 +1,23 @@
+﻿@model Slider
+
+<div class="container">
+    <div class="table-responsive table--no-card m-b-30">
+        <table class="table table-borderless table-striped table-earning">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Is deleted</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>@Model.Id</td>
+                        <td><img src="~/img/@Model.Image" style="border: 1px solid black" /></td>
+                        <td>@Model.SoftDeleted</td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

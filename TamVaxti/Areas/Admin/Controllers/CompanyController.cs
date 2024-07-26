@@ -5,7 +5,7 @@ using TamVaxti.Models;
 using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels.Company;
 
-namespace FiorelloFrontBackDB.Areas.Admin.Controllers
+namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class CompanyController : Controller

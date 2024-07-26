@@ -1,0 +1,152 @@
+﻿@model TamVaxti.ViewModels.Sliders.SliderEditVM
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <style>
+        .form-control, .form-select, .form-control-sm {
+            border-radius: 0.25rem;
+        }
+
+        .required-label::before {
+            content: '*';
+            color: red;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var $button = $('#saveButton');
+                var $spinner = $('#spinner');
+
+                $button.prop('disabled', true);
+                $spinner.show();
+            });
+
+            $('#Image').on('change', function (event) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+        @if (TempData["message"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["message"]');
+            </text>
+        }
+
+                CKEDITOR.replace('SliderTitle');
+            CKEDITOR.replace('SliderDescription');
+        });
+    </script>
+
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            <strong>Edit Slider</strong>
+                            <small>Update Slider Information</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin">
+                                <i class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Sliders</a></li>
+                        <li class="breadcrumb-item active">Edit Slider</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card tab2-card">
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
+
+                    <div class="form-group row">
+                        <label asp-for="SliderTitle" class="col-xl-3 col-md-4 required-label"><strong>Slider Title</strong></label>
+                        <div class="col-md-7">
+                            <textarea asp-for="SliderTitle" id="SliderTitle" class="form-control mb-2"></textarea>
+                            <span class="text-danger" asp-validation-for="SliderTitle"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="SliderName" class="col-xl-3 col-md-4 required-label"><strong>Slider Name</strong></label>
+                        <div class="col-md-7">
+                            <input asp-for="SliderName" class="form-control form-control-sm" />
+                            <span asp-validation-for="SliderName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="SliderDescription" class="col-xl-3 col-md-4 required-label"><strong>Slider Description</strong></label>
+                        <div class="col-md-7">
+                            <textarea asp-for="SliderDescription" id="SliderDescription" class="form-control mb-2"></textarea>
+                            <span asp-validation-for="SliderDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="SliderNumber" class="col-xl-3 col-md-4 required-label"><strong>Slider Number</strong></label>
+                        <div class="col-md-7">
+                            <input asp-for="SliderNumber" class="form-control form-control-sm" />
+                            <span asp-validation-for="SliderNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Image" class="col-xl-3 col-md-4"><strong>Image</strong></label>
+                        <div class="col-md-7">
+                            <input asp-for="Image" type="file" class="form-control form-control-sm" id="Image" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
+
+                            <div class="mt-2">
+                                @if (!string.IsNullOrEmpty(Model.ExistingImage))
+                                {
+                                    <img id="imagePreview" src="@Url.Content($"~/img/sliders/{Model.ExistingImage}")" alt="Slider Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10%;" />
+                                }
+                                else
+                                {
+                                    <img id="imagePreview" src="/img/default-image.png" alt="Default Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10%;" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center mt-4">
+                        <div class="d-flex justify-content-center">
+                            <button id="saveButton" type="submit" class="btn btn-primary d-flex align-items-center">
+                                <span id="buttonText" class="mr-2">Save</span>
+                                <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </button>
+                            <a asp-action="Index" class="btn" style="background-color: #333333; color: #ffffff; margin-left: 10px;">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
