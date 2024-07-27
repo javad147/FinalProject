@@ -1,0 +1,120 @@
+﻿@model TamVaxti.Models.Order
+
+@{
+    //Layout = null;
+}
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="page-header-left">
+                                    <h3>Order Tracking
+                                        <small>Multikart Admin panel</small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <ol class="breadcrumb pull-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i data-feather="home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a asp-action="Index">Orders</a></li>
+                                    <li class="breadcrumb-item active">Order Tracking</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 overflow-hidden">
+                                            <div class="order-left-image">
+                                                <div class="tracking-product-image">
+                                                    <img src="assets/images/fashion/1.jpg"
+                                                        class="img-fluid w-100 blur-up lazyload" alt="">
+                                                </div>
+
+                                                <div class="order-image-contain">
+                                                    <!-- h4>Van Heusen Women's Solid Regular Fit Polo</h4 -->
+                                                    <div class="tracker-number">
+                                                        <p>Order Number : <span>@Html.DisplayFor(model => model.OrderNumber)</span></p>
+                                                        <!-- p>Brand : <span>Van Heusen</span></p -->
+                                                        <p>Order Placed : <span>@Html.DisplayFor(model => model.OrderDate)</span></p>
+                                                    </div>
+                                                    <h5>Your items is on the way. Tracking information will be available
+                                                        within 24 hours.</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <ol class="progtrckr">
+                                            @for (int i = 0; i < ViewBag.DeliveryStatusItems.Count; i++)
+                                            {
+                                            var currentItem = ViewBag.DeliveryStatusItems[i];
+                                            var selectedIndex = ViewBag.DeliveryStatusItems.IndexOf(Model.DeliveryStatus);
+
+                                            var cssClass = (i <= selectedIndex) ? "progtrckr-done" : "progtrckr-todo";
+                                            var statusText = (i == selectedIndex) ? "Processing" : ((i < selectedIndex) ? "Done" : "Pending");
+                                            <li class="@cssClass">
+                                                <h5>@currentItem</h5>
+                                                <h6>@(statusText == "Done" ? Html.DisplayFor(model => model.OrderDate) : statusText)</h6>
+                                            </li>
+                                            }
+                                        </ol>
+
+                                        <div class="col-12 overflow-visible">
+                                            <div class="tracker-table all-package">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr class="table-head">
+                                                                <th scope="col">Date</th>
+                                                                <th scope="col">Time</th>
+                                                                <th scope="col">Discription</th>
+                                                                <th scope="col">Location</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @foreach (var item in Model.OrderTracking)
+                                                            {
+                                                                var dateOnly = item.Timestamp.ToString("dd/MM/yyyy");
+                                                                var timeOnly = item.Timestamp.ToString("hh:mm tt");
+                                                            <tr>
+                                                                <td>
+                                                                    <h6>@dateOnly</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <h6>@timeOnly</h6>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="fw-bold">@Html.DisplayFor(modelItem => item.Notes)</p>
+                                                                </td>
+                                                                <td>
+                                                                    <h6>@Html.DisplayFor(modelItem => item.Location)</h6>
+                                                                </td>
+                                                            </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+           

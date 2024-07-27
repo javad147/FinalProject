@@ -1,0 +1,94 @@
+﻿@model TamVaxti.ViewModels.Orders.OrderEditVM
+
+@{
+    //Layout = null;
+}
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="page-header-left">
+                                    <h3>Edit Order
+                                        <small>Multikart Admin panel</small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <ol class="breadcrumb pull-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i data-feather="home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a asp-action="Index">Orders</a> </li>
+                                    <li class="breadcrumb-item active">Edit Order</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="card tab2-card">
+                        <div class="card-header pull-right">
+                            <a asp-action="AddTracking" asp-route-id="@Model.OrderId" class="btn btn-primary mt-md-0 mt-2">Add New
+                                        Tracking</a>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="Edit" method="post" >
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input asp-for="OrderId" type="hidden" />
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade active show" id="general" role="tabpanel"
+                                        aria-labelledby="general-tab">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group row">
+                                                    <label for="validationCustom0"
+                                                        class="col-xl-3 col-md-4">
+                                                        Estimated Delivery Date</label>
+                                                    <div class="col-md-7">
+                                                        <input asp-for="EstimatedDeliveryDate" class="form-control" />
+                                                        <span asp-validation-for="EstimatedDeliveryDate" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="validationCustom1"
+                                                        class="col-xl-3 col-md-4">Actual Delivery Date</label>
+                                                    <div class="col-md-7">
+                                                        <input asp-for="ActualDeliveryDate" class="form-control" />
+                                                        <span asp-validation-for="ActualDeliveryDate" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-xl-3 col-md-4">Expected Delivery Date</label>
+                                                    <div class="col-md-7">
+                                                        <input asp-for="ExpectedDeliveryDate" class="form-control" />
+                                                        <span asp-validation-for="ExpectedDeliveryDate" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-xl-3 col-md-4">Delivery Status</label>
+                                                    <div class="col-md-7">
+                                                        @*<select class="custom-select w-100 form-control" asp-for="DeliveryStatus"></select>*@
+                                                        @*@Html.DropDownListFor(m => m.DeliveryStatus, new SelectList(ViewBag.DeliveryStatusItems), "Select Delivery Status")*@
+                                                        <select asp-for="DeliveryStatus" asp-items="new SelectList(ViewBag.DeliveryStatusItems)" class="form-control"></select>
+                                                    </div>
+                                                    <span asp-validation-for="DeliveryStatus" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
