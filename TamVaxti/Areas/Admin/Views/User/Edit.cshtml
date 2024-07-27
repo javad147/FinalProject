@@ -1,0 +1,351 @@
+﻿@model TamVaxti.ViewModels.Users.UserEditVM
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <style>
+        .form-control, .form-select, .form-control-sm {
+            border-radius: 0.25rem;
+        }
+
+        .required-label::before {
+            content: '*';
+            color: red;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var $button = $('#saveButton');
+                var $spinner = $('#spinner');
+
+                $button.prop('disabled', true);
+                $spinner.show();
+            });
+
+            // Show preview of the selected image
+            $('#ProfileImageUrl').on('change', function (event) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+        @if (TempData["message"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["message"]');
+            </text>
+        }
+                        });
+
+    </script>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            <strong>Edit User</strong>
+                            <small>Update User Information</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin">
+                                <i class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+                        <li class="breadcrumb-item active">Edit User</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card tab2-card">
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="account-tab" data-bs-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="true">Account</a>
+                    </li>
+                    @*<li class="nav-item">
+                        <a class="nav-link" id="permission-tab" data-bs-toggle="tab" href="#permission" role="tab" aria-controls="permission" aria-selected="false">Permission</a>
+                    </li>*@
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <input asp-for="Id" type="hidden" />
+
+                            <div class="form-group row">
+                                <label asp-for="FullName" class="col-xl-3 col-md-4 required-label"><strong>Full Name</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="FullName" class="form-control form-control-sm" />
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="UserName" class="col-xl-3 col-md-4 required-label"><strong>Username</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="UserName" class="form-control form-control-sm" />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Email" class="col-xl-3 col-md-4 required-label"><strong>Email</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="Email" class="form-control form-control-sm" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Password" class="col-xl-3 col-md-4 required-label"><strong>Password</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="Password" class="form-control form-control-sm" type="password" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="ConfirmPassword" class="col-xl-3 col-md-4 required-label"><strong>Confirm Password</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="ConfirmPassword" class="form-control form-control-sm" type="password" />
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row custom-select">
+                                <label asp-for="SelectedRole" class="col-xl-3 col-md-4 required-label"><strong>Role</strong></label>
+                                <div class="col-md-7">
+                                    <select asp-for="SelectedRole" class="form-select form-control form-control-sm" asp-items="Model.Roles"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="ProfileImageUrl" class="col-xl-3 col-md-4"><strong>Profile Image</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="ProfileImageUrl" type="file" class="form-control form-control-sm" id="ProfileImageUrl" />
+                                    <span asp-validation-for="ProfileImageUrl" class="text-danger"></span>
+
+                                    <!-- Show current profile image if available -->
+                                    <div class="mt-2">
+                                        @if (!string.IsNullOrEmpty(Model.ExistingProfileImageUrl))
+                                        {
+                                            <img id="imagePreview" src="@Url.Content($"~/img/users/{Model.ExistingProfileImageUrl}")" alt="Profile Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imagePreview" src="/img/default-avatar.png" alt="Default Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group text-center mt-4">
+                                <div class="d-flex justify-content-center">
+                                    <button id="saveButton" type="submit" class="btn btn-primary d-flex align-items-center">
+                                        <span id="buttonText" class="mr-2">Save</span>
+                                        <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </button>
+                                    <a asp-action="Index" class="btn" style="background-color: #333333; color: #ffffff; margin-left: 10px;">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Permission Tab -->
+                   @* <div class="tab-pane fade" id="permission" role="tabpanel" aria-labelledby="permission-tab">
+                        <form class="needs-validation user-add" novalidate="">
+                            <div class="permission-block">
+                                <div class="attribute-blocks">
+                                    <h5 class="f-w-600 mb-3">User Related Permission</h5>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Add User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-product-allow" type="radio" name="rdo-ani5" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-product-deny" type="radio" name="rdo-ani5" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Update User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="update-user-allow">
+                                                    <input class="radio_animated" id="update-user-allow" type="radio" name="rdo-ani6" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="update-user-deny">
+                                                    <input class="radio_animated" id="update-user-deny" type="radio" name="rdo-ani6" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Delete User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="delete-user-allow">
+                                                    <input class="radio_animated" id="delete-user-allow" type="radio" name="rdo-ani7" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="delete-user-deny">
+                                                    <input class="radio_animated" id="delete-user-deny" type="radio" name="rdo-ani7" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="attribute-blocks">
+                                    <h5 class="f-w-600 mb-3">Product Related Permission</h5>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Add Product</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-user-allow">
+                                                    <input class="radio_animated" id="add-user-allow" type="radio" name="rdo-ani" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-user-deny">
+                                                    <input class="radio_animated" id="add-user-deny" type="radio" name="rdo-ani" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Update Product</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="update-product-allow">
+                                                    <input class="radio_animated" id="update-product-allow" type="radio" name="rdo-ani1" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="update-product-deny">
+                                                    <input class="radio_animated" id="update-product-deny" type="radio" name="rdo-ani1" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Delete Product</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="delete-product-allow">
+                                                    <input class="radio_animated" id="delete-product-allow" type="radio" name="rdo-ani2" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="delete-product-deny">
+                                                    <input class="radio_animated" id="delete-product-deny" type="radio" name="rdo-ani2" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="attribute-blocks">
+                                    <h5 class="f-w-600 mb-3">Category Related Permission</h5>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Add Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-categories-allow">
+                                                    <input class="radio_animated" id="add-categories-allow" type="radio" name="rdo-ani8" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-categories-deny">
+                                                    <input class="radio_animated" id="add-categories-deny" type="radio" name="rdo-ani8" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Update Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="update-categories-allow">
+                                                    <input class="radio_animated" id="update-categories-allow" type="radio" name="rdo-ani9" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="update-categories-deny">
+                                                    <input class="radio_animated" id="update-categories-deny" type="radio" name="rdo-ani9" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Delete Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="delete-categories-allow">
+                                                    <input class="radio_animated" id="delete-categories-allow" type="radio" name="rdo-ani10" />
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="delete-categories-deny">
+                                                    <input class="radio_animated" id="delete-categories-deny" type="radio" name="rdo-ani10" />
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

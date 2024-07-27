@@ -1,0 +1,285 @@
+﻿@model TamVaxti.ViewModels.Users.UserCreateVM
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <style>
+        .form-control, .form-select, .form-control-sm {
+            border-radius: 0.25rem;
+        }
+
+        .required-label::before {
+            content: '*';
+            color: red;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var $button = $('#createButton');
+                var $spinner = $('#spinner');
+                var $buttonText = $('#buttonText');
+
+                $button.prop('disabled', true);
+                $spinner.show();
+            });
+
+        @if (TempData["message"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["message"]');
+            </text>
+        }
+                });
+    </script>
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3><strong>Create User</strong>
+                            <small>Add User Information</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a href="/Admin">
+                                <i class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Users</a></li>
+                        <li class="breadcrumb-item active">Create User</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card tab2-card">
+            <div class="card-body">
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="account-tab" data-bs-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="true">Account</a>
+                    </li>
+                   @* <li class="nav-item">
+                        <a class="nav-link" id="permission-tab" data-bs-toggle="tab" href="#permission" role="tab" aria-controls="permission" aria-selected="false">Permission</a>
+                    </li>*@
+                </ul>
+
+                <!-- Tabs Content -->
+                <div class="tab-content" id="myTabContent">
+                    <!-- Account Tab -->
+                    <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-group row">
+                                <label asp-for="FullName" class="col-xl-3 col-md-4 required-label"><strong>Full Name</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="FullName" class="form-control form-control-sm" />
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="UserName" class="col-xl-3 col-md-4 required-label"><strong>Username</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="UserName" class="form-control form-control-sm" />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Email" class="col-xl-3 col-md-4 required-label"><strong>Email</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="Email" class="form-control form-control-sm" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="PasswordHash" class="col-xl-3 col-md-4 required-label"><strong>Password</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="PasswordHash" class="form-control form-control-sm" type="password" />
+                                    <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="ConfirmPassword" class="col-xl-3 col-md-4 required-label"><strong>Confirm Password</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="ConfirmPassword" class="form-control form-control-sm" type="password" />
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="SelectedRole" class="col-xl-3 col-md-4 required-label"><strong>Role</strong></label>
+                                <div class="col-md-7">
+                                    <select asp-for="SelectedRole" class="form-select form-control form-control-sm" asp-items="Model.Roles">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="ProfileImageUrl" class="col-xl-3 col-md-4"><strong>Profile Image</strong></label>
+                                <div class="col-md-7">
+                                    <input asp-for="ProfileImageUrl" type="file" class="form-control form-control-sm" />
+                                    <span asp-validation-for="ProfileImageUrl" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group text-center mt-4">
+                                <div class="d-flex justify-content-center">
+                                    <button id="createButton" type="submit" class="btn btn-primary d-flex align-items-center">
+                                        <span id="buttonText" class="mr-2">Create</span>
+                                        <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </button>
+                                    <a asp-action="Index" class="btn" style="background-color: #333333; color: #ffffff; margin-left: 10px;">Cancel</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Permission Tab -->
+                @*    <div class="tab-pane fade" id="permission" role="tabpanel" aria-labelledby="permission-tab">
+                        <form class="needs-validation user-add" novalidate="">
+                            <div class="permission-block">
+                                <div class="attribute-blocks">
+                                    <h5 class="f-w-600 mb-3">User Related Permission</h5>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Add User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-User-allow" type="radio" name="addProductPermission">
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-User-deny" type="radio" name="addProductPermission" checked="">
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Update User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-User-allow" type="radio" name="addProductPermission">
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-User-deny" type="radio" name="addProductPermission" checked="">
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Delete User</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-User-allow" type="radio" name="addProductPermission">
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-User-deny" type="radio" name="addProductPermission" checked="">
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="attribute-blocks">
+                                    <h5 class="f-w-600 mb-3">Category Related Permission</h5>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Add Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-Category-allow" type="radio" name="addCategoryPermission">
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-Category-deny" type="radio" name="addCategoryPermission" checked>
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Update Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-Category-allow" type="radio" name="addProductPermission" checked>
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-Category-deny" type="radio" name="addProductPermission">
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-sm-4">
+                                            <label>Delete Category</label>
+                                        </div>
+                                        <div class="col-xl-9 col-sm-8">
+                                            <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="add-product-allow">
+                                                    <input class="radio_animated" id="add-Category-allow" type="radio" name="addProductPermission">
+                                                    Allow
+                                                </label>
+                                                <label class="d-block" for="add-product-deny">
+                                                    <input class="radio_animated" id="add-Category-deny" type="radio" name="addProductPermission" checked="true">
+                                                    Deny
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-primary">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>*@
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</body>
