@@ -1,0 +1,53 @@
+﻿@model RegisterVM
+
+
+
+<div class="container mt-5 mb-5 d-flex flex-column align-items-center">
+    <h1 class="text-center">Sign Up</h1>
+    <div class="text-danger" asp-validation-summary="ModelOnly">
+    </div>
+    <div class="register-area mt-3" style="padding:20px;background-color:lightgray;border-radius:30px;width:50%;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
+        <form method="post" asp-action="SignUp">
+
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Username</label>
+                <input asp-for="UserName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <span class="text-danger" asp-validation-for="UserName"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Fullname</label>
+                <input asp-for="FullName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <span class="text-danger" asp-validation-for="FullName"></span>
+            </div>            
+            
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input asp-for="Email" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
+                <span class="text-danger" asp-validation-for="Password"></span>
+            </div>            
+            
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" id="exampleInputPassword1">
+                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+            </div>
+            <div class="sign-up-btn d-flex justify-content-center">
+                <button type="submit" class="btn btn-warning w-25">Sign Up</button>
+            </div>
+            
+            <p class="d-flex justify-content-center mt-4">Already have an account? <a asp-controller="Account" asp-action="SignIn" class="px-2"> Sign In</a></p>
+
+        </form>
+    </div>
+</div>
+
+
+
+
