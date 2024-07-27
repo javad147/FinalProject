@@ -1,0 +1,36 @@
+﻿@model BlogEditVM
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <strong>Edit</strong>
+        </div>
+        <div class="card-body card-block">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" class="">
+                <input asp-for="Id" type="hidden" />
+                <div class="form-group">
+                    <label class="form-control-label">Enter blog title</label>
+                    <span class="text-danger d-block" asp-validation-for="BlogTitle"></span>
+                    <input asp-for="BlogTitle" type="text" class="form-control mb-2" maxlength="100">
+
+                    <label class="form-control-label">Enter blog description</label>
+                    <span class="text-danger d-block" asp-validation-for="BlogDescription"></span>
+                    <textarea asp-for="BlogDescription" id="Description" class="form-control mb-2">@Html.Raw(Model.BlogDescription)</textarea>
+
+                    <label class="form-control-label">Enter blog image</label>
+                    <span class="text-danger d-block" asp-validation-for="ImageFile"></span>
+                    <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+                <a type="reset" asp-action="Index" class="btn btn-danger btn-sm">
+                    <i class="fa fa-ban"></i> Reset
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>CKEDITOR.replace('Description');</script>

@@ -1,0 +1,61 @@
+﻿@model BlogCreateVM
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                        Add Blog
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Blog" asp-action="Index">
+                            Blog
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Craete</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body card-block">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" class="">
+                <div class="form-group">
+                    <label class="form-control-label">Enter blog title</label>
+                    <span class="text-danger d-block" asp-validation-for="Title"></span>
+                    <input asp-for="Title" type="text" class="form-control mb-2" maxlength="100">
+
+                    <label class="form-control-label">Enter blog description</label>
+                    <span class="text-danger d-block" asp-validation-for="Description"></span>
+                    <textarea asp-for="Description" id="Description" class="form-control mb-2"></textarea>
+
+                    <label class="form-control-label">Enter blog image</label>
+                    <span class="text-danger d-block" asp-validation-for="ImageFile"></span>
+                    <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+                <a type="reset" asp-action="Index" class="btn btn-danger btn-sm">
+                    <i class="fa fa-ban"></i> Reset
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>CKEDITOR.replace('Description');</script>
