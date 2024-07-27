@@ -2382,7 +2382,7 @@ $(function() {
         $inputTo = $(".js-input-to"),
         instance,
         min = 0,
-        max = 1500,
+        max = 10000,
         from = 0,
         to = 0;
 
@@ -2390,7 +2390,7 @@ $(function() {
         type: "double",
         min: min,
         max: max,
-        from: 0,
+        from: 1,
         to: 3000,
         prefix: '$',
         onStart: updateInputs,

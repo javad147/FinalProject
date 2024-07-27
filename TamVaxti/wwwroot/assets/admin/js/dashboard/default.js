@@ -138,8 +138,8 @@ var doughnutOptions = {
     animateScale: false,
     legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 };
-var doughnutCtx = document.getElementById("myDoughnutGraph").getContext("2d");
-var myDoughnutChart = new Chart(doughnutCtx).Doughnut(doughnutData, doughnutOptions);
+//var doughnutCtx = document.getElementById("myDoughnutGraph").getContext("2d");
+//var myDoughnutChart = new Chart(doughnutCtx).Doughnut(doughnutData, doughnutOptions);
 
 $(".pie-colours-1").peity("pie", {
     fill: ["#ff4c3b", "#02cccd", "#ffbc58", "#a5a5a5"],
@@ -247,10 +247,10 @@ var lineGraphOptions = {
     datasetFill: true,
     legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 };
-var lineCtx = document.getElementById("myGraph").getContext("2d");
-var myLineCharts = new Chart(lineCtx).Line(lineGraphData, lineGraphOptions);
+//var lineCtx = document.getElementById("myGraph").getContext("2d");
+//var myLineCharts = new Chart(lineCtx).Line(lineGraphData, lineGraphOptions);
 
-
+ 
 // sparkline
 
 var sparkline_chart = {

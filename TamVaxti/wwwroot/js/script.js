@@ -1,168 +1,215 @@
+function initializeWishlist() {
+    // Load wishlist from cookies
+    var wishlist = []; // Cookies.getJSON('wishlist') || [];
+    $.getJSON("/WishList/GetUserSavedWishList",
+        (data) => {
+            wishlist = data;
+            $(".add-to-wishlist").each(function() {
+                var productId = $(this).data("product-id");
 
-$(function () {
-
-    //ADD TO BASKET
-
-    $(document).on('click', '.add-product-basket', function () {
-
-        let id = parseInt($(this).attr("data-id"));
-
-        $.ajax({
-            url: `Home/AddProductToBasket?id=${id}`,
-            type: 'POST',
-            success: function (response) {
-                $(".rounded-circle").text(response.count);
-                $(".basket-total-price").text(`CART ($${response.totalPrice})`)
-            },
-        });
-    })
-
-    // HEADER
-
-    $(document).on('click', '#search', function () {
-        $(this).next().toggle();
-    })
-
-    $(document).on('click', '#mobile-navbar-close', function () {
-        $(this).parent().removeClass("active");
-
-    })
-    $(document).on('click', '#mobile-navbar-show', function () {
-        $('.mobile-navbar').addClass("active");
-
-    })
-
-    $(document).on('click', '.mobile-navbar ul li a', function () {
-        if ($(this).children('i').hasClass('fa-caret-right')) {
-            $(this).children('i').removeClass('fa-caret-right').addClass('fa-sort-down')
-        }
-        else {
-            $(this).children('i').removeClass('fa-sort-down').addClass('fa-caret-right')
-        }
-        $(this).parent().next().slideToggle();
-    })
-
-    // SLIDER
-
-    $(document).ready(function(){
-        $(".slider").owlCarousel(
-            {
-                items: 1,
-                loop: true,
-                autoplay: true
-            }
-        );
-      });
-
-    // PRODUCT
-
-    $(document).on('click', '.categories', function(e)
-    {
-        e.preventDefault();
-        $(this).next().next().slideToggle();
-    })
-
-    $(document).on('click', '.category li a', function (e) {
-        e.preventDefault();
-        let category = $(this).attr('data-id');
-        let products = $('.product-item');
-        
-        products.each(function () {
-            if(category == $(this).attr('data-id'))
-            {
-                $(this).parent().fadeIn();
-            }
-            else
-            {
-                $(this).parent().hide();
-            }
-        })
-        if(category == 'all')
-        {
-            products.parent().fadeIn();
-        }
-    })
-
-
-    // ACCORDION 
-
-    $(document).on('click', '.question', function()
-    {   
-       $(this).siblings('.question').children('i').removeClass('fa-minus').addClass('fa-plus');
-       $(this).siblings('.answer').not($(this).next()).slideUp();
-       $(this).children('i').toggleClass('fa-plus').toggleClass('fa-minus');
-       $(this).next().slideToggle();
-       $(this).siblings('.active').removeClass('active');
-       $(this).toggleClass('active');
-    })
-
-    // TAB
-
-    $(document).on('click', 'ul li', function()
-    {   
-        $(this).siblings('.active').removeClass('active');
-        $(this).addClass('active');
-        let dataId = $(this).attr('data-id');
-        $(this).parent().next().children('p.active').removeClass('active');
-
-        $(this).parent().next().children('p').each(function()
-        {
-            if(dataId == $(this).attr('data-id'))
-            {
-                $(this).addClass('active')
-            }
-        })
-    })
-
-    $(document).on('click', '.tab4 ul li', function()
-    {   
-        $(this).siblings('.active').removeClass('active');
-        $(this).addClass('active');
-        let dataId = $(this).attr('data-id');
-        $(this).parent().parent().next().children().children('p.active').removeClass('active');
-
-        $(this).parent().parent().next().children().children('p').each(function()
-        {
-            if(dataId == $(this).attr('data-id'))
-            {
-                $(this).addClass('active')
-            }
-        })
-    })
-
-    // INSTAGRAM
-
-    $(document).ready(function(){
-        $(".instagram").owlCarousel(
-            {
-                items: 4,
-                loop: true,
-                autoplay: true,
-                responsive:{
-                    0:{
-                        items:1
-                    },
-                    576:{
-                        items:2
-                    },
-                    768:{
-                        items:3
-                    },
-                    992:{
-                        items:4
-                    }
+                var $icon = $(this).find("i");
+                if (wishlist.includes(productId)) {
+                    $icon.removeClass("ti-heart").addClass("fa fa-fw fa-heart");
                 }
-            }
-        );
-      });
+            });
+        });
+    // Apply wishlisted class to already wishlisted items
 
-      $(document).ready(function(){
-        $(".say").owlCarousel(
-            {
-                items: 1,
-                loop: true,
-                autoplay: true
+
+    // Handle add to wishlist click
+    $(document).on("click",
+        ".add-to-wishlist",
+        function() {
+            var productId = $(this).data("product-id");
+            var $icon = $(this).find("i");
+            var index = wishlist.indexOf(productId);
+            if (index !== -1) {
+                // Remove from wishlist
+
+                $.getJSON("/WishList/RemoveProductFromWishList?productId=" + productId,
+                    (data) => {
+                        wishlist = data;
+                        wishlist.splice(index, 1);
+                        $icon.removeClass("fa fa-fw fa-heart").addClass("ti-heart");
+                        notifyWishlist(false);
+                        refreshWishListView();
+                    });
+
+
+            } else {
+                $.getJSON("/WishList/AddToWishList?productId=" + productId,
+                    (data) => {
+                        wishlist = data;
+                        wishlist.push(productId);
+                        $icon.removeClass("ti-heart").addClass("fa fa-fw fa-heart");
+                        notifyWishlist(true);
+                        refreshWishListView();
+                    });
             }
-        );
-      });
-})
+            // Update the cookie
+            Cookies.set("wishlist", wishlist, { expires: 7 });
+        });
+}
+
+function initializeCart() {
+    debugger 
+    // Load cart from cookies
+    var cart = Cookies.getJSON("cart") || {};
+
+    // Handle add to cart click
+    $(document).on("click",
+        ".add-to-cart",
+        function() {
+            cart = Cookies.getJSON("cart") || {};
+            var productId = $(this).data("product-id");
+
+            if (cart[productId]) {
+                // Increment the count of the product in the cart
+                cart[productId]++;
+            } else {
+                // Add new product to the cart with count 1
+                cart[productId] = 1;
+            }
+            console.log(cart);
+            notifyCart(true);
+            // Update the cookie
+            Cookies.set("cart", cart, { expires: 7 });
+            refreshCartView();
+        });
+
+    $(document).on("change",
+        ".cart-product-counter",
+        function() {
+            cart = Cookies.getJSON("cart") || {};
+            var productId = $(this).data("product-id");
+            debugger;
+            var index = Object.keys(cart).findIndex(key => key === productId.toString());
+            if (cart[productId]) {
+                cart[productId] = $(this).val();
+            }
+            // Update the cookie
+            Cookies.set("cart", cart, { expires: 7 });
+            refreshCartView();
+        });
+
+    $(document).on("click",
+        ".remove-from-cart",
+        function() {
+            cart = Cookies.getJSON("cart") || {};
+            var productId = $(this).data("product-id");
+            var index = Object.keys(cart).findIndex(key => key === productId.toString());
+            if (cart[productId]) {
+                delete cart[productId];
+            }
+            notifyCart(false);
+            // Update the cookie
+            Cookies.set("cart", cart, { expires: 7 });
+            $(this).closest("li").remove();
+            refreshCartView();
+        });
+}
+
+function notifyWishlist(added) {
+    var message = added ? "Item Successfully added in wishlist" : "Item Successfully removed from wishlist";
+    $.notify({
+            icon: "fa fa-check",
+            title: "Success!",
+            message: message
+        },
+        {
+            element: "body",
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: true,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: "animated fadeInDown",
+                exit: "animated fadeOutUp"
+            },
+            icon_type: "class",
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="btn-close" data-notify="dismiss"></button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                "</div>" +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                "</div>"
+        });
+}
+
+function notifyCart(added) {
+    var message = added ? "Item Successfully added to cart" : "Item removed from the cart";
+    $.notify({
+            icon: "fa fa-check",
+            title: "Success!",
+            message: message
+        },
+        {
+            element: "body",
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: true,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: "animated fadeInDown",
+                exit: "animated fadeOutUp"
+            },
+            icon_type: "class",
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="btn-close" data-notify="dismiss"></button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                "</div>" +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                "</div>"
+        });
+}
+
+function refreshCartView() {
+    $.get("/Basket/CartPartial",
+        function(data) {
+            $("#cart-container").html(data);
+
+        });
+
+    $.get("/Basket/SideCartPartial",
+        function(data) {
+            $("#cart_side").html(data);
+        });
+}
+
+function refreshWishListView() {
+    $.get("/Product/WishListProducts",
+        (data) => {
+            $("#wishlist-products").html(data);
+        });
+}
+
+$(function() {
+    initializeWishlist();
+    initializeCart();
+});
