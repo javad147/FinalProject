@@ -1,7 +1,12 @@
 ﻿using TamVaxti.Data;
 using TamVaxti.Models;
 using TamVaxti.Services.Interfaces;
+using TamVaxti.ViewModels.Accounts;
+using TamVaxti.ViewModels.Blogs;
+using TamVaxti.ViewModels.Company;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
+using System.Xml.Linq;
 
 namespace TamVaxti.Services
 {
