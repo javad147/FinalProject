@@ -1,0 +1,199 @@
+﻿@model IEnumerable<TamVaxti.Models.Coupon>
+
+<style>
+    .star-rating {
+        display: inline-block;
+        font-size: 0;
+        position: relative;
+    }
+
+        .star-rating .star {
+            display: inline-block;
+            font-size: 20px;
+            color: lightgray;
+        }
+
+            .star-rating .star.filled {
+                color: gold;
+            }
+
+    .icon {
+        font-size: 24px;
+        color: gray;
+    }
+
+        .icon.check-circle {
+            color: green;
+        }
+
+        .icon.x-circle {
+            color: red;
+        }
+
+    .td-status {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    svg {
+        display: inline;
+    }
+
+    .search-form .form-group {
+        margin-right: 10px;
+    }
+
+    .search-form .btn {
+        margin-left: 5px;
+    }
+</style>
+
+<div class="page-body">
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            List Coupons
+                            <small>Multikart Admin panel</small>
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home")">
+                                <i data-feather="home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">Coupons</li>
+                        <li class="breadcrumb-item active">List Coupons</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <form class="form-inline search-form search-box">
+                            <div class="form-group">
+                                <input class="form-control-plaintext" type="search" placeholder="Search..">
+                            </div>
+                        </form>
+
+                        <a href="@Url.Action("Create", "Coupons")" class="btn btn-primary mt-md-0 mt-2">Add New Coupon</a>
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive table-desi">
+                            <table class="all-package coupon-table table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <button type="button" class="btn btn-primary add-row delete_all" id="deleteSelectedBtn">Delete</button>
+                                        </th>
+                                        <th>Title</th>
+                                        <th>Code</th>
+                                        <th>Discount</th>
+                                        <th>Published</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var coupon in Model)
+                                    {
+                                        <tr data-row-id="@coupon.Id">
+                                            <td>
+                                                <input class="checkbox_animated check-it" type="checkbox" value="@coupon.Id">
+                                            </td>
+                                            <td>@coupon.CouponTitle</td>
+                                            <td>@coupon.CouponCode</td>
+                                            <td>
+                                                @if (coupon.DiscountType == "Percent")
+                                                {
+                                                    @($"{Math.Round(coupon.DiscountValue)}%")
+                                                }
+                                                else
+                                                {
+                                                    @($"{Math.Round(coupon.DiscountValue)}") <!-- Remove decimal part -->
+                                                }
+                                            </td>
+                                            <td class="td-status">
+                                                @if (coupon.IsEnabled)
+                                                {
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle icon check-circle">
+                                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                    </svg>
+                                                }
+                                                else
+                                                {
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle icon x-circle">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                                    </svg>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("Edit", "Coupons", new { id = coupon.Id })" class="btn-sm">
+                                                    <i data-feather="edit"></i>
+                                                </a>
+                                                <!-- Add delete button if needed -->
+                                                <!-- <a href="@Url.Action("Delete", "Coupons", new { id = coupon.Id })" class="btn btn-danger btn-sm">
+                                                    <i data-feather="trash-2"></i> Delete
+                                                </a> -->
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+<script>
+document.getElementById('deleteSelectedBtn').addEventListener('click', function () {
+    var checkboxes = document.querySelectorAll('.check-it:checked');
+    if (checkboxes.length === 0) {
+        alert('Please select at least one coupon to delete.');
+        return;
+    }
+
+    if (confirm('Are you sure you want to delete the selected coupons?')) {
+        var ids = Array.from(checkboxes).map(cb => cb.value);
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '@Url.Action("DeleteSelected", "Coupons")';
+        form.style.display = 'none';
+
+        ids.forEach(id => {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids';
+            input.value = id;
+            form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
