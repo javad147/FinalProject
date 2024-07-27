@@ -1,0 +1,28 @@
+﻿@model List<TamVaxti.ViewModels.Sliders.SliderVM>
+<!-- Home Slider -->
+<section class="p-0">
+    <div class="slide-1 home-slider">
+        @foreach (var item in Model)
+        {
+            <div>
+                <div class="home text-start p-left">
+                    <img src="~/img/@item.Image" alt="" class="bg-img blur-up lazyload">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="slider-contain">
+                                    <div>
+                                        <h4>@Html.Raw(@item.SliderDescription)</h4>
+                                        <h1>@Html.Raw(@item.SliderTitle)</h1>
+                                        <a href="#" class="btn btn-outline btn-classic">shop now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+<!-- Home slider end -->

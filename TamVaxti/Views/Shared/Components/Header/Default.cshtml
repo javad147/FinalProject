@@ -1,0 +1,273 @@
+﻿@model HeaderVM
+
+<!-- header start -->
+<header>
+    <div class="mobile-fix-option"></div>
+    <div class="top-header top-header-dark3">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="header-contact">
+                        <ul>
+                            <li>Welcome to @Model.Company.Name</li>
+                            <li><i class="fa fa-phone" aria-hidden="true"></i>Call Us: @Model.Company.ContactNumber</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-end">
+                    <ul class="header-dropdown">
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                        {
+                            <li class="mobile-wishlist">
+                                <i class="fa fa-heart" aria-hidden="true"></i>
+                                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    Go To Admin
+                                </a>
+                            </li>
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="mobile-wishlist">
+                                <a asp-controller="Product" asp-action="Wishlist">
+                                    <i class="fa fa-heart" aria-hidden="true"></i>
+                                    Wishlist
+                                </a>
+                            </li>
+                        }
+                        <li class="onhover-dropdown mobile-account">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            My
+                            Account
+                            <ul class="onhover-show-div">
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                    <li>
+                                        <a asp-controller="Account" asp-action="SignIn">Login</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Account" asp-action="SignUp">register</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a asp-controller="Account" asp-action="SignIn">My Profile</a>
+                                    </li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="LogOut" method="post" id="logoutForm" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <i data-feather="log-out"></i>
+                                            <a href="javascript:void(0)" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+                                        </form>
+
+                                        @* <form asp-controller="Account" asp-action="LogOut" method="post" id="logoutForm" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                    </form>
+                                    <a asp-action="LogOut" asp-controller="Account">Logout</a>*@
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="main-menu">
+                    <div class="menu-left category-nav-right">
+                        <div class="brand-logo">
+                            <a href="#">
+                                <img src="~/img/@Model.Company.LogoUrl" alt="@Model.Company.Name"
+                                     class="img-fluid blur-up lazyload">
+                            </a>
+                        </div>
+                        <div class="navbar">
+                            <a href="javascript:void(0)" class="white-content">
+                                <i class="fa fa-bars" aria-hidden="true" style="color:white !important"></i>
+                            </a>
+                            <div id="mySidenav" class="sidenav">
+                                <a href="javascript:void(0)" class="sidebar-overlay" onclick="closeNav()"></a>
+                                <nav>
+                                    <a href="javascript:void(0)" onclick="closeNav()">
+                                        <div class="sidebar-back text-start">
+                                            <i class="fa fa-angle-left pe-2"
+                                               aria-hidden="true">
+                                            </i> Back
+                                        </div>
+                                    </a>
+                                    <!-- Vertical Menu -->
+                                    <ul id="sub-menu" class="sm pixelstrap sm-vertical hidden">
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-right pull-right">
+                        <div>
+                            <nav id="main-nav">
+                                <div class="toggle-nav">
+                                    <i class="fa fa-bars sidebar-bar"></i>
+                                </div>
+                                <ul id="main-menu" class="sm pixelstrap sm-horizontal">
+                                    <li>
+                                        <div class="mobile-back text-end">
+                                            Back
+                                            <i class="fa fa-angle-right ps-2"
+                                               aria-hidden="true">
+                                            </i>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Home" asp-action="Index">Home</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Shop</a>
+
+                                        <ul>
+                                            @foreach (var category in Model.Categories.Where(x => x.ShowInMenu))
+                                            {
+                                                <li>
+                                                    <a asp-controller="ProductList" asp-action="Index" asp-route-categoryId="@category.Id">
+                                                        @category.Name
+                                                    </a>
+                                                    @if (category.Subcategories.Any())
+                                                    {
+                                                        <ul>
+
+                                                            @foreach (var subCategory in category.Subcategories)
+                                                            {
+                                                                <li>
+                                                                    <a asp-controller="ProductList" asp-action="Index" asp-route-categoryId="@category.Id"> @subCategory.Name</a>
+                                                                </li>
+                                                            }
+
+                                                        </ul>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="AboutUs" asp-action="Index">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Blog" asp-action="Index">Blog</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <div>
+                            <div class="icon-nav">
+                                <ul>
+                                    <li class="onhover-div mobile-search">
+                                        <div>
+                                            <img src="/assets/images/icon/layout4/search.png"
+                                                 onclick="openSearch()" class="img-fluid blur-up lazyload" alt=""> <i class="ti-search" onclick="openSearch()"></i>
+                                        </div>
+                                        <div id="search-overlay" class="search-overlay">
+                                            <div>
+                                                <span class="closebtn" onclick="closeSearch()"
+                                                      title="Close Overlay">
+                                                    ×
+                                                </span>
+                                                <div class="overlay-content">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            <div class="col-xl-12">
+                                                                <form>
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control"
+                                                                               id="exampleInputPassword1"
+                                                                               placeholder="Search a Product">
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary">
+                                                                        <i class="fa fa-search"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="onhover-div mobile-setting">
+                                        <div>
+                                            <img src="/assets/images/icon/layout4/setting.png"
+                                                 class="img-fluid blur-up lazyload" alt=""> <i class="ti-settings"></i>
+                                        </div>
+                                        <div class="show-div setting">
+                                            <h6>language</h6>
+                                            <ul>
+                                                <li>
+                                                    <a href="#">english</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">french</a>
+                                                </li>
+                                            </ul>
+                                            <h6>currency</h6>
+                                            <ul class="list-inline">
+                                                <li>
+                                                    <a href="#">euro</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">rupees</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">pound</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">doller</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="onhover-div mobile-cart">
+                                        <div href="javascript:void(0)" onclick="openCart()">
+                                            <img src="/assets/images/icon/layout4/cart.png"
+                                                 class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- header end -->
+
+
+@section js
+    {
+    <script>
+        // modal popup
+        $(window).on('load', function () {
+            setTimeout(function () {
+                $('#exampleModal').modal('show');
+            }, 2500);
+            reloadMenu();
+        });
+
+        function openSearch() {
+            document.getElementById("search-overlay").style.display = "block";
+        }
+
+        function closeSearch() {
+            document.getElementById("search-overlay").style.display = "none";
+        }
+
+
+    </script>
+}

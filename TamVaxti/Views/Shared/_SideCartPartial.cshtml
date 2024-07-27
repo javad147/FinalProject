@@ -1,0 +1,58 @@
+﻿@model IEnumerable<BasketVM>
+
+<a href="javascript:void(0)" class="overlay" onclick="closeCart()"></a>
+<div class="cart-inner">
+    <div class="cart_top">
+        <h3>my cart</h3>
+        <div class="close-cart">
+            <a href="javascript:void(0)" onclick="closeCart()">
+                <i class="fa fa-times"></i>
+            </a>
+        </div>
+    </div>
+    <div class="cart_media">
+        <ul class="cart_product">
+            @foreach (var cartItem in Model)
+            {
+                <li>
+                    <div class="media">
+                        <a href="#">
+                            <img alt="" class="me-3" src="/img/@cartItem.Product.ProductImages.FirstOrDefault(x => x.IsMain)?.ImageUrl">
+                        </a>
+                        <div class="media-body">
+                            <a href="#">
+                                <h4>@cartItem.Product.Name</h4>
+                            </a>
+                            <h4>
+                                <span>@cartItem.Quantity x $ @cartItem.Product.Price</span>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="close-circle">
+                        <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.Id">
+                            <i class="ti-trash"></i>
+                        </a>
+                    </div>
+                </li>
+            }
+
+        </ul>
+        <ul class="cart_total">
+            <li>
+                <div class="total">
+                    <h5>subtotal : <span>$@Model.Sum(x => x.SubTotal)</span></h5>
+                </div>
+            </li>
+            <li>
+                @if (Model.Any())
+                {
+                    <div class="buttons">
+                        <a asp-controller="Basket" asp-action="Cart" class="btn btn-solid btn-xs view-cart">view cart</a>
+                        <a asp-controller="Order" asp-action="CheckOut" class="btn btn-solid btn-xs checkout">checkout</a>
+                    </div>
+                }
+
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+﻿@using Bogus
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Blog>
+
+@foreach (var item in Model)
+{
+    var faker = new Faker("en");
+    var blogImage = faker.Image.PicsumUrl(1000, 591);//  "/assets/images/blog/1.jpg";
+    var blogCommentCount = 0;
+
+    if (string.IsNullOrEmpty(item.Image) == false)
+    {
+        var filePath = Directory.GetCurrentDirectory() + $@"\wwwroot\img\Blog\{item.Image}";
+        if (File.Exists(filePath))
+            blogImage = $"~/img/Blog/{item.Image}";
+    }
+
+
+    <div>
+        <a  asp-controller="Blog" asp-action="Details" asp-route-id="@item.Id">
+            <div class="classic-effect  mt-2">
+                <div>
+                    <img src="~/img/Blog/@item.Image"
+                         class="img-fluid blur-up lazyload bg-img" alt="">
+                </div>
+                <span></span>
+            </div>
+        </a>
+        <div class="blog-details">
+            <h4>@item.Date.ToString("dd MMM yyyy")</h4>
+            <a asp-controller="Blog" asp-action="Details" asp-route-id="@item.Id">
+                <p>@item.Title</p>
+            </a>
+            <hr class="style1">
+            <h6>by:@item.Uname,Comment:@item.CommentCount </h6>
+        </div>
+    </div>
+}
