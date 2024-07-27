@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TamVaxti.Services
 {
     public class AboutUsService : IAboutUsService
-    
+
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -40,7 +40,7 @@ namespace TamVaxti.Services
                 };
 
                 if (model.ImageFile != null)
-                { 
+                {
                     about.Image = await SaveFile(model.ImageFile);
                 }
 
@@ -269,10 +269,10 @@ namespace TamVaxti.Services
         //}
 
 
-        public async Task UpdateAsync(int id, AboutUsCreateVM model)
+        public async Task<bool> UpdateAsync(int id, AboutUsCreateVM model)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-
+            bool result = true;
             try
             {
                 // Handle About Us
@@ -284,7 +284,7 @@ namespace TamVaxti.Services
 
                 about.Title = model.Title;
                 about.Description = model.Description;
-                about.UpdatedOn = DateTime.UtcNow;
+                about.UpdatedOn = DateTime.Now;
 
                 // If new file is uploaded and an existing URL already exists, delete the existing and create the new one.
                 if (model.ImageFile != null)
@@ -315,7 +315,7 @@ namespace TamVaxti.Services
                             AboutId = about.Id,
                             Title = history.Title,
                             Description = history.Description,
-                            CreatedOn = DateTime.UtcNow,
+                            CreatedOn = DateTime.Now,
                         };
 
                         if (history.ImageFile != null)
@@ -330,7 +330,7 @@ namespace TamVaxti.Services
                         // Update existing history entry
                         historyEntry.Title = history.Title;
                         historyEntry.Description = history.Description;
-                        historyEntry.UpdatedOn = DateTime.UtcNow;
+                        historyEntry.UpdatedOn = DateTime.Now;
 
                         if (history.ImageFile != null)
                         {
@@ -363,7 +363,7 @@ namespace TamVaxti.Services
                                 AboutId = about.Id,
                                 Title = team.Title,
                                 Role = team.Role,
-                                CreatedOn = DateTime.UtcNow,
+                                CreatedOn = DateTime.Now,
                             };
 
                             if (team.ImageFile != null)
@@ -378,7 +378,7 @@ namespace TamVaxti.Services
                             // Update existing team entry
                             teamEntry.Title = team.Title;
                             teamEntry.Role = team.Role;
-                            teamEntry.UpdatedOn = DateTime.UtcNow;
+                            teamEntry.UpdatedOn = DateTime.Now;
 
                             if (team.ImageFile != null)
                             {
@@ -401,92 +401,16 @@ namespace TamVaxti.Services
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
+                result = false;
+
                 // Log the exception or handle it as needed
-                throw new Exception("An error occurred while updating records.", ex);
+                //throw new Exception("An error occurred while updating records.", ex);
             }
+            
+            return result;
         }
 
-        //Edit working code for new fileds 
-        //public async Task UpdateAsync(int id, AboutUsCreateVM model)
-        //{
-        //    using var transaction = await _context.Database.BeginTransactionAsync();
 
-        //    try
-        //    {
-        //        // Handle About Us
-        //        var about = await _context.Abouts.FindAsync(id);
-        //        if (about == null)
-        //        {
-        //            throw new Exception("About Us not found.");
-        //        }
-
-        //        about.Title = model.Title;
-        //        about.Description = model.Description;
-        //        about.UpdatedOn = DateTime.UtcNow;
-
-        //        if (model.ImageFile != null)
-        //        {
-        //            about.Image = await SaveFile(model.ImageFile);
-        //        }
-
-        //        _context.Abouts.Update(about);
-        //        await _context.SaveChangesAsync();
-
-        //       // Handle AboutUsHistory
-        //        var existingHistories = _context.AboutUsHistory.Where(h => h.AboutId == id).ToList();
-        //        _context.AboutUsHistory.RemoveRange(existingHistories);
-        //        await _context.SaveChangesAsync();
-
-        //        foreach (var history in model.AboutHistory)
-        //        {
-        //            var historyEntry = new AboutUsHistory
-        //            {
-        //                AboutId = about.Id, // Set the foreign key
-        //                Title = history.Title,
-        //                Description = history.Description,
-        //                CreatedOn = DateTime.UtcNow,
-        //            };
-
-        //            if (history.ImageFile != null)
-        //            {
-        //                historyEntry.Image = await SaveFile(history.ImageFile);
-        //            }
-
-        //            _context.AboutUsHistory.Add(historyEntry);
-        //        }
-
-        //        // Handle AboutUsTeam
-        //        var existingTeams = _context.AboutUsTeam.Where(t => t.AboutId == id).ToList();
-        //        _context.AboutUsTeam.RemoveRange(existingTeams);
-        //        await _context.SaveChangesAsync();
-
-        //        foreach (var team in model.AboutUsTeam)
-        //        {
-        //            var teamEntry = new AboutUsTeam
-        //            {
-        //                AboutId = about.Id, // Set the foreign key
-        //                Title = team.Title,
-        //                Role = team.Role,
-        //                CreatedOn = DateTime.Now,
-        //            };
-
-        //            if (team.ImageFile != null)
-        //            {
-        //                teamEntry.Image = await SaveFile(team.ImageFile);
-        //            }
-
-        //            _context.AboutUsTeam.Add(teamEntry);
-        //        }
-
-        //        await _context.SaveChangesAsync();
-        //        await transaction.CommitAsync();
-        //    }
-        //    catch
-        //    {
-        //        await transaction.RollbackAsync();
-        //        throw;
-        //    }
-        //}
 
         public List<AboutUsVM> GetAllAboutUs()
         {
@@ -510,7 +434,7 @@ namespace TamVaxti.Services
                 if (file != null)
                 {
                     fileName = $"{Guid.NewGuid()}_{file.FileName}";
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "img","about", fileName);
+                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "about", fileName);
                     await FileExtensions.SaveFileToLocalAsync(file, filePath);
                 }
 
@@ -523,7 +447,7 @@ namespace TamVaxti.Services
         {
             try
             {
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "img","about", fileName);
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", "about", fileName);
                 FileExtensions.DeleteFileFromLocal(filePath);
                 return true;
             }

@@ -38,7 +38,7 @@ namespace TamVaxti.ViewModels
 
 
 
-//namespace FiorelloFrontBackDB.Models
+//namespace TamVaxti.Models
 //{
 //    public class AboutUsTeam
 //    {

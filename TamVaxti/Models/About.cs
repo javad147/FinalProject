@@ -25,7 +25,7 @@ namespace TamVaxti.Models
 }
 
 
-//namespace FiorelloFrontBackDB.Models
+//namespace TamVaxti.Models
 //{
 //    public class About
 //    {

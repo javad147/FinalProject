@@ -5,6 +5,7 @@ using TamVaxti.ViewModels.AboutUs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
@@ -38,6 +39,14 @@ namespace TamVaxti.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AboutUsCreateVM model)
         {
+
+            var isEntryExixts = _context.About.FirstOrDefaultAsync();
+            if (isEntryExixts != null)
+            {
+                return RedirectToAction("Index");
+            }
+
+
             if (ModelState.IsValid)
             {
                 await _aboutUsService.CreateAsync(model);
@@ -46,57 +55,6 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             return View(model);
         }
-
-
-
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            // Validate the ID
-            if (id <= 0)
-            {
-                return BadRequest("Invalid ID.");
-            }
-
-            // Find the AboutUs record
-            var aboutUs = await _context.About.FindAsync(id);
-            if (aboutUs == null)
-            {
-                return NotFound("AboutUs record not found.");
-            }
-
-            try
-            {
-                // Find and remove related history records
-                var aboutUsHistory = _context.AboutUsHistory.Where(h => h.AboutId == id).ToList();
-                if (aboutUsHistory != null && aboutUsHistory.Any())
-                {
-                    _context.AboutUsHistory.RemoveRange(aboutUsHistory);
-                }
-
-                // Find and remove related team records
-                var aboutUsTeam = _context.AboutUsTeam.Where(t => t.AboutId == id).ToList();
-                if (aboutUsTeam != null && aboutUsTeam.Any())
-                {
-                    _context.AboutUsTeam.RemoveRange(aboutUsTeam);
-                }
-
-
-
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                // Log and handle the exception
-                // Example: Log.Error(ex, "Error deleting records.");
-                return StatusCode(500, "Internal server error occurred.");
-            }
-        }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -121,7 +79,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }).ToList(),
                 AboutUsTeam = aboutUs.AboutUsTeam.Select(t => new AboutUsTeamVM
                 {
-                    Id= t.Id,
+                    Id = t.Id,
                     Title = t.Title,
                     Role = t.Role,
                     ImageName = t.ImageName
@@ -136,10 +94,18 @@ namespace TamVaxti.Areas.Admin.Controllers
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Edit(AboutUsCreateVM model)
         {
-          
-                await _aboutUsService.UpdateAsync(model.Id, model);
-                return RedirectToAction("Index");
             
+            var result = await _aboutUsService.UpdateAsync(model.Id, model);
+            Console.WriteLine(result);
+            if (result)
+                return Json(new { success = true, message = "Data processed successfully." });
+            else
+                return Json(new { success = false, message = "Error occurred while saving, Make sure all mandatory fields are entered" });
+            //TempData["messageType"] = "success";
+            //TempData["message"] = " Updated Successfully.";
+
+            //return RedirectToAction(nameof(Index));
+
         }
     }
 }

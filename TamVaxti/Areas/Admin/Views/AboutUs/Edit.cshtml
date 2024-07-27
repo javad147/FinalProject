@@ -4,6 +4,7 @@
     ViewBag.PageName = "Edit About Us";
 }
 
+
 <style>
     .custom-image {
         width: 150px;
@@ -12,17 +13,17 @@
 
     .team-item, .about-history-item {
         border: 1px solid #dee2e6;
-        border-radius: 0.25rem; 
-        padding: 1rem; 
-        margin-bottom: 1rem; 
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
 
     .btn-primary {
-        margin-left: auto; 
+        margin-left: auto;
     }
 
     .remove-history, .remove-team {
-        float: right; 
+        float: right;
     }
 </style>
 
@@ -167,24 +168,24 @@
                 var div = document.createElement('div');
                 div.className = 'form-group about-history-item border p-3 mb-3 rounded';
                 div.innerHTML = `
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <input type="hidden" name="AboutHistory[${index}].Id" value="${historyItem.id}" />
-                            <input type="hidden" name="AboutHistory[${index}].ImageName" value="${historyItem.imageName}" />
-                            <label class="col-form-label pt-0">Title</label>
-                            <input name="AboutHistory[${index}].Title" value="${historyItem.title}" class="form-control mb-2" />
-                            <label class="col-form-label pt-0">Description</label>
-                            <textarea name="AboutHistory[${index}].Description" class="form-control mb-2">${historyItem.description}</textarea>
-                        </div>
-                        <div class="col-sm-6">
-                                ${historyItem.imageName ? `<img src="/img/about/${historyItem.imageName}" alt="Image" class="custom-image mb-2" />` : ''}
-                            <label class="col-form-label pt-0">Upload Image</label>
-                            <input name="AboutHistory[${index}].ImageFile" type="file" class="form-control mb-2" />
-                            <input name="AboutHistory[${index}].ImageName" type="hidden" value="${historyItem.imageName}" />
-                            <button type="button" class="btn btn-danger mt-2 remove-history mt-2">Remove</button>
-                        </div>
-                    </div>
-                `;
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <input type="hidden" name="AboutHistory[${index}].Id" value="${historyItem.id}" />
+                                            <input type="hidden" name="AboutHistory[${index}].ImageName" value="${historyItem.imageName}" />
+                                            <label class="col-form-label pt-0">Title</label>
+                                            <input name="AboutHistory[${index}].Title" value="${historyItem.title}" class="form-control mb-2" />
+                                            <label class="col-form-label pt-0">Description</label>
+                                            <textarea name="AboutHistory[${index}].Description" class="form-control mb-2">${historyItem.description}</textarea>
+                                        </div>
+                                        <div class="col-sm-6">
+                                                ${historyItem.imageName ? `<img src="/img/about/${historyItem.imageName}" alt="Image" class="custom-image mb-2" />` : ''}
+                                            <label class="col-form-label pt-0">Upload Image</label>
+                                            <input name="AboutHistory[${index}].ImageFile" type="file" class="form-control mb-2" />
+                                            <input name="AboutHistory[${index}].ImageName" type="hidden" value="${historyItem.imageName}" />
+                                            <button type="button" class="btn btn-danger mt-2 remove-history mt-2">Remove</button>
+                                        </div>
+                                    </div>
+                                `;
                 document.getElementById('aboutHistoryContainer').appendChild(div);
 
             }
@@ -192,26 +193,26 @@
             $('#addAboutHistory').click(function () {
                 var index = historyItems?.length ?? 0;
                 var html = `
-                    <div class="form-group about-history-item border p-3 mb-3 rounded">
-                        <input type="hidden" name="AboutHistory[${index}].Id" />
-                        <input type="hidden" name="AboutHistory[${index}].ImageName" />
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <label class="col-form-label pt-0">Title</label>
-                                <input type="text" name="AboutHistory[${index}].Title" class="form-control mb-2" />
-                                <label class="col-form-label pt-0">Description</label>
-                                <textarea name="AboutHistory[${index}].Description" class="form-control mb-2"></textarea>
-                            </div>
-                            <div class="col-sm-6">
-                                <label class="col-form-label pt-0">Upload Image</label>
-                                <input type="file" name="AboutHistory[${index}].ImageFile" class="form-control mb-2" />
-                                <input type="hidden" name="AboutHistory[${index}].ImageName" />
-                                        <button type="button" class="btn btn-danger mt-3 remove-history">Remove</button>
-                            </div>
-                        </div>
+                                    <div class="form-group about-history-item border p-3 mb-3 rounded">
+                                        <input type="hidden" name="AboutHistory[${index}].Id" />
+                                        <input type="hidden" name="AboutHistory[${index}].ImageName" />
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label pt-0">Title</label>
+                                                <input type="text" name="AboutHistory[${index}].Title" class="form-control mb-2" />
+                                                <label class="col-form-label pt-0">Description</label>
+                                                <textarea name="AboutHistory[${index}].Description" class="form-control mb-2"></textarea>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="col-form-label pt-0">Upload Image</label>
+                                                <input type="file" name="AboutHistory[${index}].ImageFile" class="form-control mb-2" />
+                                                <input type="hidden" name="AboutHistory[${index}].ImageName" />
+                                                        <button type="button" class="btn btn-danger mt-3 remove-history">Remove</button>
+                                            </div>
+                                        </div>
 
-                    </div>
-                `;
+                                    </div>
+                                `;
                 $('#aboutHistoryContainer').append(html);
                 historyItems.push({});
             });
@@ -220,27 +221,27 @@
                 var teamItems = model.aboutUsTeam.$values;
                 var index = teamItems.length;
                 var html = `
-                        <div class="form-group team-item border p-3 mb-3 rounded">
-                            <input type="hidden" name="AboutUsTeam[${index}].Id" />
-                            <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="col-form-label pt-0">Name</label>
-                                    <input type="text" name="AboutUsTeam[${index}].Title" class="form-control mb-2" />
-                                    <label class="col-form-label pt-0">Role</label>
-                                    <input type="text" name="AboutUsTeam[${index}].Role" class="form-control mb-2" />
-                                </div>
-                                <div class="col-sm-6">
-                                    <label class="col-form-label pt-0">Upload Image</label>
-                                    <input type="file" name="AboutUsTeam[${index}].ImageFile" class="form-control mb-2" />
-                                    <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
-                                    <button type="button" class="btn btn-danger mt-3 remove-team">Remove</button>
-                                </div>
+                                        <div class="form-group team-item border p-3 mb-3 rounded">
+                                            <input type="hidden" name="AboutUsTeam[${index}].Id" />
+                                            <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label pt-0">Name</label>
+                                                    <input type="text" name="AboutUsTeam[${index}].Title" class="form-control mb-2" />
+                                                    <label class="col-form-label pt-0">Role</label>
+                                                    <input type="text" name="AboutUsTeam[${index}].Role" class="form-control mb-2" />
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label pt-0">Upload Image</label>
+                                                    <input type="file" name="AboutUsTeam[${index}].ImageFile" class="form-control mb-2" />
+                                                    <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
+                                                    <button type="button" class="btn btn-danger mt-3 remove-team">Remove</button>
+                                                </div>
 
-                            </div>
+                                            </div>
 
-                        </div>
-                    `;
+                                        </div>
+                                    `;
                 $('#teamContainer').append(html);
                 teamItems.push({});
             });
@@ -253,10 +254,12 @@
                 $(this).closest('.team-item').remove();
             });
 
+
             // Here is the updated code block for form submission
             $('#updateAboutUs').click(function (event) {
+                debugger;
                 event.preventDefault();
-
+                debugger;
                 var form = $('#aboutUsForm')[0];
                 var formData = new FormData(form);
 
@@ -273,12 +276,26 @@
                     data: formData,
                     contentType: false,
                     processData: false,
+
                     success: function (response) {
-                        console.log(response);
-                        window.location.href = '@Url.Action("Index", "AboutUs")';
+                        console.log(response)
+                        debugger;
+                       
+                        if (response.success)
+                        {
+                            toastr.success(response.message);
+                            const myTimeout = setTimeout(() => {
+                                window.location.href = '@Url.Action("Index", "AboutUs")';
+                            }, 2000);
+                        }
+                        else
+                        {
+                            toastr.error(response.message);
+                        }
+ 
                     },
                     error: function (xhr) {
-
+                            
                     }
                 });
             });

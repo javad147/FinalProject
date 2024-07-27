@@ -4,89 +4,147 @@
     ViewBag.PageName = "About Us";
 }
 
-<div class="container-fluid">
-    <div class="page-header">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="page-header-left">
-                    <h3>
-                        About Us
-                        <small>About Us Information</small>
-                    </h3>
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+
+<body>
+
+   
+
+
+
+    @* @if (TempData["SuccessMessage"] != null)
+    {
+
+    <script>
+    $(document).ready(function () {
+    var successMessage = '@TempData["SuccessMessage"]';
+    if (successMessage) {
+    toastr.success("User Updated Successfully");
+    }
+    });
+    </script>
+    }*@
+
+
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            About Us
+
+                            <p>@TempData["message"]</p>
+                            <small>About Us Information</small>
+                        </h3>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <ol class="breadcrumb pull-right">
-                    <li class="breadcrumb-item">
-                        <a asp-controller="Dashboard" asp-action="Index">
-                            <i data-feather="home"></i>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active">About Us</li>
-                </ol>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Dashboard" asp-action="Index">
+                                <i data-feather="home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">About Us</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                @if (Model.Count < 1)
-                {
-                    <div class="card-header">
-                        <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
-                            Add About Us
-                        </a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    @if (Model.Count < 1)
+                    {
+                        <div class="card-header">
+                            <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
+                                Add About Us
+                            </a>
+                        </div>
+                    }
+
+                    <div class="card-body">
+                        <div class="table-responsive table-desi">
+                            <table class="table all-package table-category" id="editableTable">
+                                <thead>
+                                    <tr>
+                                        <th width="100px" align="left">Image</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.Image))
+                                                {
+                                                    <img align="left" src="~/img/about/@item.Image" alt="About Us Image" style="max-width: 100px; max-height: 100px;" />
+                                                }
+                                                else
+                                                {
+                                                    <img align="left" src="~/img/no_img.jpg" alt="No Image" style="max-width: 100px; max-height: 100px;" />
+                                                }
+                                            </td>
+                                            <td class="text-align-left" data-field="title">@item.Title</td>
+                                            <td class="text-align-left" data-field="description">@item.Description</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="mr-2">
+                                                    <i class="fa fa-edit" title="Edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+@section Scripts {
+    @if (TempData["message"] != null && TempData["messageType"] != null)
+    {
+        <script>
+
+            $(document).ready(function () {
+                debugger;
+                var messageType = '@TempData["messageType"]';
+                var msg = '@TempData["message"]';
+
+                if (messageType == "success") {
+                    toastr.success(msg);
 
                 }
+                else {
+                    toastr.error(msg);
+                }
+            @TempData.Remove("messageType");
+            @TempData.Remove("message");
 
-                <div class="card-body">
-                    <div class="table-responsive table-desi">
-                        <table class="table all-package table-category" id="editableTable">
-                            <thead>
-                                <tr>
-                                    <th width="100px" align="left">Image</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Option</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(item.Image))
-                                            {
-                                                <img align="left" src="~/img/about/@item.Image" alt="About Us Image" style="max-width: 100px; max-height: 100px;" />
-                                            }
-                                            else
-                                            {
-                                                <img align="left" src="~/img/no_img.jpg" alt="No Image" style="max-width: 100px; max-height: 100px;" />
-                                            }
-                                        </td>
-                                        <td class="text-align-left" data-field="title">@item.Title</td>
-                                        <td class="text-align-left" data-field="description">@item.Description</td>
-                                        <td>
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="mr-2">
-                                                <i class="fa fa-edit" title="Edit"></i>
-                                            </a>
-                                            <form asp-action="Delete" asp-route-id="@item.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                                <a href="javascript:void(0)" onclick="$(this).closest('form').submit()">
-                                                    <i class="fa fa-trash text-danger" title="Delete"></i>
-                                                </a>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+            });
+
+        </script>
+    }
+}

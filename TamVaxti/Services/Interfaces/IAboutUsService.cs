@@ -8,8 +8,13 @@ namespace TamVaxti.Services.Interfaces
 
         Task CreateAsync(AboutUsCreateVM model);
 
-        Task UpdateAsync(int id, AboutUsCreateVM model);
+        Task<bool> UpdateAsync(int id, AboutUsCreateVM model);
 
         Task<AboutUsCreateVM> GetAboutUsByIdAsync(int id);
+
+        //AboutUsVM GetAboutUsById(int id);
+        //void AddAboutUs(AboutUsVM model);
+        //void UpdateAboutUs(AboutUsVM model);
+        //void DeleteAboutUs(int id);
     }
 }
