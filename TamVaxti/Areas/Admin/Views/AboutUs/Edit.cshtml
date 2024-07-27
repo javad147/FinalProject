@@ -1,0 +1,288 @@
+﻿@model AboutUsCreateVM
+
+@{
+    ViewBag.PageName = "Edit About Us";
+}
+
+<style>
+    .custom-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .team-item, .about-history-item {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem; 
+        padding: 1rem; 
+        margin-bottom: 1rem; 
+    }
+
+    .btn-primary {
+        margin-left: auto; 
+    }
+
+    .remove-history, .remove-team {
+        float: right; 
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>Edit About Us</h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="AboutUs" asp-action="Index">About Us</a>
+                    </li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="aboutUsForm" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="hidden" asp-for="@Model.ImageName" />
+                                <input type="hidden" asp-for="@Model.Id" />
+                                <div class="form-group">
+                                    <label class="col-form-label">Title</label>
+                                    <input asp-for="Title" type="text" placeholder="Enter title..." class="form-control mb-3" maxlength="100" />
+                                    <span class="text-danger" asp-validation-for="Title"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label">Description</label>
+                                    <textarea asp-for="Description" placeholder="Enter description..." class="form-control mb-3"></textarea>
+                                    <span class="text-danger" asp-validation-for="Description"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <span class="text-danger" asp-validation-for="ImageFile"></span>
+                                    @if (Model.ImageName != null)
+                                    {
+                                        <img src="~/img/about/@Model.ImageName" alt="Image" class="custom-image" />
+                                    }
+                                    <label class="col-form-label pt-0">Upload Image</label>
+                                    <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4><b>About History</b></h4>
+                                    <button type="button" id="addAboutHistory" class="btn btn-primary mb-3 mt-3">Add History</button>
+                                </div>
+                                <div class="form-group" id="aboutHistoryContainer"></div>
+                            </div>
+                        </div>
+                        <br /><br />
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4><b>About Team</b></h4>
+                                    <button type="button" id="addTeam" class="btn btn-primary">Add Team</button>
+                                </div>
+                                <div class="form-group" id="teamContainer">
+                                    @for (var i = 0; i < Model.AboutUsTeam.Count; i++)
+                                    {
+                                        <div class="form-group team-item border p-3 mb-3 rounded">
+                                            <input type="hidden" asp-for="@Model.AboutUsTeam[i].Id" />
+                                            <input type="hidden" asp-for="@Model.AboutUsTeam[i].ImageName" />
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <label class="col-form-label pt-0">Name</label>
+                                                    <input asp-for="@Model.AboutUsTeam[i].Title" class="form-control mb-2" />
+                                                    <label class="col-form-label pt-0">Role</label>
+                                                    <input asp-for="@Model.AboutUsTeam[i].Role" class="form-control mb-2" />
+                                                </div>
+                                                <div class="col-sm-6">
+
+                                                    @if (!string.IsNullOrEmpty(Model.AboutUsTeam[i].ImageName))
+                                                    {
+                                                        <img src="~/img/about/@Model.AboutUsTeam[i].ImageName" alt="Image" class="custom-image mb-2" />
+                                                    }
+                                                    <label class="col-form-label pt-0">Upload Image</label>
+                                                    <input asp-for="@Model.AboutUsTeam[i].ImageFile" type="file" class="form-control mb-2" />
+                                                    <input asp-for="@Model.AboutUsTeam[i].ImageName" type="hidden" />
+                                                    <button type="button" class="btn btn-danger mt-2 remove-team">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <button type="submit" id="updateAboutUs" class="btn btn-primary">
+                            <i class="fa fa-dot-circle-o"></i> Save
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // Parse the serialized model
+            var model = @Html.Raw(Json.Serialize(Model));
+
+            // Access the aboutHistory $values array
+            if (model.aboutHistory && model.aboutHistory.$values && model.aboutHistory.$values.length > 0) {
+                var historyItems = model.aboutHistory.$values;
+
+                for (var i = 0; i < historyItems.length; i++) {
+                    var historyItem = historyItems[i];
+                    addHistoryItem(historyItem, i);
+                }
+            }
+
+            function addHistoryItem(historyItem, index) {
+                var div = document.createElement('div');
+                div.className = 'form-group about-history-item border p-3 mb-3 rounded';
+                div.innerHTML = `
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input type="hidden" name="AboutHistory[${index}].Id" value="${historyItem.id}" />
+                            <input type="hidden" name="AboutHistory[${index}].ImageName" value="${historyItem.imageName}" />
+                            <label class="col-form-label pt-0">Title</label>
+                            <input name="AboutHistory[${index}].Title" value="${historyItem.title}" class="form-control mb-2" />
+                            <label class="col-form-label pt-0">Description</label>
+                            <textarea name="AboutHistory[${index}].Description" class="form-control mb-2">${historyItem.description}</textarea>
+                        </div>
+                        <div class="col-sm-6">
+                                ${historyItem.imageName ? `<img src="/img/about/${historyItem.imageName}" alt="Image" class="custom-image mb-2" />` : ''}
+                            <label class="col-form-label pt-0">Upload Image</label>
+                            <input name="AboutHistory[${index}].ImageFile" type="file" class="form-control mb-2" />
+                            <input name="AboutHistory[${index}].ImageName" type="hidden" value="${historyItem.imageName}" />
+                            <button type="button" class="btn btn-danger mt-2 remove-history mt-2">Remove</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('aboutHistoryContainer').appendChild(div);
+
+            }
+
+            $('#addAboutHistory').click(function () {
+                var index = historyItems?.length ?? 0;
+                var html = `
+                    <div class="form-group about-history-item border p-3 mb-3 rounded">
+                        <input type="hidden" name="AboutHistory[${index}].Id" />
+                        <input type="hidden" name="AboutHistory[${index}].ImageName" />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label class="col-form-label pt-0">Title</label>
+                                <input type="text" name="AboutHistory[${index}].Title" class="form-control mb-2" />
+                                <label class="col-form-label pt-0">Description</label>
+                                <textarea name="AboutHistory[${index}].Description" class="form-control mb-2"></textarea>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="col-form-label pt-0">Upload Image</label>
+                                <input type="file" name="AboutHistory[${index}].ImageFile" class="form-control mb-2" />
+                                <input type="hidden" name="AboutHistory[${index}].ImageName" />
+                                        <button type="button" class="btn btn-danger mt-3 remove-history">Remove</button>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+                $('#aboutHistoryContainer').append(html);
+                historyItems.push({});
+            });
+
+            $('#addTeam').click(function () {
+                var teamItems = model.aboutUsTeam.$values;
+                var index = teamItems.length;
+                var html = `
+                        <div class="form-group team-item border p-3 mb-3 rounded">
+                            <input type="hidden" name="AboutUsTeam[${index}].Id" />
+                            <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="col-form-label pt-0">Name</label>
+                                    <input type="text" name="AboutUsTeam[${index}].Title" class="form-control mb-2" />
+                                    <label class="col-form-label pt-0">Role</label>
+                                    <input type="text" name="AboutUsTeam[${index}].Role" class="form-control mb-2" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="col-form-label pt-0">Upload Image</label>
+                                    <input type="file" name="AboutUsTeam[${index}].ImageFile" class="form-control mb-2" />
+                                    <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
+                                    <button type="button" class="btn btn-danger mt-3 remove-team">Remove</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    `;
+                $('#teamContainer').append(html);
+                teamItems.push({});
+            });
+
+            $(document).on('click', '.remove-history', function () {
+                $(this).closest('.about-history-item').remove();
+            });
+
+            $(document).on('click', '.remove-team', function () {
+                $(this).closest('.team-item').remove();
+            });
+
+            // Here is the updated code block for form submission
+            $('#updateAboutUs').click(function (event) {
+                event.preventDefault();
+
+                var form = $('#aboutUsForm')[0];
+                var formData = new FormData(form);
+
+                // Optionally, convert formData to JSON for inspection
+                var jsonData = {};
+                formData.forEach((value, key) => {
+                    jsonData[key] = value;
+                });
+
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "AboutUs")',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        window.location.href = '@Url.Action("Index", "AboutUs")';
+                    },
+                    error: function (xhr) {
+
+                    }
+                });
+            });
+        });
+
+    </script>
+}

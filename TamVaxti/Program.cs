@@ -32,6 +32,7 @@ builder.Services.Configure<IdentityOptions>(opt =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IAboutUsService, AboutUsService>();
 
 var app = builder.Build();
 
