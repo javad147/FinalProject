@@ -1,0 +1,102 @@
+﻿
+                       @* code test start*@
+
+@model CategoryCreateVM
+
+@{
+    ViewBag.PageName = "Add Category";
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                       Add Category
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Category" asp-action="Index">
+                            Category
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Craete</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+@*                <div class="card-header">
+                    <div  class="btn btn-primary add-row mt-md-0 mt-2" >
+                        Add Category
+                    </div>
+                </div>*@
+                <div class="card-body card-block">
+                   
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label class="col-form-label pt-0">Enter category name</label>
+                            <input asp-for="Name" type="text" placeholder="Enter name..." class="form-control  mb-2" maxlength="100">
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label pt-0">Upload Category Image</label>
+                            <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                            <span class="text-danger" asp-validation-for="ImageFile"></span>
+                        </div>
+                       
+
+                        <div class="form-group">
+                            <label class="form-control-label">Is Published</label>
+                            <input asp-for="IsPublished" type="checkbox" class="form-check-input">
+                            <span class="text-danger" asp-validation-for="IsPublished"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fa fa-dot-circle-o"></i> Submit
+                        </button>
+                        <a type="reset" asp-action="Index" class="btn btn-danger btn-sm">
+                            <i class="fa fa-ban"></i> Reset
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData.Peek("SuccessMessage")';
+            if (successMessage) {
+                toastr.success(successMessage);
+                
+        @TempData.Remove("SuccessMessage");
+            }
+            var errorMessage = '@TempData.Peek("ErrorMessage")';
+            if (errorMessage) {
+                toastr.error(errorMessage);
+               
+        @TempData.Remove("ErrorMessage");
+            }
+        });
+    </script>
+}
+
+
+                        @*code test end*@
