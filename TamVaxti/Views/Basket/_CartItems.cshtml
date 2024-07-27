@@ -1,0 +1,73 @@
+﻿@model IEnumerable<BasketVM>
+
+<table class="table cart-table">
+    <thead>
+        <tr class="table-head">
+            <th scope="col">image</th>
+            <th scope="col">product name</th>
+            <th scope="col">price</th>
+            <th scope="col">quantity</th>
+            <th scope="col">action</th>
+            <th scope="col">total</th>
+        </tr>
+    </thead>
+
+    @foreach (var cartItem in Model)
+    {
+        <tbody>
+            <tr>
+                <td>
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.Id"><img src="/img/@cartItem.Product.ProductImages.FirstOrDefault(x=>x.IsMain)?.ImageUrl" alt=""></a>
+                </td>
+                <td>
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.Id">cotton shirt</a>
+                    <div class="mobile-cart-content row">
+                        <div class="col">
+                            <div class="qty-box">
+                                <div class="input-group">
+                                    <input type="text" name="quantity" class="form-control input-number cart-product-counter"
+                                           value="@cartItem.Quantity" data-product-id="@cartItem.Product.Id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h2 class="td-color">$@cartItem.Product.Price</h2>
+                        </div>
+                        <div class="col">
+                            <h2 class="td-color">
+                                <a href="#" class="icon"><i class="ti-close"></i></a>
+                            </h2>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <h2>$@cartItem.Product.Price</h2>
+                </td>
+                <td>
+                    <div class="qty-box">
+                        <div class="input-group">
+                            <input type="number" name="quantity" class="form-control input-number cart-product-counter" data-product-id="@cartItem.Product.Id"
+                                   value="@cartItem.Quantity" min="1" max="10">
+                        </div>
+                    </div>
+                </td>
+                <td><a href="#" class="icon"><i class="ti-close"></i></a></td>
+                <td>
+                    <h2 class="td-color">$@cartItem.SubTotal</h2>
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+<div class="table-responsive-md">
+    <table class="table cart-table ">
+        <tfoot>
+            <tr>
+                <td>total price :</td>
+                <td>
+                    <h2>$@Model.Sum(x => x.SubTotal)</h2>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

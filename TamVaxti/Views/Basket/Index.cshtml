@@ -1,0 +1,71 @@
+﻿@model List<CartVM>
+
+
+
+@section css {
+    <link rel="stylesheet" href="~/css/basket.css">
+}
+
+@section js {
+    <script src="~/js/basket.js"></script>
+    <script src="https://kit.fontawesome.com/83dcd321a4.js" crossorigin="anonymous"></script>
+}
+
+<section id="cart-products">
+    <div class="container">
+        @if (Model.Count is 0)
+        {
+                <div class=" text-center alert alert-warning cart-alert mt-4" role="alert">
+                    Products not added yet
+                </div>  
+        }
+        else
+        {
+            <div class="cart-table d-none d-block">
+            <h1 class="text-center">Products</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                           <tr data-id="@item.Id">
+                            <td><img src="~/img/@item.Image" alt="" style="object-fit:contain"></td>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.Category</td>
+                            <td style="width:200px">
+                                <div class="qty">
+                                    <span class="minus bg-dark">-</span>
+                                    <input type="text" class="count" style="width:40px" name="qty" value="@item.Count">
+                                    <span class="plus bg-dark">+</span>
+                                </div>
+                            </td>
+                            <td>@(item.Price)$</td>
+                            <td>@(item.TotalPrice)$</td>
+                            <td><i class="fa fa-circle-xmark delete-btn" style="font-size:20px"></i></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="grand-total">
+                <span>Grand Total:</span>
+                    <span class="total">$@ViewBag.TotalPrice</span>
+            </div>
+        </div>
+        }
+
+        
+    </div>
+</section>
+
