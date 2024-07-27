@@ -1,0 +1,69 @@
+﻿@using Bogus
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Product
+
+@{
+    var faker = new Faker();
+}
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>product</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">product</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+
+@await Html.PartialAsync("_ProductDetail",Model)
+<!-- sticky cart bottom start -->
+<div class="sticky-bottom-cart d-sm-block d-none">
+    <div class="container">
+        <div class="cart-content">
+            <div class="product-image">
+                <img src="../assets/images/pro3/1.jpg" class="img-fluid" alt="">
+                <div class="content d-lg-block d-none">
+                    <h5>WOMEN PINK SHIRT</h5>
+                    <h6>$32.96<del>$459.00</del><span>55% off</span></h6>
+                </div>
+            </div>
+            <div class="selection-section">
+                <div class="form-group mb-0">
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose color...</option>
+                        <option>pink</option>
+                        <option>blue</option>
+                        <option>grey</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose size...</option>
+                        <option>small</option>
+                        <option>medium</option>
+                        <option>large</option>
+                        <option>extra large</option>
+                    </select>
+                </div>
+            </div>
+            <div class="add-btn">
+                <a data-bs-toggle="modal" data-bs-target="#addtocart" href="" class="btn btn-solid btn-sm">add to
+                    cart</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- sticky cart bottom end -->

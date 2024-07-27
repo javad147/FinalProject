@@ -1,0 +1,264 @@
+﻿@model TamVaxti.ViewModels.Products.ProductListVM
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@* @{
+    Layout = "_Layout";
+    ViewBag.Title = "Products List";
+} *@
+
+@section css {
+    <!-- Price range icon -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/vendors/price-range.css">
+}
+
+<!-- section start -->
+<section class="section-b-space ratio_asos">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3 collection-filter">
+                    <!-- side-bar colleps block stat -->
+                    <div class="collection-filter-block">
+                        <!-- brand filter start -->
+                        <div class="collection-mobile-back">
+                            <span class="filter-back">
+                                <i class="fa fa-angle-left"
+                                   aria-hidden="true"></i> back
+                            </span>
+                        </div>
+                        <div class="collection-collapse-block open">
+                            <h3 class="collapse-block-title">brand</h3>
+                            <div class="collection-collapse-block-content">
+                                <div class="collection-brand-filter">
+                                    @for (var index = 0; index < Model.Categories.Count; index++)
+                                    {
+                                        var category = Model.Categories[index];
+@*                                         <div class="form-check collection-filter-checkbox">
+                                            <input type="checkbox" class="form-check-input category-filter-checkbox" id="@Model.Categories[index].Id" asp-for="@Model.Categories[index].IsSelected" onchange="updateModel(this)">
+                                            <label class="form-check-label" for="@category.Id">@category.Name</label>
+                                            <input type="hidden" asp-for="@Model.Categories[index].Id" />
+                                            <input type="hidden" asp-for="@Model.Categories[index].Name" />
+                                        </div> *@
+
+                                        <div class="form-check collection-filter-checkbox">
+                                            <input type="checkbox" class="form-check-input category-filter-checkbox" id="@category.Id" value="@category.Id" @(category.IsSelected ? "checked" : "") onchange="updateModel()">
+                                            <label class="form-check-label" for="@category.Id">@category.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <!-- price filter start here -->
+                        <div class="collection-collapse-block border-0 open">
+                            <h3 class="collapse-block-title">price</h3>
+                            <div class="collection-collapse-block-content">
+                                <div class="wrapper mt-3">
+                                    <div class="range-slider">
+                                        <input type="text" class="js-range-slider" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- silde-bar colleps block end here -->
+                    <!-- side-bar single product slider start -->
+                    <div class="theme-card">
+                        <h5 class="title-border">new product</h5>
+                        <div class="offer-slider slide-1">
+                            <div>
+                                @foreach (var product in Model.Products.OrderByDescending(x => x.Id).Take(3))
+                                {
+                                    <div class="media">
+                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                            <img class="img-fluid blur-up lazyload"
+                                                 src="~/img/@product.ProductImages.FirstOrDefault(m => m.IsMain)?.ImageUrl" alt="">
+                                        </a>
+                                        <div class="media-body align-self-center">
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                            </div>
+                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                                <h6>@product.Name</h6>
+                                            </a>
+                                            <h4>@product.Price</h4>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- side-bar single product slider end -->
+                    <!-- side-bar banner start here -->
+                    <div class="collection-sidebar-banner">
+                        <a href="#">
+                            <img src="../assets/images/side-banner.png" class="img-fluid blur-up lazyload"
+                                 alt="">
+                        </a>
+                    </div>
+                    <!-- side-bar banner end here -->
+                </div>
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                               
+                                <div class="collection-product-wrapper">
+                                    <div class="product-top-filter">
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <div class="filter-main-btn">
+                                                    <span class="filter-btn btn btn-theme">
+                                                        <i class="fa fa-filter"
+                                                           aria-hidden="true"></i> Filter
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="product-filter-content">
+                                                    <div class="search-count">
+                                                        <h5>Showing Products 1-24 of 10 Result</h5>
+                                                    </div>
+                                                    <div class="collection-view">
+                                                        <ul>
+                                                            <li><i class="fa fa-th grid-layout-view"></i></li>
+                                                            <li><i class="fa fa-list-ul list-layout-view"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="collection-grid-view">
+                                                        <ul>
+                                                            <li>
+                                                                <img src="../assets/images/icon/2.png" alt=""
+                                                                     class="product-2-layout-view">
+                                                            </li>
+                                                            <li>
+                                                                <img src="../assets/images/icon/3.png" alt=""
+                                                                     class="product-3-layout-view">
+                                                            </li>
+                                                            <li>
+                                                                <img src="../assets/images/icon/4.png" alt=""
+                                                                     class="product-4-layout-view">
+                                                            </li>
+                                                            <li>
+                                                                <img src="../assets/images/icon/6.png" alt=""
+                                                                     class="product-6-layout-view">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="product-page-per-view">
+                                                        <select>
+                                                            <option value="High to low">
+                                                                24 Products Par Page
+                                                            </option>
+                                                            <option value="Low to High">
+                                                                50 Products Par Page
+                                                            </option>
+                                                            <option value="Low to High">
+                                                                100 Products Par Page
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="product-page-filter">
+                                                        <select>
+                                                            <option value="High to low">Sorting items</option>
+                                                            <option value="Low to High">50 Products</option>
+                                                            <option value="Low to High">100 Products</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="product-wrapper-grid">
+                                        <div class="row margin-res" id="product-list">
+                                            @await Html.PartialAsync("_ProductListPartial", Model.Products)
+                                        </div>
+                                    </div>
+                                    <div class="product-pagination">
+                                        <div class="theme-paggination-block">
+                                            <div class="row">
+                                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                                    <nav aria-label="Page navigation">
+                                                        <ul class="pagination">
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="#"
+                                                                   aria-label="Previous">
+                                                                    <span aria-hidden="true">
+                                                                        <i class="fa fa-chevron-left"
+                                                                           aria-hidden="true"></i>
+                                                                    </span> <span class="sr-only">Previous</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="page-item active">
+                                                                <a class="page-link"
+                                                                   href="#">1</a>
+                                                            </li>
+                                                            <li class="page-item">
+                                                                <a class="page-link"
+                                                                   href="#">2</a>
+                                                            </li>
+                                                            <li class="page-item">
+                                                                <a class="page-link"
+                                                                   href="#">3</a>
+                                                            </li>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="#"
+                                                                   aria-label="Next">
+                                                                    <span aria-hidden="true">
+                                                                        <i class="fa fa-chevron-right"
+                                                                           aria-hidden="true"></i>
+                                                                    </span> <span class="sr-only">Next</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </nav>
+                                                </div>
+                                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                                    <div class="product-search-count-bottom">
+                                                        <h5>Showing Products 1-24 of 10 Result</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- section End -->
+
+@section js {
+    <!-- price range js -->
+    <script src="~/assets/js/price-range.js"></script>
+
+    <script>
+        function updateModel() {
+            var priceRange = $(".js-range-slider").val();
+            var selectedCategoryIds = Array.from(document.querySelectorAll('.category-filter-checkbox:checked'), checkbox => parseInt(checkbox.value));
+
+            fetch('@Url.Action("FilterProducts", "ProductList")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selectedCategoryIds: selectedCategoryIds, priceRange: priceRange })
+            })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('product-list').innerHTML = html;
+                    initializeWishlist();
+                });
+        }
+
+        $(".js-range-slider").on('change', updateModel);
+    </script>
+
+}
+

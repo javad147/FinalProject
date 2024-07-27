@@ -1,0 +1,211 @@
+﻿@model TamVaxti.ViewModels.Profile.UserProfileVM
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <style>
+        .form-control, .form-control-sm {
+            border-radius: 0.25rem;
+        }
+
+        .required-label::before {
+            content: '*';
+            color: red;
+            margin-right: 5px;
+        }
+
+        .btn-orange {
+            background-color: #ff4c3b !important;
+            border-color: #ff4c3b !important;
+            color: white;
+            text-transform: none;
+        }
+
+        .form-container {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px;
+        }
+
+            .card-header h5 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+        .breadcrumb {
+            background: none;
+            margin-bottom: 0;
+            padding: 0;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: ">";
+        }
+
+        .btn-solid {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+            .btn-solid:hover {
+                background-color: #0056b3;
+            }
+
+        .select_input select {
+            height: calc(2.25rem + 2px);
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var $button = $('#updateButton');
+                var $spinner = $('#spinner');
+                var $buttonText = $('#buttonText');
+
+                $button.prop('disabled', true);
+                $spinner.show();
+            });
+
+        @if (TempData["message"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["message"]');
+            </text>
+        }
+                        });
+    </script>
+
+    <!-- Breadcrumb Section -->
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="page-title">
+                        <h2>User Profile</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active">User Profile</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal Details Section -->
+    @using (Html.BeginForm("UpdateProfile", "Profile", FormMethod.Post, new { @class = "theme-form" }))
+    {
+        @Html.HiddenFor(m => m.UserId)
+        <section class="contact-page register-page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>PERSONAL DETAILS</h3>
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-row row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FullName" class="required-label"><strong>Full Name</strong></label>
+                                <input asp-for="FullName" class="form-control" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="required-label"><strong>Phone Number</strong></label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="required-label"><strong>Email</strong></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shipping Address Section -->
+        <section class="contact-page register-page section-b-space">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>SHIPPING ADDRESS</h3>
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-row row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Flat"><strong>Flat/Plot</strong></label>
+                                <input asp-for="Flat" class="form-control" />
+                                <span asp-validation-for="Flat" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Address" class="required-label"><strong>Address</strong></label>
+                                <input asp-for="Address" class="form-control" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ZipCode" class="required-label"><strong>Zip Code</strong></label>
+                                <input asp-for="ZipCode" class="form-control" />
+                                <span asp-validation-for="ZipCode" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Country" class="required-label"><strong>Country</strong></label>
+                                <input asp-for="Country" class="form-control" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="required-label"><strong>City</strong></label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Region" class="required-label"><strong>Region/State</strong></label>
+                                <input asp-for="Region" class="form-control" />
+                                <span asp-validation-for="Region" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mt-4 text-right">
+                                <button id="updateButton" type="submit" class="btn btn-solid">
+                                    <span id="buttonText" class="mr-2">Save Settings</span>
+                                    <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+</body>
