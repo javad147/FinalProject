@@ -7,13 +7,16 @@ using System.Collections.Generic;
 
 public class AdminLeftViewComponent : ViewComponent
 {
+    private readonly ISettingService _settingService;
     private readonly IHttpContextAccessor _accessor;
     private readonly UserManager<AppUser> _userManager;
     private readonly ICompanyService _companyService;
-    public AdminLeftViewComponent(IHttpContextAccessor accessor,
+    public AdminLeftViewComponent(ISettingService settingService,
+                               IHttpContextAccessor accessor,
                                UserManager<AppUser> userManager,
                                ICompanyService companyService)
     {
+        _settingService = settingService;
         _accessor = accessor;
         _userManager = userManager;
         _companyService = companyService;
