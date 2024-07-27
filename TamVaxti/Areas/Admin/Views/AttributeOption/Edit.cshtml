@@ -1,0 +1,172 @@
+﻿@model EditAttributeOptionVM
+@{
+    ViewBag.PageName = "Edit Attribute Option";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        margin-top: 10px;
+    }
+</style>
+
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                        Edit Attribute options
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="AttributeOption" asp-action="Index">
+                            AttributeOption
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ExistingImageUrl)
+                        <div class="form-group">
+                            <label asp-for="Value" class="control-label">Value</label>
+                            <input asp-for="Value" class="form-control" />
+                            <span asp-validation-for="Value" class="text-danger"></span>
+                        </div>
+
+     @*                   <div class="form-group">
+                            <label asp-for="SelectedCategoryId" class="control-label">Category</label>
+                            <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
+                                <option value="">-- Select a Category --</option>
+                                @foreach (var item in Model.Attributes)
+                                {
+                                    <option value="@item.Value" data-type="@item.Group.Name" @(item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "")>@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SelectedCategoryId" class="text-danger"></span>
+                        </div>*@
+
+                     @*   <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
+                            <option value="">-- Select a Category --</option>
+                            @foreach (var item in Model.Attributes)
+                            {
+                                var selected = item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "";
+                                <option value="@item.Value" data-type="@item.Group.Name" @Html.Raw(selected)>@item.Text</option>
+                            }
+                        </select>*@
+
+
+                         <div class="form-group">
+                            <label asp-for="SelectedCategoryId" class="control-label">Category</label>
+                            <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
+                                <option value="">-- Select a Category --</option>
+                                @foreach (var item in Model.Attributes)
+                                {
+                                    string selected = item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "";
+                                    <option value="@item.Value" data-type="@item.Group.Name" selected>@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SelectedCategoryId" class="text-danger"></span>
+                        </div>
+
+                           
+                        <div id="conditional-fields" style="display: none;">
+                            <div id="color-field" class="form-group" style="display: none;">
+                                <label asp-for="Color" class="control-label">Color</label>
+                                <input asp-for="Color" class="form-control" />
+                                <span asp-validation-for="Color" class="text-danger"></span>
+                            </div>
+
+
+                            @*working code*@
+                          @*  <div id="image-url-field" class="form-group" style="display: none;">
+                                <label asp-for="ImageUrl" class="control-label">Image Upload</label>
+                                <input asp-for="ImageUrl" type="file" class="form-control" />
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+                                {
+                                    <img src="~/img/attributes/@Model.ExistingImageUrl" alt="Current Image" style="max-width: 100px; max-height: 100px;" class="mt-2"/>
+                                }
+                            </div>*@
+
+                            <div id="image-url-field" class="form-group" style="display: none;">
+                                <label asp-for="ImageUrl" class="control-label">Image Upload</label>
+                                <input asp-for="ImageUrl" type="file" class="form-control" />
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+                                {
+                                    <div>
+                                        <img src="~/img/attributes/@Model.ExistingImageUrl" alt="Existing Image" style="max-width: 200px; margin-top: 10px;" />
+                                    </div>
+                                }
+                            </div>
+                       
+
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update Attribute Option</button>
+                            <a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function categoryChanged() {
+        var selectedCategoryId = $('select[name="SelectedCategoryId"]').val();
+        var selectedOption = $('select[name="SelectedCategoryId"] option:selected');
+        var categoryType = selectedOption.data('type');
+
+        if (categoryType) {
+            if (categoryType === 'Image') {
+                $('#color-field').hide();
+                $('#image-url-field').show();
+            } else if (categoryType === 'Color') {
+                $('#image-url-field').hide();
+                $('#color-field').show();
+            } else {
+                $('#color-field').hide();
+                $('#image-url-field').hide();
+            }
+
+            $('#conditional-fields').show();
+        } else {
+            $('#conditional-fields').hide();
+        }
+    }
+
+    $(document).ready(function () {
+        $('select[name="SelectedCategoryId"]').change(categoryChanged);
+
+        // Trigger change event on page load to display the correct fields
+        categoryChanged();
+    });
+</script>
