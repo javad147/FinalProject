@@ -1,0 +1,176 @@
+﻿
+
+
+@model List<AttributeVM>
+@{
+    ViewBag.PageName = "Attribute Master";
+}
+
+<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+
+
+<style>
+    .icon {
+        font-size: 24px;
+        color: gray;
+    }
+
+        .icon.check-circle {
+            color: green;
+        }
+
+        .icon.x-circle {
+            color: red;
+        }
+
+    .td-status {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    svg {
+        display: inline;
+    }
+
+    .search-form .form-group {
+        margin-right: 10px;
+    }
+
+    .search-form .btn {
+        margin-left: 5px;
+    }
+</style>
+
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var messageType = '@TempData["messageType"]';
+            var message = '@TempData["message"]';
+            if (messageType === "success") {
+                toastr.success(message);
+            } else if (messageType === "error") {
+                toastr.error(message);
+            }
+        });
+    </script>
+}
+
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                        Attribute
+                        <small>Attribute Information </small>
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active"> Product / Attribute </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div class="card-header">
+                        <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
+                            Add Attribute
+                        </a>
+                    </div>
+                }
+                <div class="card-header">
+                    <form class="form-inline search-form" method="get" asp-action="Index">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                                {
+                                    <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive table-desi">
+                        @if (Model != null && Model.Any())
+                        {
+                            <table class="table all-package table-category" id="editableTable">
+                                <thead>
+                                    <tr>
+                                        <th width="100px" align="left">ID</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>@item.Name</td>
+                                            <td>@item.Type</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="mr-2">
+                                                    <i class="fa fa-edit" title="Edit"></i>
+                                                </a>
+                                                <form asp-action="Delete" asp-route-id="@item.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete this attribute?');">
+                                                    <a href="javascript:void(0)" onclick="$(this).closest('form').submit()">
+                                                        <i class="fa fa-trash text-danger" title="Delete"></i>
+                                                    </a>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No attributes found.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function clearSearch() {
+        window.location.href = '@Url.Action("Index")';
+    }
+</script>
+

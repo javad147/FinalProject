@@ -1,0 +1,88 @@
+﻿@model AttributeVM
+@{
+    ViewBag.PageName = "Edit Attribute";
+}
+
+
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .dropdown-menu {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .btn-primary {
+        margin-top: 10px;
+    }
+</style>
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                        Edit Attribute
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Attribute" asp-action="Index">
+                            Attribute
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+@*                <div class="card-header">
+                    <div class="btn btn-primary add-row mt-md-0 mt-2">
+                        Edit Attribute
+                    </div>
+                </div>*@
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Type" class="control-label">Select Type</label>
+                            <select asp-for="Type" class="form-control">
+                                <option value="">-- Select an Option --</option>
+                                <option value="Color">Color</option>
+                                <option value="Image">Image</option>
+                                <option value="Button">Button</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a asp-action="Index" class="btn btn-secondary mt-2">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
