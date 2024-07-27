@@ -1,0 +1,192 @@
+﻿@model IEnumerable<TamVaxti.ViewModels.Orders.OrderHistoryVM>
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Order History</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!-- section start -->
+<section class="order-history section-b-space">
+    <div class="container">
+        @if (!Model.Any())
+        {
+            <div class="no-orders-message text-center">
+                <h4>No Orders Found</h4>
+                <p>You have not placed any orders yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var order in Model)
+                {
+                    <div class="col-12">
+                        <div class="order-box">
+                            <h5>Order Number: @order.OrderNumber</h5>
+                            <p>Total Amount: $@order.TotalAmount</p>
+                            <p>Actual Delivery Date: @order.ActualDeliveryDate?.ToString("yyyy-MM-dd")</p>
+
+                            <div class="products">
+                                @foreach (var product in order.Products)
+                                {
+                                    <div class="product-card">
+                                        <div class="img-wrapper">
+                                            <div class="front">
+                                                <a href="#"><img src="@product.Image" alt="@product.Name" class="img-fluid product-image" /></a>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="rating">
+                                                @for (var i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= product.Rating)
+                                                    {
+                                                        <span class="fa fa-star checked"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="fa fa-star"></span>
+                                                    }
+                                                }
+                                            </div>
+                                            <h6>@product.Name</h6>
+                                            <p>Quantity: @product.Quantity | Amount: $@product.Amount</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+<!-- section end -->
+
+<style>
+    .breadcrumb-section {
+        padding: 20px 0;
+        background: #f8f9fa;
+    }
+
+    .order-history {
+        padding: 20px 0;
+    }
+
+    .container {
+        padding-left: 15px; /* Add left padding */
+        padding-right: 15px; /* Add right padding */
+    }
+
+    .order-box {
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .product-card {
+        display: flex;
+        border: 1px solid #ddd;
+        margin: 10px 0;
+        padding: 10px;
+        background: #f9f9f9;
+        align-items: center;
+    }
+
+    .img-wrapper {
+        position: relative;
+        width: 180px; /* Adjust width as needed */
+        height: 180px; /* Adjust height as needed */
+        margin-right: 15px;
+    }
+
+        .img-wrapper .front,
+        .img-wrapper .back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        .img-wrapper .back {
+            opacity: 0;
+        }
+
+        .img-wrapper:hover .back {
+            opacity: 1;
+        }
+
+    .product-image {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+    }
+
+    .product-info {
+        flex-grow: 1;
+        padding: 10px;
+    }
+
+    .checked {
+        color: orange;
+    }
+
+    .rating {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .product-info h6 {
+        margin: 0;
+        font-size: 1.1em;
+    }
+
+    .product-info p {
+        margin: 5px 0;
+        font-size: 0.9em;
+        color: #777;
+    }
+
+    .no-orders-message {
+        padding: 20px;
+        background-color: #f8d7da;
+        color: #721c24;
+        border-radius: 4px;
+        margin: 20px 0;
+    }
+
+        .no-orders-message h4 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .no-orders-message p {
+            margin: 5px 0;
+        }
+</style>
