@@ -1,2 +1,323 @@
 ﻿
-<h1>ADMIN PANEL</h1>
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="page-header-left">
+                                    <h3>Dashboard
+                                        <small>Multikart Admin panel</small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <ol class="breadcrumb pull-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i data-feather="home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xxl-4 col-md-6 xl-50">
+                            <div class="card o-hidden widget-cards">
+                                <div class="warning-box card-body">
+                                    <div class="media static-top-widget align-items-center">
+                                        <div class="icons-widgets">
+                                            <div class="align-self-center text-center">
+                                                <i data-feather="navigation" class="font-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="media-body media-doller">
+                                            <span class="m-0">Earnings</span>
+                                            <h3 class="mb-0">$ <span class="counter">@ViewBag.Earnings</span><small> This
+                                                    Month</small>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-md-6 xl-50">
+                            <div class="card o-hidden widget-cards">
+                                <div class="secondary-box card-body">
+                                    <div class="media static-top-widget align-items-center">
+                                        <div class="icons-widgets">
+                                            <div class="align-self-center text-center">
+                                                <i data-feather="box" class="font-secondary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="media-body media-doller">
+                                            <span class="m-0">Products Sold</span>
+                                            <h3 class="mb-0"> <span class="counter">@ViewBag.TotalSku</span><small> This
+                                                    Month</small>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xxl-4 col-md-6 xl-50">
+                            <div class="card o-hidden widget-cards">
+                                <div class="primary-box card-body">
+                                    <div class="media static-top-widget align-items-center">
+                                        <div class="icons-widgets">
+                                            <div class="align-self-center text-center"><i data-feather="message-square"
+                                                    class="font-primary"></i></div>
+                                        </div>
+                                        <div class="media-body media-doller"><span class="m-0">Orders Delivered</span>
+                                            <h3 class="mb-0"> <span class="counter">@ViewBag.OrderCnt</span><small> This
+                                                    Month</small></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-xxl-3 col-md-6 xl-50">
+                            <div class="card o-hidden widget-cards">
+                                <div class="danger-box card-body">
+                                    <div class="media static-top-widget align-items-center">
+                                        <div class="icons-widgets">
+                                            <div class="align-self-center text-center"><i data-feather="users"
+                                                    class="font-danger"></i></div>
+                                        </div>
+                                        <div class="media-body media-doller"><span class="m-0">New Vendors</span>
+                                            <h3 class="mb-0">$ <span class="counter">5631</span><small> This
+                                                    Month</small></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                        <div class="col-xl-6 xl-100">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Revenue for last month</h5>
+                                    <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="icofont icofont-simple-left"></i></li>
+                                            <li><i class="view-html fa fa-code"></i></li>
+                                            <li><i class="icofont icofont-maximize full-card"></i></li>
+                                            <li><i class="icofont icofont-minus minimize-card"></i></li>
+                                            <li><i class="icofont icofont-refresh reload-card"></i></li>
+                                            <li><i class="icofont icofont-error close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="order-graph xl-space">
+                                         <div class="ct-5 flot-chart-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 xl-100">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Latest Orders</h5>
+                                    <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="icofont icofont-simple-left"></i></li>
+                                            <li><i class="view-html fa fa-code"></i></li>
+                                            <li><i class="icofont icofont-maximize full-card"></i></li>
+                                            <li><i class="icofont icofont-minus minimize-card"></i></li>
+                                            <li><i class="icofont icofont-refresh reload-card"></i></li>
+                                            <li><i class="icofont icofont-error close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="user-status table-responsive latest-order-table">
+                                        <table class="table table-bordernone">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Order ID</th>
+                                                    <th scope="col">Order Total</th>
+                                                    <th scope="col">Payment Method</th>
+                                                    <th scope="col">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach(var item in ViewBag.LatestOrders)
+                                                {
+                                                    var PayClass = "";
+                                                    switch (item.PaymentMode)
+                                                    {
+                                                        case "Net Banking":
+                                                            PayClass = "font-primary";
+                                                            break;
+                                                        case "PayPal":
+                                                            PayClass = "font-secondary";
+                                                            break;
+                                                        case "CreditCard":
+                                                            PayClass = "font-danger";
+                                                            break;
+                                                        case "Cash":
+                                                            PayClass = "font-warning";
+                                                            break;
+                                                        default:
+                                                            PayClass = "font-danger";
+                                                            break;
+                                                    }
+                                                <tr>
+                                                    <td>@item.OrderId</td>
+                                                    <td class="digits">$@item.TotalAmount</td>
+                                                    <td class="@PayClass">@item.PaymentMode</td>
+                                                    <td class="digits">@item.DeliveryStatus</td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="btn btn-primary mt-4">View All Orders</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6 xl-50">
+                            <div class="card order-graph sales-carousel">
+                                <div class="card-header b-header">
+                                    <h6>Total Sales</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="small-chartjs">
+                                                <div class="flot-chart-placeholder" id="simple-line-chart-sparkline-3">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="value-graph">
+                                                <h3>42% <span><i class="fa fa-angle-up font-primary"></i></span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <span>Sales Last Month</span>
+                                            <h2 class="mb-0">$@ViewBag.LastMonthEarnings</h2>
+                                            <p>0.25% <span><i class="fa fa-angle-up"></i></span></p>
+                                        </div>
+
+                                        <div class="bg-primary b-r-8">
+                                            <div class="small-box">
+                                                <i data-feather="briefcase"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="sales-contain">
+                                        <h5 class="f-w-600">Gross sales of @ViewBag.LastMonth</h5>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6 xl-50">
+                            <div class="card order-graph sales-carousel">
+                                <div class="card-header b-header">
+                                    <h6>Total purchase</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="small-chartjs">
+                                                <div class="flot-chart-placeholder" id="simple-line-chart-sparkline">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="value-graph">
+                                                <h3>20% <span><i class="fa fa-angle-up font-secondary"></i></span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <span>Monthly purchase</span>
+                                            <h2 class="mb-0">2154</h2>
+                                            <p>0.13% <span><i class="fa fa-angle-up"></i></span></p>
+                                        </div>
+                                        <div class="bg-secondary b-r-8">
+                                            <div class="small-box">
+                                                <i data-feather="credit-card"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="sales-contain">
+                                        <h5 class="f-w-600">Avg Gross purchase</h5>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6 xl-50">
+                            <div class="card order-graph sales-carousel">
+                                <div class="card-header b-header">
+                                    <h6>Total cash transaction</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="small-chartjs">
+                                                <div class="flot-chart-placeholder" id="simple-line-chart-sparkline-2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="value-graph">
+                                                <h3>28% <span><i class="fa fa-angle-up font-warning"></i></span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <span>Cash on hand</span>
+                                            <h2 class="mb-0">$@ViewBag.CashTransactions</h2>
+                                            <p>0.8% <span><i class="fa fa-angle-up"></i></span></p>
+                                        </div>
+                                        <div class="bg-warning b-r-8">
+                                            <div class="small-box">
+                                                <i data-feather="shopping-cart"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="sales-contain">
+                                        <h5 class="f-w-600">Details about cash</h5>
+                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+  
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/Admin/Dashboard/GetLastMonthRevenue')
+            .then(response => response.json())
+            .then(data => {
+                new Chartist.Line('.ct-5', {
+                    labels: data.Labels, 
+                    series: data.Series
+                }, {
+                    low: 0,
+                    showArea: true
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    });
+</script>
