@@ -1,0 +1,198 @@
+﻿@model ProductCreateVM
+
+ <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="page-header-left">
+                                    <h3>Add Products
+                                        <small>Multikart Admin panel</small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <ol class="breadcrumb pull-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i data-feather="home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a asp-action="Index">Products</a></li>
+                                    <li class="breadcrumb-item active">Add Product</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="card tab2-card">
+                        <div class="card-body">
+                            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" class="form-control" data-val="true" data-val-required="Name is required." />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <input asp-for="Description" class="form-control" data-val="true" data-val-required="Description is required." />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CategoryId" class="control-label"></label>
+                                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.categories"></select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Main Image</label>
+                                    <input type="file" name="MainImage" class="form-control" data-val="true" data-val-required="Main image is required." />
+                                    <span asp-validation-for="MainImage" class="text-danger"></span>
+                                </div>
+
+                                <h4>SKUs</h4>
+                                <table class="table" id="skus-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Image 1</th>
+                                            <th>Image 2</th>
+                                            <th>Image 3</th>
+                                            <th>Image 4</th>
+                                            @foreach (var item in ViewBag.AttributeList)
+                                            {
+                                                <th>@item.Name</th>
+                                            }
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.SKUs.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />
+                                                    <span asp-validation-for="@Model.SKUs[i].SkuCode" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].Price" class="form-control" data-val="true" data-val-required="Price is required." />
+                                                    <span asp-validation-for="@Model.SKUs[i].Price" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].Quantity" class="form-control" data-val="true" />
+                                                    <span asp-validation-for="@Model.SKUs[i].Quantity" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl1" class="form-control" />
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl1" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl2" class="form-control" />
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl2" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl3" class="form-control" />
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl3" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl4" class="form-control" />
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl4" class="text-danger"></span>
+                                                </td>
+                                                @for (int j = 0; j < ViewBag.AttributeList.Count; j++)
+                                                {
+                                                        @*var skuAttribute = Model.SKUs[i].SKUAttributes[j];
+                                                                        var SkuAttributeVal = skuAttribute != null ? skuAttribute.AttributeOptionId : 0;*@
+                                                    <td class="select-item">
+                                                        <select asp-for="@Model.SKUs[i].SKUAttributes[j].AttributeOptionId" asp-items="ViewBag.AttributeList[j].AttributeOptions" class="form-control">
+                                                            <option value="0">Select @ViewBag.AttributeList[j].Name</option>
+                                                        </select>
+                                                            @*@Html.DropDownListFor(
+                                                                                m => skuAttribute!= null ? skuAttribute.AttributeOptionId : 0 ,//Model.SKUs[i].SKUAttributes[attribute.Id].AttributeOptionId,
+                                                                                attribute.AttributeOptions,
+                                                                                "Select an option",
+                                                                                new { @class = "form-control" })*@
+                                                        </td>
+                                                }
+                                                <td>
+                                                    <a class="remove-sku-btn"><i style="color:red;" class="fa fa-close"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <button type="button" id="add-sku-btn" class="btn btn-primary">Add SKU</button>
+
+                                <div class="form-group pull-right">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+@section Scripts {
+    @*<partial name="_ValidationScriptsPartial" />*@
+    <script>
+        document.getElementById('add-sku-btn').addEventListener('click', function () {
+            var table = document.getElementById('skus-table').getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var attributes = @Html.Raw(Json.Serialize(ViewBag.AttributeListJson));
+
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            var cell6 = row.insertCell(5);
+            var cell7 = row.insertCell(6);
+
+            var cellCnt = 7;
+
+            cell1.innerHTML = '<input type="text" name="SKUs[' + rowCount + '].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />';
+            cell2.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Price" class="form-control" data-val="true" data-val-required="Price is required." />';
+            cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
+            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1" class="form-control" />';
+            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2" class="form-control" />';
+            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3" class="form-control" />';
+            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4" class="form-control" />';
+
+            var items = JSON.parse(attributes);
+
+            const attributesHtml = items.map((attribute, index) => {
+                var cellop = row.insertCell(cellCnt++);
+
+                const optionsHtml = attribute.AttributeOptions
+                    .map(option => '<option value="' + option.Value + '">' + option.Text + '</option>')
+                    .join('');
+                
+                var selectHtml = '<select name="SKUs[' + rowCount + '].SKUAttributes[' + index + '].AttributeOptionId" class="form-control">'
+                            + '<option value="0">Select ' + attribute.Name + '</option>'
+                            + optionsHtml + '</select>';
+
+                cellop.innerHTML = selectHtml;
+                
+            });
+
+            var cell8 = row.insertCell(cellCnt);
+
+            cell8.innerHTML = '<a class="remove-sku-btn"><i style="color:red;" class="fa fa-close"></i></a>';
+
+            var removeButtons = document.getElementsByClassName('remove-sku-btn');
+            for (var i = 0; i < removeButtons.length; i++) {
+                removeButtons[i].addEventListener('click', function () {
+                    var row = this.parentNode.parentNode;
+                    row.parentNode.removeChild(row);
+                });
+            }
+        });
+    </script>
+
+}

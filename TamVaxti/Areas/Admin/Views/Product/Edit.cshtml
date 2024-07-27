@@ -1,0 +1,239 @@
+﻿@model Product
+
+ <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="page-header">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="page-header-left">
+                                    <h3>Edit Product
+                                        <small>Multikart Admin panel</small>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <ol class="breadcrumb pull-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="index.html">
+                                            <i data-feather="home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a asp-action="Index">Products</a></li>
+                                    <li class="breadcrumb-item active">Edit Product</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Container-fluid Ends-->
+
+                <!-- Container-fluid starts-->
+                <div class="container-fluid">
+                    <div class="card tab2-card">
+                        <div class="card-body">
+                            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                                @Html.AntiForgeryToken()
+                                <input asp-for="@Model.Id" type="hidden" />
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" class="form-control" data-val="true" data-val-required="Name is required." />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <input asp-for="Description" class="form-control" data-val="true" data-val-required="Description is required." />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CategoryId" class="control-label"></label>
+                                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.categories"></select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Main Image</label>
+                                    <input type="file" name="MainImageFile" class="form-control" />
+                                    @if (!string.IsNullOrEmpty(Model.MainImage))
+                                    {
+                                        <img src="~/img/product/@Model.MainImage" alt="Main Image" width="200" />
+                                    }
+                                    <span asp-validation-for="MainImage" class="text-danger"></span>
+                                </div>
+
+                                <h4>SKUs</h4>
+                                <table class="table" id="skus-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Image 1</th>
+                                            <th>Image 2</th>
+                                            <th>Image 3</th>
+                                            <th>Image 4</th>
+                                            @foreach (var item in ViewBag.AttributeList)
+                                            {
+                                                <th>@item.Name</th>
+                                            }
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.SKUs.Count; i++)
+                                        {   
+                                            <input asp-for="@Model.SKUs[i].Id" type="hidden" />
+                                            <input asp-for="@Model.SKUs[i].ProductId" type="hidden" />
+                                            <input asp-for="@Model.SKUs[i].CreatedOn" type="hidden"  />
+                                            <tr>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />
+                                                    <span asp-validation-for="@Model.SKUs[i].SkuCode" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].Price" class="form-control" data-val="true" data-val-required="Price is required." />
+                                                    <span asp-validation-for="@Model.SKUs[i].Price" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].Quantity" class="form-control" data-val="true" />
+                                                    <span asp-validation-for="@Model.SKUs[i].Quantity" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="SKUs[@i].ImageUrl1File" class="form-control" />
+                                                    @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl1))
+                                                    {
+                                                        <img src="~/img/product/@Model.SKUs[i].ImageUrl1" alt="Image 1" width="70" />
+                                                    }
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl1" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="SKUs[@i].ImageUrl2File" class="form-control" />
+                                                    @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl2))
+                                                    {
+                                                        <img src="~/img/product/@Model.SKUs[i].ImageUrl2" alt="Image 2" width="70" />
+                                                    }
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl2" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="SKUs[@i].ImageUrl3File" class="form-control" />
+                                                    @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl3))
+                                                    {
+                                                        <img src="~/img/product/@Model.SKUs[i].ImageUrl3" alt="Image 3" width="70" />
+                                                    }
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl3" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="SKUs[@i].ImageUrl4File" class="form-control" />
+                                                    @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl4))
+                                                    {
+                                                        <img src="~/img/product/@Model.SKUs[i].ImageUrl4" alt="Image 4" width="70" />
+                                                    }
+                                                    <span asp-validation-for="@Model.SKUs[i].ImageUrl4" class="text-danger"></span>
+                                                </td>
+                                                @for (int j = 0; j < ViewBag.AttributeList.Count; j++)
+                                                {
+                                                        var skuAttributeIndex = Model.SKUs[i].AttributeOptionSKUs.Select((item, index) => new { Item = item, Index = index })
+                                                                            .Where(ao => ao.Item.AttributeId == ViewBag.AttributeList[j].Id).Select(x => x.Index).FirstOrDefault();
+                                                                        @*var SkuAttributeOptionId = skuAttribute != null ? skuAttribute.AttributeOptionId : 0;
+                                                                        var SkuId = skuAttribute != null ? skuAttribute.SkuId : 0;*@
+                                                    
+                                                    <td class="select-item">
+                                                        <input asp-for="@Model.SKUs[i].AttributeOptionSKUs[skuAttributeIndex].SkuId" type="hidden" />
+                                                        <select asp-for="@Model.SKUs[i].AttributeOptionSKUs[skuAttributeIndex].AttributeOptionId" asp-items="ViewBag.AttributeList[j].AttributeOptions" class="form-control">
+                                                            <option value="0">Select @ViewBag.AttributeList[j].Name</option>
+                                                        </select>
+                                                            @*@Html.DropDownListFor(
+                                                                                m => skuAttribute!= null ? skuAttribute.AttributeOptionId : 0 ,//Model.SKUs[i].SKUAttributes[attribute.Id].AttributeOptionId,
+                                                                                attribute.AttributeOptions,
+                                                                                "Select an option",
+                                                                                new { @class = "form-control" })*@
+                                                    </td>
+                                                }
+                                                <td>
+                                                    <a class="remove-sku-btnn" onclick="deleteSku(@Model.SKUs[i].Id)"><i style="color:red;" class="fa fa-close"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <button type="button" id="add-sku-btn" class="btn btn-primary">Add SKU</button>
+
+                                <div class="form-group pull-right">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="deleteSkuForm" action="@Url.Action("DeleteSku", "Product", new { area = "Admin" })" method="post" style="display:none;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="skuId" />
+                </form>
+
+                <!-- Container-fluid Ends-->
+
+@section Scripts {
+    @*<partial name="_ValidationScriptsPartial" />*@
+    <script>
+        function deleteSku(id) {
+            if (confirm('Are you sure you want to delete this sku?')) {
+                document.getElementById('skuId').value = id;
+                document.getElementById('deleteSkuForm').submit();
+            }
+        }
+        document.getElementById('add-sku-btn').addEventListener('click', function () {
+            var table = document.getElementById('skus-table').getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var attributes = @Html.Raw(Json.Serialize(ViewBag.AttributeListJson));
+
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            var cell6 = row.insertCell(5);
+            var cell7 = row.insertCell(6);
+
+            var cellCnt = 7;
+
+            cell1.innerHTML = '<input type="text" name="SKUs[' + rowCount + '].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />';
+            cell2.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Price" class="form-control" data-val="true" data-val-required="Price is required." />';
+            cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
+            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1File" class="form-control" />';
+            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2File" class="form-control" />';
+            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3File" class="form-control" />';
+            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4File" class="form-control" />';
+
+            var items = JSON.parse(attributes);
+
+            const attributesHtml = items.map((attribute, index) => {
+                var cellop = row.insertCell(cellCnt++);
+
+                const optionsHtml = attribute.AttributeOptions
+                    .map(option => '<option value="' + option.Value + '">' + option.Text + '</option>')
+                    .join('');
+                
+                var selectHtml = '<select name="SKUs[' + rowCount + '].AttributeOptionSKUs[' + index + '].AttributeOptionId" class="form-control">'
+                            + '<option value="0">Select ' + attribute.Name + '</option>'
+                            + optionsHtml + '</select>';
+
+                cellop.innerHTML = selectHtml;
+                
+            });
+
+            var cell8 = row.insertCell(cellCnt);
+
+            cell8.innerHTML = '<a class="remove-sku-btn"><i style="color:red;" class="fa fa-close"></i></a>';
+
+            var removeButtons = document.getElementsByClassName('remove-sku-btn');
+            for (var i = 0; i < removeButtons.length; i++) {
+                removeButtons[i].addEventListener('click', function () {
+                    var row = this.parentNode.parentNode;
+                    row.parentNode.removeChild(row);
+                });
+            }
+        });
+    </script>
+
+}
