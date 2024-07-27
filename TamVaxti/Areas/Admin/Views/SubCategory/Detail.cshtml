@@ -1,0 +1,33 @@
+﻿@model TamVaxti.ViewModels.SubCategory.SubcategoryDetailVM
+
+<div class="container">
+    <div class="table-responsive table--no-card m-b-30">
+        <table class="table table-borderless table-striped table-earning">
+            <thead>
+                <tr>
+                    <th>Subcategory</th>
+                    <th>Product Count</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Name</td>
+                    <td>@Model.ProductCount</td>
+                    <td>@Model.CategoryName</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.SubcategoryImage))
+                        {
+                            <img src="@Url.Content("~/img/" + Model.SubcategoryImage)" alt="Subcategory Image" style="max-width: 100px; max-height: 100px;" />
+                        }
+                        else
+                        {
+                            <span>No image</span>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

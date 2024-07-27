@@ -1,0 +1,83 @@
+﻿
+@model TamVaxti.ViewModels.SubCategory.SubCategoryCreateVM
+
+@{
+    ViewBag.Title = "Create SubCategory";
+}
+
+
+
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="page-header-left">
+                    <h3>
+                        Add SubCategory
+                    </h3>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i data-feather="home"></i>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-controller="SubCategory" asp-action="Index">
+                            SubCategory
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Craete</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+                 <div class="card">
+
+        <div class="card-body card-block">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-control-label">Enter subcategory name</label>
+                    <input asp-for="Name" type="text" placeholder="Enter name..." class="form-control mb-2" maxlength="100">
+                    <span class="text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label">Upload Subcategory Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                    <span class="text-danger" asp-validation-for="ImageFile"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label">Select Category</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "Value", "Text"))"></select>
+                    <span class="text-danger" asp-validation-for="CategoryId"></span>
+                </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Is Published</label>
+                            <input asp-for="IsPublished" type="checkbox" class="form-check-input">
+                            <span class="text-danger" asp-validation-for="IsPublished"></span>
+                        </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+                <a asp-action="Index" class="btn btn-danger btn-sm">
+                    <i class="fa fa-ban"></i> Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
