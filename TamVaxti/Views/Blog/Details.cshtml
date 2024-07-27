@@ -1,0 +1,229 @@
+﻿@model TamVaxti.Models.Blog
+
+@{
+    var blogImage = "/assets/images/about/about-us.jpg";
+
+    if (string.IsNullOrEmpty(Model.Image) == false)
+    {
+
+
+        blogImage = $"~/img/Blog/{Model.Image}";
+    }
+}
+
+<!-- breadcrumb start-->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>blog details</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="index.html">blog</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Blog Details</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb end-->
+<!--section start-->
+<section class="blog-detail-page section-b-space ratio2_3">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 blog-detail">
+                <img src="@Url.Content(@blogImage)" class="img-fluid blur-up lazyload" alt="" width="1370" height="385">
+                <h3>@Model.Title</h3>
+                <ul class="post-social">
+                    <li>@Model.Date.ToString("dd MMM yyyy")</li>
+                    <li>Posted By : @Model.Uname</li>
+                    <li><i class="fa fa-heart"></i> @Model.Hits</li>
+                    <li><i class="fa fa-comments"></i> @Model.CommentCount Comment(s)</li>
+                </ul>
+                <div class="row section-b-space blog-advance">
+                    @Html.Raw(Model.Description)
+                </div>
+
+            </div>
+        </div>
+
+        @*<div class="row section-b-space">
+                <div class="col-sm-12">
+                    <ul class="comment-section">
+                        <li>
+                            <div class="media">
+                                <img src="~/assets/images/avtar.jpg" alt="Generic placeholder image">
+                                <div class="media-body">
+                                    <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
+                                    <p>
+                                        Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
+                                        fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
+                                        faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
+                                        odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
+                                        lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
+                                        sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
+                                        erat tempor quis. Vestibulum eu vestibulum ex.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media">
+                                <img src="../assets/images/2.jpg" alt="Generic placeholder image">
+                                <div class="media-body">
+                                    <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
+                                    <p>
+                                        Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
+                                        fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
+                                        faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
+                                        odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
+                                        lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
+                                        sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
+                                        erat tempor quis. Vestibulum eu vestibulum ex.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="media">
+                                <img src="../assets/images/20.jpg" alt="Generic placeholder image">
+                                <div class="media-body">
+                                    <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
+                                    <p>
+                                        Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
+                                        fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
+                                        faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
+                                        odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
+                                        lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
+                                        sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
+                                        erat tempor quis. Vestibulum eu vestibulum ex.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>*@
+
+
+        <div class="row section-b-space">
+            <div class="col-sm-12">
+                <ul class="comment-section">
+                    @if (Model.Comments != null && Model.Comments.Any())
+                    {
+                        foreach (var comment in Model.Comments)
+                        {
+                            var nameParts = comment.Name.Split(' ');
+                            var initials = nameParts.Length > 1
+                                ? $"{nameParts[0][0]}{nameParts[1][0]}"
+                                : $"{nameParts[0][0]}";
+                        
+                            <li class="media mb-3" style="display: flex; align-items: center;">
+                                <div class="initial-avatar" data-name="@initials" style=" width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ffffff; font-weight: bold; margin-right: 10px;">
+                                    @initials
+                                </div>
+                                <div class="media-body" >
+                                    <h6>@comment.Name <span>( @comment.Date.ToString("dd MMM yyyy 'at' h:mm tt") )</span></h6>
+                                    <p>@comment.Content</p>
+                                </div>
+                            </li>
+                            
+                        }
+                    }
+                    else
+                    {
+                        <li>No comments yet.</li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+
+
+
+
+        @*<div class="row blog-contact">
+                    <div class="col-sm-12">
+                        <h2>Leave Your Comment</h2>
+                        <form class="theme-form">
+                            <div class="form-row row">
+                                <div class="col-md-12">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" placeholder="Enter Your name"
+                                           required="">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="email">Email</label>
+                                    <input type="text" class="form-control" id="email" placeholder="Email" required="">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="exampleFormControlTextarea1">Comment</label>
+                                    <textarea class="form-control" placeholder="Write Your Comment"
+                                              id="exampleFormControlTextarea1" rows="6"></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <button class="btn btn-solid" type="submit">Post Comment</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="row blog-contact">
+            <div class="col-sm-12">
+                <h2>Leave Your Comment</h2>
+                <form asp-action="PostComment" method="post" class="theme-form">
+                    <input type="hidden" name="BlogId" value="@Model.Id" />
+                    <div class="form-row row">
+                        <div class="col-md-12">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="Name" placeholder="Enter Your name" required />
+                        </div>
+                        <div class="col-md-12">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="Email" placeholder="Email" required />
+                        </div>
+                        <div class="col-md-12">
+                            <label for="exampleFormControlTextarea1">Comment</label>
+                            <textarea class="form-control" placeholder="Write Your Comment" id="exampleFormControlTextarea1" name="Content" rows="6" required></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <button class="btn btn-solid" type="submit">Post Comment</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+</section>
+<!--Section ends-->
+
+
+<script>document.addEventListener("DOMContentLoaded", function () {
+        var elements = document.querySelectorAll('.initial-avatar');
+        elements.forEach(function (element) {
+            var name = element.getAttribute('data-name');
+            var colors = ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9'];
+            var color = colors[Math.floor(Math.random() * colors.length)];
+
+            element.style.backgroundColor = color;
+            element.style.width = "64px";
+            element.style.height = "64px";
+            element.style.borderRadius = "50%";
+            element.style.display = "flex";
+            element.style.alignItems = "center";
+            element.style.justifyContent = "center";
+            element.style.fontSize = "24px";
+            element.style.color = "#ffffff";
+            element.style.fontWeight = "bold";
+            element.style.marginRight = "10px";
+
+            element.textContent = name;
+        });
+    });</script>
