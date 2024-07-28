@@ -117,7 +117,7 @@
                                 <div class="toggle-nav">
                                     <i class="fa fa-bars sidebar-bar"></i>
                                 </div>
-                                <ul id="main-menu" class="sm pixelstrap sm-horizontal">
+                                <ul id="main-menu1" class="sm pixelstrap sm-horizontal">
                                     <li>
                                         <div class="mobile-back text-end">
                                             Back
@@ -157,14 +157,16 @@
                                         </ul>
                                     </li>
                                     <li>
-                                        <a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
+                                        <a asp-controller="Blog" asp-action="Index">Blog</a>
                                     </li>
+                                    
                                     <li>
                                         <a asp-controller="AboutUs" asp-action="Index">About Us</a>
                                     </li>
                                     <li>
-                                        <a asp-controller="Blog" asp-action="Index">Blog</a>
+                                        <a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
                                     </li>
+                                   
                                 </ul>
                             </nav>
                         </div>
@@ -172,38 +174,38 @@
                             <div class="icon-nav">
                                 <ul>
                                     @* <li class="onhover-div mobile-search">
-                                        <div>
-                                            <img src="/assets/images/icon/layout4/search.png"
-                                                 onclick="openSearch()" class="img-fluid blur-up lazyload" alt=""> <i class="ti-search" onclick="openSearch()"></i>
-                                        </div>
-                                        <div id="search-overlay" class="search-overlay">
-                                            <div>
-                                                <span class="closebtn" onclick="closeSearch()"
-                                                      title="Close Overlay">
-                                                    ×
-                                                </span>
-                                                <div class="overlay-content">
-                                                    <div class="container">
-                                                        <div class="row">
-                                                            <div class="col-xl-12">
-                                                                <form>
-                                                                    <div class="form-group">
-                                                                        <input type="text" class="form-control"
-                                                                               id="exampleInputPassword1"
-                                                                               placeholder="Search a Product">
-                                                                    </div>
-                                                                    <button type="submit" class="btn btn-primary">
-                                                                        <i class="fa fa-search"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div>
+                                    <img src="/assets/images/icon/layout4/search.png"
+                                    onclick="openSearch()" class="img-fluid blur-up lazyload" alt=""> <i class="ti-search" onclick="openSearch()"></i>
+                                    </div>
+                                    <div id="search-overlay" class="search-overlay">
+                                    <div>
+                                    <span class="closebtn" onclick="closeSearch()"
+                                    title="Close Overlay">
+                                    ×
+                                    </span>
+                                    <div class="overlay-content">
+                                    <div class="container">
+                                    <div class="row">
+                                    <div class="col-xl-12">
+                                    <form>
+                                    <div class="form-group">
+                                    <input type="text" class="form-control"
+                                    id="exampleInputPassword1"
+                                    placeholder="Search a Product">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search"></i>
+                                    </button>
+                                    </form>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
+                                    </div>
                                     </li>
-             *@
+                                    *@
                                     <li class="onhover-div mobile-cart">
                                         <div href="javascript:void(0)" onclick="openCart()">
                                             <img src="/assets/images/icon/layout4/cart.png"
@@ -219,28 +221,3 @@
         </div>
     </div>
 </header>
-<!-- header end -->
-
-
-@section js
-    {
-    <script>
-        // modal popup
-        $(window).on('load', function () {
-            setTimeout(function () {
-                $('#exampleModal').modal('show');
-            }, 2500);
-            reloadMenu();
-        });
-
-        function openSearch() {
-            document.getElementById("search-overlay").style.display = "block";
-        }
-
-        function closeSearch() {
-            document.getElementById("search-overlay").style.display = "none";
-        }
-
-
-    </script>
-}
