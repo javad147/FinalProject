@@ -23,11 +23,8 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 
 
 
-//builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-//{
-//    options.LoginPath = "/Account/Login"; // Custom login page
-//    options.AccessDeniedPath = "/Account/AccessDenied"; // Custom access denied page
-//});
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+                                                     .AddDefaultTokenProviders();
 
 
 builder.Services.Configure<IdentityOptions>(opt =>
