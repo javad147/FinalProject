@@ -25,15 +25,27 @@ public class AdminHeaderViewComponent : ViewComponent
     {
 
         AppUser user = new();
+        UserInfo UserInfo = new UserInfo();
 
         if (User.Identity.IsAuthenticated)
         {
             user = await _userManager.FindByNameAsync(User.Identity.Name);
+            UserInfo.Name = user.FullName;
+            UserInfo.ProfileImageURL = user.ProfileImageUrl;
+            if (User.IsInRole("SuperAdmin"))
+            {
+                UserInfo.Role = "Super Administrator";
+            }
+            if (User.IsInRole("Admin"))
+            {
+                UserInfo.Role = "Administrator";
+            }
         }
         var companyModel = await _companyService.GetFirstOrDefaultCompany();
         FooterVM response = new()
         {
-           Company = companyModel
+           Company = companyModel,
+           UserInfo = UserInfo
         };
 
 
