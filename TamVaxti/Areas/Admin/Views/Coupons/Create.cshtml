@@ -8,7 +8,7 @@
                 <div class="col-lg-6">
                     <div class="page-header-left">
                         <h3>
-                            Create Coupon
+                            Edit Coupon
                             <small>Multikart Admin panel</small>
                         </h3>
                     </div>
@@ -25,7 +25,7 @@
                                 Coupons
                             </a>
                         </li>
-                        <li class="breadcrumb-item active">Create Coupon</li>
+                        <li class="breadcrumb-item active">Edit Coupon</li>
                     </ol>
                 </div>
             </div>
@@ -36,10 +36,13 @@
     <div class="container-fluid">
         <div class="card tab2-card">
             <div class="card-body">
-                @using (Html.BeginForm("Create", "Coupons", FormMethod.Post, new { @class = "needs-validation", novalidate = "" }))
-                {
+                <form asp-action="Create" method="post">
+                    @*  @Html.HiddenFor(model => model.Id) *@
+
                     <ul class="nav nav-tabs tab-coupon" id="myTab" role="tablist">
                         <li class="nav-item"><a class="nav-link active show" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a></li>
+                        <li class="nav-item"><a class="nav-link" id="restriction-tabs" data-bs-toggle="tab" href="#restriction" role="tab" aria-controls="restriction" aria-selected="false">Restriction</a></li>
+                        <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false">Usage</a></li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade active show" id="general" role="tabpanel" aria-labelledby="general-tab">
@@ -47,77 +50,127 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.CouponTitle, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="CouponTitle" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.CouponTitle, new { @class = "form-control", required = "required" })
-                                            @Html.ValidationMessageFor(model => model.CouponTitle, null, new { @class = "text-danger" })
+                                            <input asp-for="CouponTitle" class="form-control" />
+                                            <span asp-validation-for="CouponTitle" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.CouponCode, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="CouponCode" class="col-xl-3 col-md-4 control-label"></label>
+
+                                        <div class="col-md-4">
+                                            <input asp-for="CouponCode" class="form-control" />
+                                            <span asp-validation-for="CouponCode" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary" onclick="generateCouponCode()">Generate Code</button>
+
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label asp-for="StartDate" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.CouponCode, new { @class = "form-control", required = "required", @readonly = "readonly", id = "CouponCode" })
-                                            @Html.ValidationMessageFor(model => model.CouponCode, null, new { @class = "text-danger" })
-                                            <button type="button" class="btn btn-primary mt-2" onclick="generateCouponCode()">Generate Code</button>
+                                            <input asp-for="StartDate" class="form-control" />
+
+                                            <span asp-validation-for="StartDate" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.StartDate, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="EndDate" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.StartDate, "{0:yyyy-MM-dd}", new { @class = "datepicker-here form-control digits", data_language = "en", min = "1753-01-01", max = "9999-12-31", required = "required" })
-                                            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                                            <input asp-for="EndDate" class="form-control" />
+                                            <span asp-validation-for="EndDate" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.EndDate, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="Quantity" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.EndDate, "{0:yyyy-MM-dd}", new { @class = "datepicker-here form-control digits", data_language = "en", min = "1753-01-01", max = "9999-12-31", required = "required" })
-                                            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                                            <input asp-for="Quantity" class="form-control" />
+                                            <span asp-validation-for="Quantity" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.AllowFreeShipping, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="DiscountType" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.CheckBoxFor(model => model.AllowFreeShipping, new { @id = "checkbox-primary-1", @class = "checkbox checkbox-primary" })
-                                            @Html.Label("checkbox-primary-1", "Allow Free Shipping")
+                                            <input asp-for="DiscountType" class="form-control" readonly="true" />
+                                            @*    <select asp-for="DiscountType" class="custom-select w-100 form-control">
+                                            <option value="">"--Select--"</option>
+                                            <option value="Percent">Percent</option>
+                                            </select> *@
+                                            <span asp-validation-for="DiscountType" class="text-danger">Discount Type is required</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label asp-for="DiscountValue" class="col-xl-3 col-md-4 control-label"></label>
+                                        <div class="col-md-7">
+                                            <input asp-for="DiscountValue" class="form-control" />
+                                            <span asp-validation-for="DiscountValue" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        @Html.LabelFor(model => model.Quantity, new { @class = "col-xl-3 col-md-4" })
+                                        <label asp-for="IsEnabled" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.Quantity, new { @class = "form-control", required = "required", type = "number" })
-                                            @Html.ValidationMessageFor(model => model.Quantity, null, new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        @Html.LabelFor(model => model.DiscountType, new { @class = "col-xl-3 col-md-4" })
-                                        <div class="col-md-7">
-                                            @Html.DropDownListFor(model => model.DiscountType, new SelectList(new[] { "Percent", "Fixed" }), "--Select--", new { @class = "custom-select w-100 form-control", required = "required" })
-                                            @Html.ValidationMessageFor(model => model.DiscountType, null, new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        @Html.LabelFor(model => model.DiscountValue, new { @class = "col-xl-3 col-md-4" })
-                                        <div class="col-md-7">
-                                            @Html.TextBoxFor(model => model.DiscountValue, new { @class = "form-control", required = "required", type = "number" })
-                                            @Html.ValidationMessageFor(model => model.DiscountValue, null, new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        @Html.LabelFor(model => model.IsEnabled, new { @class = "col-xl-3 col-md-4" })
-                                        <div class="col-md-7">
-                                            @Html.CheckBoxFor(model => model.IsEnabled, new { @id = "checkbox-primary-2", @class = "checkbox checkbox-primary" })
-                                            @Html.Label("checkbox-primary-2", "Enable the Coupon")
+                                            <input asp-for="IsEnabled" id="checkbox-primary-2" class="checkbox checkbox-primary" type="checkbox" />
+                                            <label for="checkbox-primary-2">Enable the Coupon</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="restriction" role="tabpanel" aria-labelledby="restriction-tabs">
+                            <h4>Restriction</h4>
+                            @*    <div class="form-group row">
+                            @Html.LabelFor(model => model.Products, new { @class = "col-xl-3 col-md-4" })
+                            <div class="col-md-7">
+                            @Html.TextBoxFor(model => model.Products, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Products, null, new { @class = "text-danger" })
+                            </div>
+                            </div> *@
+                            @*   <div class="form-group row">
+                            @Html.LabelFor(model => model.Category, new { @class = "col-xl-3 col-md-4" })
+                            <div class="col-md-7">
+                            @Html.DropDownListFor(model => model.Category, new SelectList(new[] { "Electronics", "Clothes", "Shoes", "Digital" }), "--Select--", new { @class = "custom-select w-100 form-control" })
+                            @Html.ValidationMessageFor(model => model.Category, null, new { @class = "text-danger" })
+                            </div>
+                            </div> *@
+                            <div class="form-group row">
+                                <label asp-for="MinimumSpend" class="col-xl-3 col-md-4 control-label"></label>
+                                <div class="col-md-7">
+                                    <input asp-for="MinimumSpend" class="form-control" type="number" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label asp-for="MaximumSpend" class="col-xl-3 col-md-4 control-label"></label>
+                                <div class="col-md-7">
+                                    <input asp-for="MaximumSpend" class="form-control" type="number" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="usage" role="tabpanel" aria-labelledby="usage-tab">
+                            <h4>Usage</h4>
+                            <div class="form-group row">
+                                <label asp-for="PerLimit" class="col-xl-3 col-md-4 control-label"></label>
+                                <div class="col-md-7">
+                                    <input asp-for="PerLimit" class="form-control" type="number" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label asp-for="PerCustomer" class="col-xl-3 col-md-4 control-label"></label>
+                                <div class="col-md-7">
+                                    <input asp-for="PerCustomer" class="form-control" type="number" />
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                     <div class="pull-right mt-3">
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
-                }
+                </form>
             </div>
         </div>
     </div>
@@ -125,14 +178,19 @@
 </div>
 
 <script>
-    function generateCouponCode() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let code = '';
-        for (let i = 0; i < 10; i++) {
-            code += characters.charAt(Math.floor(Math.random() * characters.length));
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-        document.getElementById('CouponCode').value = code;
     }
+        function generateCouponCode() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 10; i++) {
+                code += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('CouponCode').value = code;
+        }
 
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr(".datepicker-here", {

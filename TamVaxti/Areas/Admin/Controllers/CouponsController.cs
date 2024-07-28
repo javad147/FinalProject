@@ -34,13 +34,13 @@ namespace TamVaxti.Areas.Admin.Controllers
         // GET: Admin/Coupons/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new Coupon() { DiscountType = "Percent", StartDate = DateTime.Now, EndDate = DateTime.Now });
         }
 
         // POST: Admin/Coupons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CouponTitle,CouponCode,StartDate,EndDate,AllowFreeShipping,Quantity,DiscountType,DiscountValue,IsEnabled,Products,Category,MinimumSpend,MaximumSpend,PerLimit,PerCustomer")] Coupon coupon)
+        public async Task<IActionResult> Create(Coupon coupon)
         {
             if (ModelState.IsValid)
             {
