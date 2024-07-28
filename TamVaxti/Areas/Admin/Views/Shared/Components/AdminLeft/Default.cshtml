@@ -4,7 +4,7 @@
 <div class="page-sidebar">
     <div class="main-header-left d-none d-lg-block">
         <div class="logo-wrapper">
-            <a href="index.html">
+            <a asp-controller="Dashboard" asp-action="Index">
                 <img class="d-none d-lg-block blur-up lazyloaded"
                      src="~/img/@Model.Company.LogoUrl" alt="@Model.Company.Name">
             </a>
@@ -90,6 +90,13 @@
                 </ul>
             </li>
             <li>
+                <a class="sidebar-header" asp-controller="Enquiry" asp-action="Index">
+                    <i data-feather="help-circle"></i>
+                    <span>Contact Form Enquiries</span>
+                    <i class="fa fa-angle-right pull-right"></i>
+                </a>
+            </li>
+            <li>
                 <a class="sidebar-header" href="javascript:void(0)">
                     <i data-feather="box"></i>
                     <span>Products</span>
@@ -114,7 +121,7 @@
                     <li>
                         <a asp-area="Admin" asp-controller="Product" asp-action="Index">
                             <i class="fa fa-circle"></i>List
-                        </a>   
+                        </a>
                     </li>
                     <li>
                         <a asp-area="Admin" asp-controller="Product" asp-action="Create">
