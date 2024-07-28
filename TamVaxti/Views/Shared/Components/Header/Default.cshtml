@@ -19,7 +19,7 @@
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
                         {
                             <li class="mobile-wishlist">
-                                <i class="fa fa-heart" aria-hidden="true"></i>
+                                <i data-feather="tools"></i>
                                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
                                     Go To Admin
                                 </a>
@@ -85,7 +85,7 @@
                 <div class="main-menu">
                     <div class="menu-left category-nav-right">
                         <div class="brand-logo">
-                            <a href="#">
+                            <a asp-controller="Home" asp-action="Index">
                                 <img src="~/img/@Model.Company.LogoUrl" alt="@Model.Company.Name"
                                      class="img-fluid blur-up lazyload">
                             </a>
