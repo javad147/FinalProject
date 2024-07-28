@@ -9,7 +9,7 @@
                         <div class="subscribe">
                             <div>
                                 <h4>KNOW IT ALL FIRST!</h4>
-                                <p>Never Miss Anything From Multikart By Signing Up To Our Newsletter.</p>
+                                <p>Never Miss Anything From @Model.Company.Name By Signing Up To Our Newsletter.</p>
                             </div>
                         </div>
                     </div>
@@ -34,11 +34,11 @@
                         <h4>about</h4>
                     </div>
                     <div class="footer-contant">
-                        <div class="footer-logo"><img src="../assets/images/icon/logo.png" alt=""></div>
-                        <p>
+                        <div class="footer-logo"><img src="~/img/@Model.Company.LogoUrl" alt="@Model.Company.Name"></div>
+                       @*  <p>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                             ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        </p>
+                        </p> *@
                         <div class="footer-social">
                             <ul>
                                 <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col offset-xl-1">
+               @*  <div class="col offset-xl-1">
                     <div class="sub-title">
                         <div class="footer-title">
                             <h4>my account</h4>
@@ -65,8 +65,8 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-                <div class="col">
+                </div> *@
+               @*  <div class="col">
                     <div class="sub-title">
                         <div class="footer-title">
                             <h4>why we choose</h4>
@@ -81,6 +81,21 @@
                             </ul>
                         </div>
                     </div>
+                </div> *@
+                <div class="col">
+                    <div class="sub-title">
+                        <div class="footer-title">
+                            <h4>Contact Information</h4>
+                        </div>
+                        <div class="footer-contant">
+                            <ul class="contact-list">
+                                
+                                <li><i class="fa fa-phone"></i>Call Us: @Model.Company.ContactNumber</li>
+                                <li><i class="fa fa-envelope"></i>Email Us: <a href="#">@Model.Company.EmailId</a></li>
+                                
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
                     <div class="sub-title">
@@ -90,11 +105,8 @@
                         <div class="footer-contant">
                             <ul class="contact-list">
                                 <li>
-                                    <i class="fa fa-map-marker"></i>Multikart Demo Store, Demo store India
-                                    345-659
+                                    <i class="fa fa-map-marker"></i>@Model.Company.AddressLineOne @Model.Company.AddressLineTwo
                                 </li>
-                                <li><i class="fa fa-phone"></i>Call Us: @Model.Company.ContactNumber</li>
-                                <li><i class="fa fa-envelope"></i>Email Us: <a href="#">@Model.Company.EmailId</a></li>
                                 <li><i class="fa fa-fax"></i>Fax: @Model.Company.Fax</li>
                             </ul>
                         </div>
@@ -109,7 +121,7 @@
                 <div class="col-xl-6 col-md-6 col-sm-12">
                     <div class="footer-end">
                         <p>
-                            <i class="fa fa-copyright" aria-hidden="true"></i> @DateTime.Now.Year powered by
+                            <i class="fa fa-copyright" aria-hidden="true"></i> @DateTime.Now.Year Powered by
                             @Model.Company.Name
                         </p>
                     </div>
