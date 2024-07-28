@@ -26,7 +26,10 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
                                                      .AddDefaultTokenProviders();
 
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/SignIn"; // Set your login URL here
+});
 builder.Services.Configure<IdentityOptions>(opt =>
 {
     opt.Password.RequiredUniqueChars = 1;

@@ -33,6 +33,7 @@
                                     Wishlist
                                 </a>
                             </li>
+
                         }
                         <li class="onhover-dropdown mobile-account">
                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -52,6 +53,9 @@
                                 {
                                     <li>
                                         <a asp-controller="Account" asp-action="SignIn">My Profile</a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Order" asp-action="OrderHistory">Order History</a>
                                     </li>
                                     <li>
                                         <form asp-controller="Account" asp-action="LogOut" method="post" id="logoutForm" class="d-inline">
@@ -167,7 +171,7 @@
                         <div>
                             <div class="icon-nav">
                                 <ul>
-                                    <li class="onhover-div mobile-search">
+                                    @* <li class="onhover-div mobile-search">
                                         <div>
                                             <img src="/assets/images/icon/layout4/search.png"
                                                  onclick="openSearch()" class="img-fluid blur-up lazyload" alt=""> <i class="ti-search" onclick="openSearch()"></i>
@@ -199,38 +203,7 @@
                                             </div>
                                         </div>
                                     </li>
-                                    <li class="onhover-div mobile-setting">
-                                        <div>
-                                            <img src="/assets/images/icon/layout4/setting.png"
-                                                 class="img-fluid blur-up lazyload" alt=""> <i class="ti-settings"></i>
-                                        </div>
-                                        <div class="show-div setting">
-                                            <h6>language</h6>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">english</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">french</a>
-                                                </li>
-                                            </ul>
-                                            <h6>currency</h6>
-                                            <ul class="list-inline">
-                                                <li>
-                                                    <a href="#">euro</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">rupees</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">pound</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">doller</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
+             *@
                                     <li class="onhover-div mobile-cart">
                                         <div href="javascript:void(0)" onclick="openCart()">
                                             <img src="/assets/images/icon/layout4/cart.png"

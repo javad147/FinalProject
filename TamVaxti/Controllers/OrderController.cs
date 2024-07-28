@@ -44,24 +44,58 @@ public class OrderController : Controller
             .ToListAsync();
 
         // Calculate ratings in-memory, filtering published reviews
-        var orderHistory = orders.OrderByDescending(o=>o.OrderId).Select(o => new OrderHistoryVM
+        var orderHistory = orders.OrderByDescending(o => o.OrderId).Select(o => new OrderHistoryVM
         {
             OrderNumber = o.OrderNumber,
             TotalAmount = o.TotalAmount,
             ActualDeliveryDate = o.ActualDeliveryDate,
-            Products = o.OrderProductDetails.Select(op => new ProductVM
-            {
-                Name = op.Product.Name,
-                Image = $"/img/product/{op.Product.MainImage}",
-                Rating = RoundRating(_context.Product_Reviews
-                    .Where(pr => pr.ProductId == op.ProductId && pr.Status)
-                    .Average(pr => (double?)pr.Rating) ?? 0),
-                Quantity = op.Quantity,
-                Amount = op.Amount
-            }).ToList()
+            //Products = o.OrderProductDetails.Select(op =>
+            //{
+            //    var product = op.Product;
+            //    var imagePath = $"/img/product/{product.MainImage}";
+
+            //    // Log the product name and image path for debugging
+            //    Console.WriteLine($"Product: {product.Name}, Image Path: {imagePath}");
+
+            //    return new ProductVM
+            //    {
+            //        Name = product.Name,
+            //        Image = op.Product.MainImage,
+            //        Rating = RoundRating(_context.Product_Reviews
+            //            .Where(pr => pr.ProductId == op.ProductId && pr.Status)
+            //            .Average(pr => (double?)pr.Rating) ?? 0),
+            //        Quantity = op.Quantity,
+            //        Amount = op.Amount
+            //    };
+            //}).ToList()
         }).ToList();
 
-        return View(orderHistory);
+        List<OrderHistoryVM> ord = new List<OrderHistoryVM>();
+        foreach (var o in orders)
+        {
+            OrderHistoryVM mod = new OrderHistoryVM();
+            mod.OrderNumber = o.OrderNumber;
+            mod.TotalAmount = o.TotalAmount;
+            mod.ActualDeliveryDate = o.ActualDeliveryDate;
+            mod.Products = new List<ProductVM>();
+            foreach (var od in o.OrderProductDetails)
+            {
+                var product = od.Product;
+                mod.Products.Add(new ProductVM()
+                {
+                    Name = product.Name,
+                    Image = product.MainImage,
+                    Rating = RoundRating(_context.Product_Reviews
+                        .Where(pr => pr.ProductId == od.ProductId && pr.Status)
+                       .Average(pr => (double?)pr.Rating) ?? 0),
+                    Quantity = od.Quantity,
+                    Amount = od.Amount
+                });
+            }
+            ord.Add(mod);
+        }
+
+        return View(ord);
     }
 
     private static int RoundRating(double rating)
@@ -73,7 +107,7 @@ public class OrderController : Controller
     {
         var basketProducts = await GetOrderProducts();
 
-        if(basketProducts.Count == 0) return RedirectToAction("Cart", "Basket");
+        if (basketProducts.Count == 0) return RedirectToAction("Cart", "Basket");
 
         var user = await GetUser();
 
@@ -150,7 +184,7 @@ public class OrderController : Controller
             ProductId = item.Product.Id,
             Quantity = item.Quantity,
             Amount = item.SubTotal,
-            
+
         }))
         {
             _context.OrderProductDetails.Add(orderProductDetail);

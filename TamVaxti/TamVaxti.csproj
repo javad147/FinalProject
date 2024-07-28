@@ -25,10 +25,9 @@
   <ItemGroup>
     <Folder Include="wwwroot\admin\" />
     <Folder Include="wwwroot\assets\admin\" />
+    <Folder Include="wwwroot\img\about\" />
     <Folder Include="wwwroot\img\attributes\" />
-    <Folder Include="wwwroot\img\about\" />
     <Folder Include="wwwroot\img\sliders\" />
-    <Folder Include="wwwroot\img\about\" />
     <Folder Include="wwwroot\img\Users\" />
     <Folder Include="wwwroot\img\Blog\" />
     <Folder Include="Areas\Admin\Views\Coupons\" />

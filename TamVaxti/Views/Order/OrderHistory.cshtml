@@ -52,7 +52,7 @@
                                     <div class="product-card">
                                         <div class="img-wrapper">
                                             <div class="front">
-                                                <a href="#"><img src="@product.Image" alt="@product.Name" class="img-fluid product-image" /></a>
+                                                <a href="#"><img src="~/img/@product.Image" alt="@product.Name" class="img-fluid product-image" /></a>
                                             </div>
                                         </div>
                                         <div class="product-info">
@@ -70,7 +70,7 @@
                                                 }
                                             </div>
                                             <h6>@product.Name</h6>
-                                            <p>Quantity: @product.Quantity | Amount: $@product.Amount</p>
+                                            <p>Quantity: @product.Quantity | Amount: $@product.Amount | @product.Image</p>
                                         </div>
                                     </div>
                                 }
