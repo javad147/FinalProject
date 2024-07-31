@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "SuperAdmin, Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class DashboardController : Controller
     {
         private AppDbContext _context;
@@ -80,6 +80,12 @@ namespace TamVaxti.Areas.Admin.Controllers
             };
 
             return Ok(JsonSerializer.Serialize(model));
+        }
+
+        [HttpGet]
+        public ActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
