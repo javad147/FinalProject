@@ -52,7 +52,7 @@ namespace TamVaxti.Controllers
                 return View(request);
             }
 
-            await _userManager.AddToRoleAsync(user, nameof(Roles.SuperAdmin));
+            await _userManager.AddToRoleAsync(user, nameof(Roles.Member));
 
             return RedirectToAction("Index","Home");   
         }
