@@ -31,6 +31,7 @@
     <Folder Include="wwwroot\img\Users\" />
     <Folder Include="wwwroot\img\Blog\" />
     <Folder Include="Areas\Admin\Views\Coupons\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,5 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Areas\Admin\Views\Coupons\" />
+    <None Remove="Middleware\" />
   </ItemGroup>
 </Project>
