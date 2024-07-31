@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class CategoryController : Controller
     {
         private readonly AppDbContext _context;

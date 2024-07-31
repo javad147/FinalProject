@@ -8,10 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using TamVaxti.ViewModels.Orders;
 using TamVaxti.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using TamVaxti.Helpers.Enums;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class OrderController : Controller
     {
         private AppDbContext _context;

@@ -6,10 +6,13 @@ using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels.Company;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.AspNetCore.Authorization;
+using TamVaxti.Helpers.Enums;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class CompanyController : Controller
     {
         // GET: CompanyController

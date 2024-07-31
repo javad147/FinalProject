@@ -5,10 +5,13 @@ using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using TamVaxti.Helpers.Enums;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class AttributeController : Controller
     {
 

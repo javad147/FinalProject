@@ -5,10 +5,13 @@ using TamVaxti.ViewModels.Sliders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using TamVaxti.Helpers.Enums;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class SliderController : Controller
     {
         private readonly AppDbContext _context;

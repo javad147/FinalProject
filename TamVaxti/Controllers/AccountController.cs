@@ -116,5 +116,11 @@ namespace TamVaxti.Controllers
             }
             return Ok();
         }
+
+        [HttpGet]
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

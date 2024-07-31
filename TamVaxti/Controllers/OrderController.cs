@@ -31,6 +31,7 @@ public class OrderController : Controller
         _productService = productService;
     }
 
+    [Authorize]
     public async Task<IActionResult> OrderHistory()
     {
         AppUser user = new();
@@ -125,6 +126,7 @@ public class OrderController : Controller
 
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> SubmitOrder([FromBody] OrderCreateViewModel orderVM)
     {
         // Validate the orderViewModel data

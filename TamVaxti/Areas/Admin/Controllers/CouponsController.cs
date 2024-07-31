@@ -4,10 +4,13 @@ using TamVaxti.Data;
 using TamVaxti.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using TamVaxti.Helpers.Enums;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class CouponsController : Controller
     {
         private readonly AppDbContext _context;
