@@ -64,6 +64,7 @@ builder.Services.AddScoped<IAboutUsService, AboutUsService>();
 builder.Services.AddScoped<IUserWishList, UserWishListService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
 
 var app = builder.Build();
 app.UseMiddleware<UnAuthorizedRedirect>();

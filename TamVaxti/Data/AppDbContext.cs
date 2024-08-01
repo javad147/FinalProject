@@ -40,8 +40,8 @@ namespace TamVaxti.Data
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<SkuStock> SkuStocks { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Enquiry> Enquiries { get; set; } 
-
+        public DbSet<Enquiry> Enquiries { get; set; }
+        public DbSet<Brand> Brand { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

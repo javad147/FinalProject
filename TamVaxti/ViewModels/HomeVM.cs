@@ -13,6 +13,7 @@ namespace TamVaxti.ViewModels
         public List<Position> Positions { get; set; }
         public List<Blog> Blogs { get; set; }
         public List<SliderVM> InstaSliders { get; set; }
+        public List<Brand> Brands { get; set; }
 
         public List<SubCategoryVM> SubCategories { get; set; }
     }
