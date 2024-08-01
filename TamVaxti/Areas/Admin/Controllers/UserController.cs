@@ -317,6 +317,35 @@ namespace TamVaxti.Areas.Admin.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Customer()
+        {
+            List<UserRoleVM> userRoles = new();
+            var users = await _userManager.Users.ToListAsync();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
+                {
+                    continue;
+                }
+                string rolesStr = string.Join(",", roles.ToArray());
+
+                userRoles.Add(new UserRoleVM
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Roles = rolesStr,
+                    ProfileImageUrl = user.ProfileImageUrl
+                });
+            }
+            return View(userRoles);
+        }
+
+
         private async Task<string> SaveProfileImage(IFormFile file)
         {
             if (file != null && file.Length > 0)
