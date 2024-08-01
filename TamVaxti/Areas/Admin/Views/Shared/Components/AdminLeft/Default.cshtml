@@ -87,13 +87,23 @@
                             <i class="fa fa-circle"></i>Blog List
                         </a>
                     </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Blog" asp-action="Comment">
+                            <i class="fa fa-circle"></i>Comment
+                        </a>
+                    </li>
                 </ul>
+            </li>
+            <li>
+                <a class="sidebar-header" asp-controller="Product" asp-action="ProductReview">
+                    <i data-feather="help-circle"></i>
+                    <span>Product Reviews</span>
+                </a>
             </li>
             <li>
                 <a class="sidebar-header" asp-controller="Enquiry" asp-action="Index">
                     <i data-feather="help-circle"></i>
-                    <span>Contact Form Enquiries</span>
-                    <i class="fa fa-angle-right pull-right"></i>
+                    <span>Enquiries</span>
                 </a>
             </li>
             <li>
@@ -111,8 +121,8 @@
                     </li>
                     <li>
                         @*  <a href="category-sub.html">
-                        <i class="fa fa-circle"></i>Sub Category
-                        </a>*@
+                    <i class="fa fa-circle"></i>Sub Category
+                    </a>*@
                         <a asp-area="Admin" asp-controller="SubCategory" asp-action="Index">
                             <i class="fa fa-circle"></i>SubCategory
                         </a>
@@ -165,27 +175,31 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a class="sidebar-header" href="javascript:void(0)">
-                    <i data-feather="user-plus"></i>
-                    <span>Users</span>
-                    <i class="fa fa-angle-right pull-right"></i>
-                </a>
-                <ul class="sidebar-submenu">
-                    <li>
-                        <a asp-area="Admin" asp-controller="User" asp-action="Index">
-                            <i class="fa fa-circle"></i>
-                            <span>User List</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-area="Admin" asp-controller="User" asp-action="Create">
-                            <i class="fa fa-circle"></i>
-                            <span>Create User</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+
+                <li>
+                    <a class="sidebar-header" href="javascript:void(0)">
+                        <i data-feather="user-plus"></i>
+                        <span>Users</span>
+                        <i class="fa fa-angle-right pull-right"></i>
+                    </a>
+                    <ul class="sidebar-submenu">
+                        <li>
+                            <a asp-area="Admin" asp-controller="User" asp-action="Index">
+                                <i class="fa fa-circle"></i>
+                                <span>User List</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-area="Admin" asp-controller="User" asp-action="Create">
+                                <i class="fa fa-circle"></i>
+                                <span>Create User</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            }
             <li>
                 <a class="sidebar-header" href="javascript:void(0)">
                     <i data-feather="settings"></i><span>Settings</span><i class="fa fa-angle-right pull-right"></i>
