@@ -52,6 +52,7 @@ namespace TamVaxti.Controllers
 
             List<SliderVM> sliders = await _context.Sliders
                 .Where(s => !s.SoftDeleted)
+                .OrderBy(s => s.SliderNumber)
                 .Select(s => new SliderVM
                 {
                     Id = s.Id,
