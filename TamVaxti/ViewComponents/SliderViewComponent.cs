@@ -17,6 +17,7 @@ namespace TamVaxti.ViewComponents
         {
             var sliderData  = await _context.Sliders
                 .Where(s => !s.SoftDeleted)
+                .OrderBy(s => s.SliderNumber)
                 .Select(s => new SliderVM
                 {
                     Id = s.Id,
