@@ -3,7 +3,7 @@
 *@
 @{
 }
-
+@model TamVaxti.Models.Company
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
@@ -30,7 +30,7 @@
     <div class="container">
         <div class="row section-b-space">
             <div class="col-lg-7 map">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1605.811957341231!2d25.45976406005396!3d36.3940974010114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1550912388321"
+                <iframe src="@Model.ContactMapUrl"
                         allowfullscreen></iframe>
             </div>
             <div class="col-lg-5">
@@ -43,8 +43,8 @@
                                 <h6>Contact Us</h6>
                             </div>
                             <div class="media-body">
-                                <p>+91 123 - 456 - 7890</p>
-                                <p>+86 163 - 451 - 7894</p>
+                                <p>@Model.ContactNumber</p>
+                                <p>@Model.AlternateNumber</p>
                             </div>
                         </li>
                         <li>
@@ -53,19 +53,19 @@
                                 <h6>Address</h6>
                             </div>
                             <div class="media-body">
-                                <p>ABC Complex,Near xyz, New York</p>
-                                <p>USA 123456</p>
+                                <p>@Model.AddressLineOne</p>
+                                <p>@Model.AddressLineTwo</p>
                             </div>
                         </li>
                         <li>
                             <div class="contact-icon">
                                 <img src="~/assets/images/icon/email.png"
                                      alt="Generic placeholder image">
-                                <h6>Address</h6>
+                                <h6>Email</h6>
                             </div>
                             <div class="media-body">
-                                <p>Support@Shopcart.com</p>
-                                <p>info@shopcart.com</p>
+                                <p>@Model.EmailId</p>
+                                <p>@Model.SupportEmailId</p>
                             </div>
                         </li>
                         <li>
@@ -74,8 +74,8 @@
                                 <h6>Fax</h6>
                             </div>
                             <div class="media-body">
-                                <p>Support@Shopcart.com</p>
-                                <p>info@shopcart.com</p>
+                                <p>@Model.Fax</p>
+                                <p></p>
                             </div>
                         </li>
                     </ul>
@@ -93,7 +93,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" maxlength="50"  name="LastName" id="lastName" placeholder="Enter Your last name" required>
+                            <input type="text" class="form-control" maxlength="50" name="LastName" id="lastName" placeholder="Enter Your last name" required>
                         </div>
                         <div class="col-md-6">
                             <label for="phoneNumber">Phone Number</label>

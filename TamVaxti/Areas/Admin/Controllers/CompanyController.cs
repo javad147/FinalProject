@@ -45,6 +45,12 @@ namespace TamVaxti.Areas.Admin.Controllers
                 companyViewModel.AlternateNumber = company.AlternateNumber;
                 companyViewModel.SupportEmailId = company.SupportEmailId;
                 companyViewModel.EmailId = company.EmailId;
+                companyViewModel.FacebookUrl = company.FacebookUrl;
+                companyViewModel.InstagramUrl = company.InstagramUrl;
+                companyViewModel.RssUrl = company.RssUrl;
+                companyViewModel.XUrl = company.XUrl;
+                companyViewModel.GoogleUrl = company.GoogleUrl;
+                companyViewModel.ContactMapUrl = company.ContactMapUrl;
             }
             return View(companyViewModel);
         }
@@ -103,6 +109,12 @@ namespace TamVaxti.Areas.Admin.Controllers
             company.AlternateNumber = companyVm.AlternateNumber;
             company.SupportEmailId = companyVm.SupportEmailId;
             company.EmailId = companyVm.EmailId;
+            company.FacebookUrl = companyVm.FacebookUrl;
+            company.InstagramUrl = companyVm.InstagramUrl;
+            company.RssUrl = companyVm.RssUrl;
+            company.XUrl = companyVm.XUrl;
+            company.GoogleUrl = companyVm.GoogleUrl;
+            company.ContactMapUrl = companyVm.ContactMapUrl;
 
             return company;
         }

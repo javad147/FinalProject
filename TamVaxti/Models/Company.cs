@@ -11,5 +11,11 @@
         public string AlternateNumber { get; set; }
         public string SupportEmailId { get; set; }
         public string EmailId { get; set; }
+        public string InstagramUrl { get; set; }
+        public string GoogleUrl { get; set; }
+        public string XUrl { get; set; }
+        public string RssUrl { get; set; }
+        public string FacebookUrl { get; set; }
+        public string ContactMapUrl { get; set; }  
     }
 }

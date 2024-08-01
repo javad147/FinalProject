@@ -27,6 +27,13 @@ namespace TamVaxti.ViewModels.Company
         public string EmailId { get; set; }
         public bool SoftDeleted { get; set; }
 
+        public string InstagramUrl { get; set; }
+        public string GoogleUrl { get; set; }
+        public string XUrl { get; set; }
+        public string RssUrl { get; set; }
+        public string FacebookUrl { get; set; }
+        public string ContactMapUrl { get; set; }
+
         public IFormFile ImageFile { get; set; } // For file upload
     }
 }

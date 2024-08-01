@@ -16,7 +16,7 @@
                aria-hidden="true"></i>
         </a>
         <div class="sidebar-user">
-            <img class="img-60" src="~/img/users/@Model.UserInfo.ProfileImageURL" alt="@Model.UserInfo.Name" onerror="this.onerror=null; this.src='img/users/user3.jpg';">
+            <img class="img-60" src="~/img/users/@Model.UserInfo.ProfileImageURL" alt="@Model.UserInfo.Name" onerror="this.onerror=null; this.src='/img/users/user3.jpg';">
             <div>
                 <h6 class="f-14">@Model.UserInfo.Name</h6>
                 <p>@Model.UserInfo.Role</p>
@@ -45,6 +45,26 @@
                     <li>
                         <a asp-area="Admin" asp-controller="Slider" asp-action="Create">
                             <i class="fa fa-circle"></i>Add Slider
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="sidebar-header" href="javascript:void(0)">
+                    <i data-feather="tag"></i>
+                    <span>Brand</span>
+                    <i class="fa fa-angle-right pull-right"></i>
+                </a>
+                <ul class="sidebar-submenu">
+
+                    <li>
+                        <a asp-area="Admin" asp-controller="Brand" asp-action="Index">
+                            <i class="fa fa-circle"></i>Brand List
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Brand" asp-action="Create">
+                            <i class="fa fa-circle"></i>Add Brand
                         </a>
                     </li>
                 </ul>
@@ -185,6 +205,12 @@
                         <i class="fa fa-angle-right pull-right"></i>
                     </a>
                     <ul class="sidebar-submenu">
+                        <li>
+                            <a asp-area="Admin" asp-controller="User" asp-action="Customer">
+                                <i class="fa fa-circle"></i>
+                                <span>Customer List</span>
+                            </a>
+                        </li>
                         <li>
                             <a asp-area="Admin" asp-controller="User" asp-action="Index">
                                 <i class="fa fa-circle"></i>

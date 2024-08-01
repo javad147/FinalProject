@@ -1,6 +1,7 @@
 ﻿using TamVaxti.Models;
 using TamVaxti.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using TamVaxti.Services;
 
 namespace TamVaxti.Controllers
 {
@@ -9,17 +10,20 @@ namespace TamVaxti.Controllers
 
 
         private readonly IContactUsService _contactUsService;
+        private readonly ICompanyService _companyService;
 
 
-        public ContactUsController(IContactUsService contactUsService)
+        public ContactUsController(IContactUsService contactUsService, ICompanyService companyService)
         {
             _contactUsService = contactUsService;
+            _companyService = companyService;
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var companyModel = await _companyService.GetFirstOrDefaultCompany();
+            return View(companyModel);
         }
 
 

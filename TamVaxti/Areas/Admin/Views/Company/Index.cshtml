@@ -85,7 +85,36 @@
                                 </label>
                                 @Html.EditorFor(model => model.AddressLineTwo, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
-
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    Facebook Url
+                                </label>
+                                @Html.EditorFor(model => model.FacebookUrl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    Instagram Url
+                                </label>
+                                @Html.EditorFor(model => model.InstagramUrl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    Google Url
+                                </label>
+                                @Html.EditorFor(model => model.GoogleUrl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    Rss Url
+                                </label>
+                                @Html.EditorFor(model => model.RssUrl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom02" class="col-form-label">
+                                    X (Twitter) Url
+                                </label>
+                                @Html.EditorFor(model => model.XUrl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,6 +151,11 @@
                                 @Html.EditorFor(model => model.SupportEmailId, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
 
+                            <div class="form-group">
+                            <label class="col-form-label">Contact Map Url</label>
+                            @Html.EditorFor(model => model.ContactMapUrl, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                            
                         </div>
                     </div>
                 </div>
