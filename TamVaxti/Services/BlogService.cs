@@ -24,7 +24,7 @@ namespace TamVaxti.Services
 
         public async Task CreateAsync(BlogCreateVM blogCreateVM)
         {
-            await _context.Blogs.AddAsync(new Blog { Title = blogCreateVM.Title, Description = blogCreateVM.Description, Image = blogCreateVM.Image ,Uname= blogCreateVM.Uname });
+            await _context.Blogs.AddAsync(new Blog { Title = blogCreateVM.Title, Description = blogCreateVM.Description, Image = blogCreateVM.Image ,Uname= blogCreateVM.Uname,Date = blogCreateVM.Date });
             await _context.SaveChangesAsync();
         }
 
@@ -83,11 +83,32 @@ namespace TamVaxti.Services
         {
             return await _context.Comments.CountAsync(c => c.BlogId == blogId);
         }
-
+        public async Task<Comment> GetCommentById(int commentId)
+        {
+                return await _context.Comments.SingleOrDefaultAsync(m => m.Id == commentId);
+        }
+        public async Task<List<Comment>> GetCommentOfBlog(int blogId)
+        {
+            return await _context.Comments.Where(m => m.Status).ToListAsync();
+        }
+        public async Task<List<Comment>> GetAllCommentOfBlogs()
+        {
+            return await _context.Comments.Include(b=>b.Blog).ToListAsync();
+        }
+        public async Task UpdateComments(Comment comment)
+        {
+            _context.Comments.Update(comment);
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteComment(Comment comment)
+        {
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+        }
         public async Task<IEnumerable<Comment>> GetCommentsByBlogIdAsync(int blogId)
         {
             return await _context.Comments
-                                 .Where(c => c.BlogId == blogId)
+                                 .Where(c => c.BlogId == blogId && c.Status)
                                  .ToListAsync();
         }
 

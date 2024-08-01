@@ -1,4 +1,5 @@
-﻿using TamVaxti.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using TamVaxti.Models;
 using TamVaxti.ViewModels.Blogs;
 
 namespace TamVaxti.Services.Interfaces
@@ -21,5 +22,10 @@ namespace TamVaxti.Services.Interfaces
         Task<IEnumerable<Comment>> GetCommentsByBlogIdAsync(int blogId);
         Task<List<Blog>> GetPopularBlogsAsync(int count);
         Task<List<Blog>> GetRecentBlogsAsync(int count);
+        Task<List<Comment>> GetCommentOfBlog(int blogId);
+        Task<List<Comment>> GetAllCommentOfBlogs();
+        Task<Comment> GetCommentById(int commentId);
+        Task UpdateComments(Comment comment);
+        Task DeleteComment(Comment comment);
     }
 }

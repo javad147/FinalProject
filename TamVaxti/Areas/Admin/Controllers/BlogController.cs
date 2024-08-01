@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using TamVaxti.Helpers.Enums;
+using Microsoft.EntityFrameworkCore;
+using TamVaxti.ViewModels.Products;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
@@ -78,6 +80,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             blog.Uname= user.UserName;
             blog.Date = DateTime.Now;
             await _blogService.CreateAsync(blog);
+            TempData["messageType"] = "success";
+            TempData["message"] = $"Blog created successfully";
             return RedirectToAction("Index");
         }
 
@@ -95,11 +99,22 @@ namespace TamVaxti.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id is null) return BadRequest();
 
-            await _blogService.DeleteAsync((int)id);
+            int blogCount = await _blogService.GetCommentCountAsync(id);
+            if(blogCount>0)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = $"Comments for this blog exist please delete the comment of blog having id - {id} from comment menu.";
+            }
+            else
+            {
+                await _blogService.DeleteAsync((int)id);
+                TempData["messageType"] = "success";
+                TempData["message"] = $"Blog deleted successfully";
+            }
+           
             return RedirectToAction(nameof(Index));
         }
 
@@ -145,6 +160,51 @@ namespace TamVaxti.Areas.Admin.Controllers
             }
 
             await _blogService.EditAsync(blog, blogEdit);
+            TempData["messageType"] = "success";
+            TempData["message"] = $"Blog updated successfully";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Comment()
+        {
+            var blogsComments = await _blogService.GetAllCommentOfBlogs();
+            return View(blogsComments);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCommentStatus(int CommentId, string PublishStatus)
+        {
+            var comment = await _blogService.GetCommentById(CommentId);
+
+            if (comment != null)
+            {
+                comment.Status = Convert.ToBoolean(PublishStatus.ToLower());
+                await _blogService.UpdateComments(comment);
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var comment = await _blogService.GetCommentById(id);
+            if (comment != null)
+            {
+                await _blogService.DeleteComment(comment);
+                TempData["messageType"] = "success";
+                TempData["message"] = $"Comment deleted successfully";
+            }
+            else
+            {
+               
+                TempData["messageType"] = "error";
+                TempData["message"] = $"Comments doesnot exists or already deleted";
+            }
             return RedirectToAction(nameof(Index));
         }
     }
