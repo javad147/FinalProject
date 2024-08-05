@@ -17,7 +17,7 @@
                 <li>
                     <div class="media">
                         <a href="#">
-                            <img alt="" class="me-3" src="/img/@cartItem.Product.ProductImages.FirstOrDefault(x => x.IsMain)?.ImageUrl">
+                            <img alt="" class="me-3" src="/img/product/@cartItem.Product.MainImage">
                         </a>
                         <div class="media-body">
                             <a href="#">
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="close-circle">
-                        <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.Id">
+                        <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId">
                             <i class="ti-trash"></i>
                         </a>
                     </div>

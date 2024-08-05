@@ -38,16 +38,17 @@ public class FooterViewComponent : ViewComponent
         var companyModel = await _companyService.GetFirstOrDefaultCompany();
        
 
-        var basketProducts = new Dictionary<int, int>();
+        var basketProducts = new Dictionary<long, int>();
 
         if (_accessor.HttpContext.Request.Cookies["cart"] is not null)
         {
-            basketProducts = JsonConvert.DeserializeObject<Dictionary<int, int>>(_accessor.HttpContext.Request.Cookies["cart"]);
+            basketProducts = JsonConvert.DeserializeObject<Dictionary<long, int>>(_accessor.HttpContext.Request.Cookies["cart"]);
         }
 
-        var products = await _productService.GetAllWithImagesAsync();
+        List<Product> products = await _productService.GetAllWithSkusAsync();
+        var result = _productService.GetProductSkuListVM(products);
         var cart = basketProducts.Select(basketProduct =>
-            new BasketVM { Product = products.FirstOrDefault(m => m.Id == basketProduct.Key), Quantity = basketProduct.Value, SubTotal = basketProduct.Value * products.FirstOrDefault(m => m.Id == basketProduct.Key)?.Price ?? 0 }).ToList();
+            new BasketVM { Product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key), Quantity = basketProduct.Value, SubTotal = basketProduct.Value * result.FirstOrDefault(m => m.SkuId == basketProduct.Key)?.Price ?? 0 }).ToList();
 
 
         FooterVM response = new()
