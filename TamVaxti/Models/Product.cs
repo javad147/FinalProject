@@ -13,9 +13,11 @@ namespace TamVaxti.Models
         
         public decimal DiscountPrice { get; set; }
         public int CategoryId { get; set; }
+        public int SubcategoryId { get; set; }
         public int StockStatusId { get; set; }
         public string MainImage { get; set; }
         public Category Category { get; set; }
+        public SubCategory SubCategory { get; set; }
         public ICollection<ProductImage> ProductImages { get; set; }
         public ICollection<OrderProductDetail> OrderProductDetails { get; set; }
         public List<SKU> SKUs { get; set; }

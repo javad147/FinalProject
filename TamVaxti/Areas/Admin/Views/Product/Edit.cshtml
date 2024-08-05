@@ -45,13 +45,13 @@
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="CategoryId" class="control-label"></label>
-                                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.categories"></select>
-                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                    <label asp-for="SubcategoryId" class="control-label"></label>
+                                    <select asp-for="SubcategoryId" class="form-control" asp-items="ViewBag.subcategories"></select>
+                                    <span asp-validation-for="SubcategoryId" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <label>Main Image</label>
-                                    <input type="file" name="MainImageFile" class="form-control" />
+                                    <input type="file" name="MainImageFile" class="form-control" accept="image/*" />
                                     @if (!string.IsNullOrEmpty(Model.MainImage))
                                     {
                                         <img src="~/img/product/@Model.MainImage" alt="Main Image" width="200" />
@@ -97,7 +97,7 @@
                                                     <span asp-validation-for="@Model.SKUs[i].Quantity" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input type="file" name="SKUs[@i].ImageUrl1File" class="form-control" />
+                                                    <input type="file" name="SKUs[@i].ImageUrl1File" class="form-control" accept="image/*" />
                                                     @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl1))
                                                     {
                                                         <img src="~/img/product/@Model.SKUs[i].ImageUrl1" alt="Image 1" width="70" />
@@ -105,7 +105,7 @@
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl1" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input type="file" name="SKUs[@i].ImageUrl2File" class="form-control" />
+                                                    <input type="file" name="SKUs[@i].ImageUrl2File" class="form-control" accept="image/*" />
                                                     @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl2))
                                                     {
                                                         <img src="~/img/product/@Model.SKUs[i].ImageUrl2" alt="Image 2" width="70" />
@@ -113,7 +113,7 @@
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl2" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input type="file" name="SKUs[@i].ImageUrl3File" class="form-control" />
+                                                    <input type="file" name="SKUs[@i].ImageUrl3File" class="form-control" accept="image/*" />
                                                     @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl3))
                                                     {
                                                         <img src="~/img/product/@Model.SKUs[i].ImageUrl3" alt="Image 3" width="70" />
@@ -121,7 +121,7 @@
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl3" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input type="file" name="SKUs[@i].ImageUrl4File" class="form-control" />
+                                                    <input type="file" name="SKUs[@i].ImageUrl4File" class="form-control" accept="image/*" />
                                                     @if (!string.IsNullOrEmpty(Model.SKUs[i].ImageUrl4))
                                                     {
                                                         <img src="~/img/product/@Model.SKUs[i].ImageUrl4" alt="Image 4" width="70" />
@@ -140,11 +140,7 @@
                                                         <select asp-for="@Model.SKUs[i].AttributeOptionSKUs[skuAttributeIndex].AttributeOptionId" asp-items="ViewBag.AttributeList[j].AttributeOptions" class="form-control">
                                                             <option value="0">Select @ViewBag.AttributeList[j].Name</option>
                                                         </select>
-                                                            @*@Html.DropDownListFor(
-                                                                                m => skuAttribute!= null ? skuAttribute.AttributeOptionId : 0 ,//Model.SKUs[i].SKUAttributes[attribute.Id].AttributeOptionId,
-                                                                                attribute.AttributeOptions,
-                                                                                "Select an option",
-                                                                                new { @class = "form-control" })*@
+                                                        <span asp-validation-for="@Model.SKUs[i].AttributeOptionSKUs[j].AttributeOptionId" class="text-danger"></span>
                                                     </td>
                                                 }
                                                 <td>
@@ -200,10 +196,10 @@
             cell1.innerHTML = '<input type="text" name="SKUs[' + rowCount + '].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />';
             cell2.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Price" class="form-control" data-val="true" data-val-required="Price is required." />';
             cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
-            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1File" class="form-control" />';
-            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2File" class="form-control" />';
-            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3File" class="form-control" />';
-            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4File" class="form-control" />';
+            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1File" class="form-control" accept="image/*" />';
+            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2File" class="form-control" accept="image/*" />';
+            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3File" class="form-control" accept="image/*" />';
+            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4File" class="form-control" accept="image/*" />';
 
             var items = JSON.parse(attributes);
 
@@ -229,8 +225,12 @@
             var removeButtons = document.getElementsByClassName('remove-sku-btn');
             for (var i = 0; i < removeButtons.length; i++) {
                 removeButtons[i].addEventListener('click', function () {
-                    var row = this.parentNode.parentNode;
-                    row.parentNode.removeChild(row);
+                    if (removeButtons.length == 1) {
+                        alert("There must be at least one SKU in the product.");
+                    } else {
+                        var row = this.parentNode.parentNode;
+                        row.parentNode.removeChild(row);
+                    }
                 });
             }
         });

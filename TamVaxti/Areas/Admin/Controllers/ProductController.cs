@@ -161,7 +161,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
 
-            ViewBag.categories = await _subCategoryService.GetAllBySelectedAsync();
+            ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
             return View(model);
         }
 
@@ -169,14 +169,34 @@ namespace TamVaxti.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductCreateVM request)
         {
+            var Attributes = await _productService.GetAttributes();
+            var AttributeOptions = await _productService.GetAttributeOptions();
+            List<ProductAttributeVM> AttributeList = new List<ProductAttributeVM>();
+            foreach (var option in Attributes)
+            {
+                var res = new ProductAttributeVM
+                {
+                    Id = option.Id,
+                    Name = option.Name,
+                    AttributeOptions = AttributeOptions.Where(ao => ao.AttributeId == option.Id)
+                    .Select(ao => new SelectListItem { Value = ao.Id.ToString(), Text = ao.Value }).ToList()
+                };
+                AttributeList.Add(res);
+                //request.SKUs[0].SKUAttributes.Add(new AttributeOptionSKUVM());
+            }
+            ViewBag.AttributeList = AttributeList;
+            ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
+            ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
 
             if (ModelState.IsValid)
             {
+                var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);
                 Product product = new()
                 {
                     Name = request.Name,
                     Description = request.Description,
-                    CategoryId = request.CategoryId
+                    CategoryId = category.CategoryId,
+                    SubcategoryId = request.SubcategoryId
                 };
 
                 if (request.MainImage != null)
@@ -311,43 +331,12 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }
             }
 
-            var Attributes = await _productService.GetAttributes();
-            var AttributeOptions = await _productService.GetAttributeOptions();
-
-            List<ProductAttributeVM> AttributeList = new List<ProductAttributeVM>();
-
-            var AddAttributeOptions = false;
-            if (product.SKUs.Count <= 0)
-            {
-                AddAttributeOptions = true;
-                product.SKUs = new List<SKU> { new SKU() };
-                product.SKUs[0].AttributeOptionSKUs = new List<AttributeOptionSKU>();
-            }
-
-            for (int i = 0; i < Attributes.Count; i++)
-            {
-                var option = Attributes[i];
-                    var res = new ProductAttributeVM
-                    {
-                        Id = option.Id,
-                        Name = option.Name,
-                        AttributeOptions = AttributeOptions.Where(ao => ao.AttributeId == option.Id)
-                        .Select(ao => new SelectListItem { Value = ao.Id.ToString(), Text = ao.Value }).ToList()
-                    };
-
-                AttributeList.Add(res);
-
-                if (AddAttributeOptions)
-                {
-                        product.SKUs[0].AttributeOptionSKUs.Add(new AttributeOptionSKU());
-                }
-            }
-
+            List<ProductAttributeVM> AttributeList = await this.GetAttributeList(product);
 
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
 
-            ViewBag.categories = await _subCategoryService.GetAllBySelectedAsync();
+            ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
 
             //return Ok(product);
 
@@ -360,6 +349,13 @@ namespace TamVaxti.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(Product request)
         {
             //return Ok(request);
+
+            List<ProductAttributeVM> AttributeList = await this.GetAttributeList(request);
+            ViewBag.AttributeList = AttributeList;
+            ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
+            ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);
+            request.CategoryId = category.CategoryId;
 
             if (!ModelState.IsValid)
             {
@@ -381,7 +377,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                     ModelState.AddModelError("MainImage", "Image size must be less than 500KB");
                     return View(request);
                 }
-                //this.DeleteImg(request.MainImage);
+                this.DeleteImg(request.MainImage);
                 request.MainImage = await ImgFileActionAsync(request.MainImageFile, request);
                 MainFileChk = true;
             }
@@ -409,22 +405,22 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }
 
                 if (request.SKUs[i].ImageUrl1File != null) {
-                    //this.DeleteImg(request.SKUs[i].ImageUrl1);
+                    this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl1 = await ImgFileActionAsync(request.SKUs[i].ImageUrl1File, request);
                 }
 
                 if (request.SKUs[i].ImageUrl2File != null) {
-                    //this.DeleteImg(request.SKUs[i].ImageUrl1);
+                    this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl2 = await ImgFileActionAsync(request.SKUs[i].ImageUrl2File, request);
                 }
 
                 if (request.SKUs[i].ImageUrl3File != null) {
-                    //this.DeleteImg(request.SKUs[i].ImageUrl1);
+                    this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl3 = await ImgFileActionAsync(request.SKUs[i].ImageUrl3File, request);
                 }
 
                 if (request.SKUs[i].ImageUrl4File != null) {
-                    //this.DeleteImg(request.SKUs[i].ImageUrl1);
+                    this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl4 = await ImgFileActionAsync(request.SKUs[i].ImageUrl4File, request);
                 }
 
@@ -440,12 +436,49 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             _context.Update(request);
             _context.Entry(request).Property(x => x.MainImage).IsModified = MainFileChk;
+            for (int k = 0; k < request.SKUs.Count; k++)
+            {
+                _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl1).IsModified = request.SKUs[k].ImageUrl1File != null ? true : false;
+                _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl2).IsModified = request.SKUs[k].ImageUrl2File != null ? true : false;
+                _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl3).IsModified = request.SKUs[k].ImageUrl3File != null ? true : false;
+                _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl4).IsModified = request.SKUs[k].ImageUrl4File != null ? true : false;
+            }
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-
+        public async Task<List<ProductAttributeVM>> GetAttributeList(Product product)
+        {
+            var Attributes = await _productService.GetAttributes();
+            var AttributeOptions = await _productService.GetAttributeOptions();
+            List<ProductAttributeVM> AttributeList = new List<ProductAttributeVM>();
+            var AddAttributeOptions = false;
+            if (product.SKUs.Count <= 0)
+            {
+                AddAttributeOptions = true;
+                product.SKUs = new List<SKU> { new SKU() };
+                product.SKUs[0].AttributeOptionSKUs = new List<AttributeOptionSKU>();
+            }
+            for (int i = 0; i < Attributes.Count; i++)
+            {
+                var option = Attributes[i];
+                var res = new ProductAttributeVM
+                {
+                    Id = option.Id,
+                    Name = option.Name,
+                    AttributeOptions = AttributeOptions.Where(ao => ao.AttributeId == option.Id)
+                    .Select(ao => new SelectListItem { Value = ao.Id.ToString(), Text = ao.Value }).ToList()
+                };
+                AttributeList.Add(res);
+                if (AddAttributeOptions)
+                {
+                    product.SKUs[0].AttributeOptionSKUs.Add(new AttributeOptionSKU());
+                }
+            }
+            return AttributeList;
+        }
+  
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -511,20 +544,22 @@ namespace TamVaxti.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteSku(int? id)
+        public async Task<IActionResult> DeleteSku(long id)
         {
-            if (id is null) return BadRequest();
+            if (id <= 0) return BadRequest();
 
             SKU sku = await _productService.GetSkuByIdAsync((int)id);
 
             if (sku is null) return NotFound();
 
-            this.DeleteImg(sku.ImageUrl1);
+            await _productService.SoftDeleteSku(id);
+
+            /*this.DeleteImg(sku.ImageUrl1);
             this.DeleteImg(sku.ImageUrl2);
             this.DeleteImg(sku.ImageUrl3);
             this.DeleteImg(sku.ImageUrl4);
 
-            await _productService.DeleteSkuAsync(sku);
+            await _productService.DeleteSkuAsync(sku);*/
 
             return RedirectToAction(nameof(Index));
         }
