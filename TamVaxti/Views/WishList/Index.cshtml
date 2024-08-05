@@ -1,4 +1,4 @@
-﻿@model List<Product>
+﻿@model List<TamVaxti.ViewModels.Products.ProductSkuListVM>
 
 @{
     ViewData["Title"] = "Wishlist";
@@ -49,7 +49,7 @@
                             <tr>
                                 <td>
                                     <a href="#wishlist-section">
-                                        <img src="/img/@product.ProductImages.FirstOrDefault(x=>x.IsMain)?.ImageUrl" alt="">
+                                        <img src="/img/product/@product.MainImage" alt="">
                                     </a>
                                 </td>
                                 <td>
@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="col">
                                             <h2 class="td-color">
-                                                <a href="#" class="icon me-1 add-to-wishlist" data-product-id="@product.Id">
+                                                <a href="#" class="icon me-1 add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
                                                     <i class="ti-close"></i>
                                                 </a>
                                                 <a href="#" class="cart">
@@ -80,7 +80,7 @@
                                     <p>in stock</p>
                                 </td>
                                 <td>
-                                    <a href="#" class="icon me-3 add-to-wishlist" data-product-id="@product.Id">
+                                    <a href="#" class="icon me-3 add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
                                         <i class="ti-close"></i>
                                     </a>
                                     <a href="#"

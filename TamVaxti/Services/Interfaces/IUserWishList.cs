@@ -10,7 +10,7 @@ namespace TamVaxti.Services.Interfaces
 
         Task<IList<UserWishList>> GetUserSavedWishList(string userId);
 
-        Task<IList<int>> GetUserSavedWishListProducts(string userId);
+        Task<IList<long>> GetUserSavedWishListProducts(string userId);
 
         Task<bool> RemoveProductFromWishList(UserWishList userWishList);
     }
