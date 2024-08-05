@@ -13,6 +13,9 @@ namespace TamVaxti.Models
         [Required]
         public int ProductId { get; set; }
 
+        [Required]
+        public long SkuId { get; set; }
+
         [Range(1, 5)]
         public int Rating { get; set; }
 
@@ -23,5 +26,6 @@ namespace TamVaxti.Models
         public bool Status { get; set; }
         public virtual AppUser User { get; set; }
         public virtual Product Product { get; set; }
+        public virtual SKU SKU { get; set; }
     }
 }
