@@ -31,11 +31,17 @@ namespace TamVaxti.Controllers
                 }
             }
 
-            List<Product> products = await _productService.GetAllWithImagesAsync();
+            List<Product> products = await _productService.GetAllWithSkusAsync();
+            if (categoryId is not null)
+            {
+                products = products.Where(p => p.CategoryId == categoryId).ToList();
+            }
+            var result = _productService.GetProductSkuListVM(products);
+
             var model = new ProductListVM()
             {
                 Categories = categories,
-                Products = products
+                Products = result
             };
             return View(model);
         }

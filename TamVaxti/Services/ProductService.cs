@@ -132,7 +132,7 @@ namespace TamVaxti.Services
             return _context.SkuStocks.Where(e => e.SkuId == Id).Sum(e => e.Quantity);
         }
 
-        public async Task<SKU> GetSkuByIdAsync(int id)
+        public async Task<SKU> GetSkuByIdAsync(long id)
         {
             return await _context.SKUs.Where(m => m.Id == id)
                                         .Include(m => m.AttributeOptionSKUs)
@@ -147,18 +147,112 @@ namespace TamVaxti.Services
         public async Task<Product> GetProductByIdAsync(int id)
         {
             return await _context.Products.Where(m => !m.SoftDeleted)
-                                    .Include(p => p.SKUs)
+                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                                     .ThenInclude(s => s.AttributeOptionSKUs)
                                     .ThenInclude(s => s.AttributeOption)
-                                    .Include(p => p.SKUs)
+                                    .ThenInclude(ao => ao.Attribute)
+                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                                     .ThenInclude(s => s.SkuStock)
-                                    .Include(x=>x.ProductImages)
                                     .FirstOrDefaultAsync(m => m.Id == id);
         }
         public async Task DeleteSkuAsync(SKU sku)
         {
             _context.Remove(sku);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ProductReview>> GetProductReviewById(string Id, int ProductId, long SkuId)
+        {
+            var res = await _context.Product_Reviews.Where(r => r.UserId == Id && r.ProductId == ProductId && r.SkuId == SkuId).ToListAsync();
+            return res;
+        }
+
+        public async Task<bool> AddProductReview(ProductReview model)
+        {
+            _context.Product_Reviews.Add(model);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<Product>> GetAllWithSkusAsync()
+        {
+            return await _context.Products.Where(m => !m.SoftDeleted)
+                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.AttributeOptionSKUs)
+                                    .ThenInclude(s => s.AttributeOption)
+                                    .ThenInclude(ao => ao.Attribute)
+                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.SkuStock)
+                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.ProductReviews)
+                                    .OrderByDescending(o => o.Id)
+                                    .ToListAsync();
+        }
+
+        public async Task<int> GetProductIdBySkuIdAsync(long SkuId)
+        {
+            var res = await _context.SKUs.Where(s => s.Id == SkuId).Select(s => s.ProductId).FirstOrDefaultAsync();
+            return res;
+        }
+
+        public async Task<Product> GetProductBySkuIdAsync(long skuId)
+        {
+            var sku = await _context.SKUs
+                                .Where(s => s.Id == skuId && !s.SoftDeleted)
+                                .Include(s => s.Product)
+                                    .ThenInclude(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.SkuStock)
+                                .Include(s => s.Product)
+                                    .ThenInclude(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.AttributeOptionSKUs)
+                                    .ThenInclude(aos => aos.AttributeOption)
+                                    .ThenInclude(ao => ao.Attribute)
+                                .Include(s => s.Product)
+                                    .ThenInclude(p => p.SKUs.Where(s => !s.SoftDeleted))
+                                    .ThenInclude(s => s.ProductReviews)
+                                .FirstOrDefaultAsync();
+
+            return sku?.Product;
+        }
+
+        public List<ProductSkuListVM> GetProductSkuListVM(List<Product> products)
+        {
+            var result = products.SelectMany(product =>
+                product.SKUs.Select(sku => new ProductSkuListVM
+                {
+                    ProductId = product.Id,
+                    Name = product.Name + " (" + sku.SkuCode + ")",
+                    Description = product.Description,
+                    MainImage = sku.ImageUrl1 ?? sku.ImageUrl2 ?? sku.ImageUrl3 ?? sku.ImageUrl4 ?? product.MainImage,
+                    SkuId = sku.Id,
+                    SkuCode = sku.SkuCode,
+                    Price = sku.Price,
+                    Quantity = sku.SkuStock.Sum(s => s.Quantity),
+                    Rating = (int)(sku.ProductReviews.Count() > 0 ? Math.Round(sku.ProductReviews.Average(s => s.Rating)) : 0),
+                    RatingCount = sku.ProductReviews.Count(),
+                    Color = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
+                                    .AttributeOption.Value,
+                    Size = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
+                                    .AttributeOption.Value,
+                    RelatedSku = product.SKUs.Select(s => new RelatedSkuVM
+                    {
+                        SkuId = s.Id,
+                        Color = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
+                                    .AttributeOption.Value
+                    }).DistinctBy(r => r.Color).OrderBy(s => sku.Id).ToList()
+                })).ToList();
+
+            return result;
+        }
+
+        public async Task SoftDeleteSku(long skuId)
+        {
+            var sku = await _context.SKUs.FindAsync(skuId);
+            if (sku != null)
+            {
+                sku.SoftDeleted = true;
+                sku.UpdatedOn = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
