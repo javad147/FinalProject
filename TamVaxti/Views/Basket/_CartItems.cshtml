@@ -17,16 +17,16 @@
         <tbody>
             <tr>
                 <td>
-                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.Id"><img src="/img/@cartItem.Product.ProductImages.FirstOrDefault(x=>x.IsMain)?.ImageUrl" alt=""></a>
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.SkuId"><img src="/img/product/@cartItem.Product.MainImage" alt=""></a>
                 </td>
                 <td>
-                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.Id">cotton shirt</a>
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@cartItem.Product.SkuId">@cartItem.Product.Name</a>
                     <div class="mobile-cart-content row">
                         <div class="col">
                             <div class="qty-box">
                                 <div class="input-group">
                                     <input type="text" name="quantity" class="form-control input-number cart-product-counter"
-                                           value="@cartItem.Quantity" data-product-id="@cartItem.Product.Id">
+                                           value="@cartItem.Quantity" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId">
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                 <td>
                     <div class="qty-box">
                         <div class="input-group">
-                            <input type="number" name="quantity" class="form-control input-number cart-product-counter" data-product-id="@cartItem.Product.Id"
+                            <input type="number" name="quantity" class="form-control input-number cart-product-counter" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId"
                                    value="@cartItem.Quantity" min="1" max="10">
                         </div>
                     </div>

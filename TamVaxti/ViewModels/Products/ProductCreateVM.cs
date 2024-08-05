@@ -14,6 +14,7 @@ namespace TamVaxti.ViewModels.Products
         [Required(ErrorMessage = "Price can't be empty")]
         //public string Price { get; set; }
         public int CategoryId { get; set; }
+        public int SubcategoryId { get; set; }
 
         //public List<IFormFile> Images { get; set; }
         [Required(ErrorMessage = "Main image is required")]

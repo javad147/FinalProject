@@ -25,5 +25,7 @@ namespace TamVaxti.Models
         public IFormFile ImageUrl3File { get; set; }
         public IFormFile ImageUrl4File { get; set; }
         public List<OrderProductDetail> OrderProductDetail { get; set; }
+        public List<ProductReview> ProductReviews { get; set; }
+        public bool SoftDeleted { get; set; }
     }
 }

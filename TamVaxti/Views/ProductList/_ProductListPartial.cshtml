@@ -1,5 +1,5 @@
 ﻿@using Newtonsoft.Json
-@model List<TamVaxti.Models.Product>
+@model List<TamVaxti.ViewModels.Products.ProductSkuListVM>
 
 @foreach (var product in Model)
 {
@@ -7,27 +7,27 @@
         <div class="product-box">
             <div class="img-wrapper">
                 <div class="front">
-                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
-                        <img src="~/img/@product.ProductImages.FirstOrDefault(m => m.IsMain)?.ImageUrl"
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                        <img src="~/img/product/@product.MainImage"
                              class="img-fluid blur-up lazyload bg-img" alt="">
                     </a>
                 </div>
                 <div class="back">
-                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
-                        <img src="~/img/@product.ProductImages.FirstOrDefault(m => m.IsMain)?.ImageUrl"
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                        <img src="~/img/product/@product.MainImage"
                              class="img-fluid blur-up lazyload bg-img" alt="">
                     </a>
                 </div>
 
                 <div class="cart-info cart-wrap">
 
-                    <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.Id">
+                    <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
                         <i class="ti-shopping-cart"></i>
                     </a>
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a href="javascript:void(0)" class="add-to-wishlist" data-product-id="@product.Id" title="Add to Wishlist">
+                        <a href="javascript:void(0)" class="add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId" title="Add to Wishlist">
                             <i class="ti-heart" aria-hidden="true"></i>
                         </a>
                     }
@@ -38,18 +38,27 @@
             </div>
             <div class="product-detail">
                 <div>
-                    <div class="rating">
-                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                    <div class="ratings">
+                        @for (int i = 1; i <= 5; i++)
+                                {
+                                    var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
+                                    var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
+                                    <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
+                                }
                     </div>
-                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                    <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                         <h6>@product.Name</h6>
                     </a>
                     <p>@product.Description</p>
-                    <h4>@product.Price</h4>
+                    <h4>$@product.Price</h4>
                     <ul class="color-variant">
-                        <li class="bg-light0"></li>
-                        <li class="bg-light1"></li>
-                        <li class="bg-light2"></li>
+                        @foreach (var sku in product.RelatedSku)
+                        {
+                            var activeClass = sku.Color == product.Color ? "selected" : "";
+                            <a class="colorl-li @activeClass"  asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                                <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+                            </a>
+                        }
                     </ul>
                 </div>
             </div>
@@ -57,4 +66,20 @@
     </div>
 }
 
-
+<style>
+    .colorl-li.selected {
+        display: inline-block;
+        border: solid 2px black;
+        border-radius: 100%;
+        height: 27px;
+        width: 27px;
+        padding: 1px;
+        margin-right: 3px;
+        -webkit-transition: all 0.1s ease;
+        transition: all 0.1s ease;
+        vertical-align: middle;
+    }
+    .color-circle{
+        border: solid 2px transparent;
+    }
+</style>

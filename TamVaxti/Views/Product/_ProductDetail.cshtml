@@ -1,6 +1,6 @@
 ﻿@using Bogus
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Product
+@model TamVaxti.ViewModels.Products.ProductSkuListVM
 
 @{
     var faker = new Faker();
@@ -13,11 +13,11 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-slick">
-                        @for (int i = 0; i < Model.ProductImages.ToList().Count; i++)
+                        @for (int i = 0; i < Model.ImageUrls.ToList().Count; i++)
                         {
-                            var image = Model.ProductImages.ToList()[i];
+                            var image = Model.ImageUrls.ToList()[i];
                             <div>
-                                <img src="/img/@image.ImageUrl" alt=""
+                                <img src="/img/product/@image" alt=""
                                      class="img-fluid blur-up lazyload img-zoom-cls-@i">
                             </div>
                         }
@@ -26,10 +26,10 @@
                     <div class="row">
                         <div class="col-12 p-0">
                             <div class="slider-nav">
-                                @foreach (var image in Model.ProductImages)
+                                @foreach (var image in Model.ImageUrls)
                                 {
                                     <div>
-                                        <img src="/img/@image.ImageUrl" alt=""
+                                        <img src="/img/product/@image" alt=""
                                              class="img-fluid blur-up lazyload">
                                     </div>
                                 }
@@ -39,53 +39,56 @@
                 </div>
                 <div class="col-lg-6 rtl-text">
                     <div class="product-right">
-                        <div class="product-count">
-                            <ul>
-                                <li>
-                                    <img src="/assets/images/fire.gif" class="img-fluid" alt="image">
-                                    <span class="p-counter">@faker.Random.Int(0, 50)</span>
-                                    <span class="lang">orders in last 24 hours</span>
-                                </li>
-                                <li>
-                                    <img src="/assets/images/person.gif" class="img-fluid user_img" alt="image">
-                                    <span class="p-counter">@faker.Random.Int(0, 50)</span>
-                                    <span class="lang">active view this</span>
-                                </li>
-                            </ul>
-                        </div>
                         <h2>@Model.Name</h2>
                         <div class="rating-section">
                             <div class="rating">
-                                <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    var ratingClass = i <= Model.Rating ? "fa-star" : "fa-star-o";
+                                    var colrClass = i <= Model.Rating ? "#ffa200" : "#ddd";
+                                    <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
+                                }
                             </div>
-                            <h6>120 ratings</h6>
+                            @{
+                                var ratingText = @Model.RatingCount > 1 ? "ratings" : "rating";
+                            }
+                            <h6>@Model.RatingCount @ratingText</h6>
                         </div>
                         <div class="label-section">
                             <span class="badge badge-grey-color">#1 Best seller</span>
                             <span class="label-text">in fashion</span>
                         </div>
                         <h3 class="price-detail">$@Model.Price</h3>
+                        <span class="quantity-detail">@Model.Quantity Left</span>
+                        <ul class="size-variant mt-3 mb-3">
+                            @foreach (var sku in Model.RelatedSizes)
+                            {
+                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                                    <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
+                                </a>
+                            }
+                        </ul>
                         <ul class="color-variant">
-                            <li class="bg-light0 active"></li>
-                            <li class="bg-light1"></li>
-                            <li class="bg-light2"></li>
+                            @foreach (var sku in Model.RelatedSku)
+                            {
+                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
+                                <a class="color-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                                    <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+                                </a>
+                            }
                         </ul>
                         <div class="product-buttons">
-                            <a href="javascript:void(0)" id="cartEffect" data-product-id="@Model.Id"
+                            <a href="javascript:void(0)" id="cartEffect" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId"
                                class="btn btn-solid hover-solid btn-animation add-to-cart">
-                                <i class="fa fa-shopping-cart me-1"
-                                   aria-hidden="true"></i> add to cart
-                            </a> <a href="#" class="btn btn-solid">
-                                <i class="fa fa-bookmark fz-16 me-2" aria-hidden="true"></i>wishlist
-                            </a>
-                        </div>
-                        <div class="product-count">
-                            <ul>
-                                <li>
-                                    <img src="/assets/images/icon/truck.png" class="img-fluid" alt="image">
-                                    <span class="lang">Free shipping for orders above $500 USD</span>
-                                </li>
-                            </ul>
+                                <i class="ti-shopping-cart"></i> add to cart
+                            </a> 
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a href="javascript:void(0)" class="btn btn-solid add-to-wishlist" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId">
+                                    <i class="ti-heart" aria-hidden="true"></i> wishlist
+                                </a>
+                            }
                         </div>
                         <div class="border-product">
                             <h6 class="product-title">shipping info</h6>
@@ -94,18 +97,6 @@
                                 <li>Pay on delivery is available</li>
                                 <li>Easy 30 days returns and exchanges</li>
                             </ul>
-                        </div>
-                        <div class="border-product">
-                            <h6 class="product-title">share it</h6>
-                            <div class="product-icon">
-                                <ul class="product-social">
-                                    <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                                </ul>
-                            </div>
                         </div>
                         <div class="border-product">
                             <h6 class="product-title">100% secure payment</h6>
@@ -131,13 +122,16 @@
                         </a>
                         <div class="material-border"></div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="review-top-tab" data-bs-toggle="tab"
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" id="review-top-tab" data-bs-toggle="tab"
                            href="#top-review" role="tab" aria-selected="false">
-                            <i class="icofont icofont-contacts"></i>Write Review
-                        </a>
-                        <div class="material-border"></div>
-                    </li>
+                                <i class="icofont icofont-contacts"></i>Write Review
+                            </a>
+                            <div class="material-border"></div>
+                        </li>
+                    }
                 </ul>
                 <div class="tab-content nav-material" id="top-tabContent">
                     <div class="tab-pane fade show active" id="top-home" role="tabpanel"
@@ -147,40 +141,31 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="top-review" role="tabpanel" aria-labelledby="review-top-tab">
-                        <form class="theme-form">
+                        <form class="theme-form" action="@Url.Action("AddProductReview", "Product")" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" value="@Model.ProductId" name="ProductId" />
+                            <input type="hidden" value="@Model.SkuId" name="SkuId" />
                             <div class="form-row row">
                                 <div class="col-md-12">
-                                    <div class="media">
-                                        <label>Rating</label>
-                                        <div class="media-body ms-3">
-                                            <div class="rating three-star">
-                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                                            </div>
+                                    <div class="media mb-3">
+                                        <label style="margin-right:15px;">Rating</label>
+                                        <div class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <i class="fa fa-star-o" data-rating="@i"></i>
+                                            }
                                         </div>
+                                        <input type="hidden" name="Rating" class="rating-value" />
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" placeholder="Enter Your name"
-                                           required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="email">Email</label>
-                                    <input type="text" class="form-control" id="email" placeholder="Email" required>
+                                <div class="col-md-12">
+                                    <label for="review">Review Description</label>
+                                    <input type="text" class="form-control" name="ReviewDescription"
+                                           placeholder="Enter your Review" required>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="review">Review Title</label>
-                                    <input type="text" class="form-control" id="review"
-                                           placeholder="Enter your Review Subjects" required>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="review">Review Title</label>
-                                    <textarea class="form-control" placeholder="Wrire Your Testimonial Here"
-                                              id="exampleFormControlTextarea1" rows="6"></textarea>
-                                </div>
-                                <div class="col-md-12">
-                                    <button class="btn btn-solid" type="submit">
-                                        Submit YOur
+                                    <button class="btn btn-solid" type="submit" id="add-review-btn">
+                                        Submit Your
                                         Review
                                     </button>
                                 </div>
@@ -193,3 +178,79 @@
     </div>
 </section>
 <!-- product-tab ends -->
+
+<script>
+        document.getElementById('add-review-btn').addEventListener('click', function (event) {
+            var ratingValue = document.querySelector('.rating-value').value;
+            if (!ratingValue) {
+                event.preventDefault();
+                alert('Please select a rating.');
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var stars = document.querySelectorAll('.star-rating .fa');
+            stars.forEach(function (star) {
+                star.addEventListener('click', function () {
+                    var rating = this.getAttribute('data-rating');
+                    document.querySelector('.rating-value').value = rating;
+                    stars.forEach(function (s) {
+                        if (s.getAttribute('data-rating') <= rating) {
+                            s.classList.remove('fa-star-o');
+                            s.classList.add('fa-star');
+                        } else {
+                            s.classList.remove('fa-star');
+                            s.classList.add('fa-star-o');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+<style>
+    .star-rating .fa {
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .star-rating .fa-star {
+        color: #ffa200;
+    }
+    .star-rating .fa-star-o {
+        color: #ddd;
+    }
+    .size-li.selected {
+        background-color: #dbdada;
+        color: black;
+    }
+    .size-li {
+        border: solid 2px #dbdada;
+        padding: 5px 10px;
+        width: auto;
+        color: black;
+        display: inline-block;
+        border-radius: 5%;
+        margin-right: 5px;
+        -webkit-transition: all 0.1s ease;
+        transition: all 0.1s ease;
+        vertical-align: middle;
+    }
+    .quantity-detail{
+        font-size: 13px;
+        background: wheat;
+        padding: 1px 5px;
+    }
+    .color-li.selected {
+        display: inline-block;
+        border: solid 2px black;
+        border-radius: 100%;
+        height: 39px;
+        width: 39px;
+        padding: 3px;
+        margin-right: 5px;
+        -webkit-transition: all 0.1s ease;
+        transition: all 0.1s ease;
+        vertical-align: middle;
+    }
+    .color-circle{
+        border: solid 2px transparent;
+    }
+</style>

@@ -42,6 +42,8 @@ public class OrderController : Controller
             .Where(o => o.CustomerId == user.Id)
             .Include(o => o.OrderProductDetails)
             .ThenInclude(op => op.Product)
+            .Include(o => o.OrderProductDetails)
+            .ThenInclude(op => op.SKU)
             .ToListAsync();
 
         // Calculate ratings in-memory, filtering published reviews
@@ -84,10 +86,10 @@ public class OrderController : Controller
                 var product = od.Product;
                 mod.Products.Add(new ProductVM()
                 {
-                    Name = product.Name,
-                    Image = product.MainImage,
+                    Name = product.Name + " (" + od.SKU.SkuCode + ")",
+                    Image = od.SKU.ImageUrl1 ?? od.SKU.ImageUrl2 ?? od.SKU.ImageUrl3 ?? od.SKU.ImageUrl4 ?? product.MainImage,
                     Rating = RoundRating(_context.Product_Reviews
-                        .Where(pr => pr.ProductId == od.ProductId && pr.Status)
+                        .Where(pr => pr.SkuId == od.SkuId && pr.Status)
                        .Average(pr => (double?)pr.Rating) ?? 0),
                     Quantity = od.Quantity,
                     Amount = od.Amount
@@ -183,7 +185,8 @@ public class OrderController : Controller
         foreach (var orderProductDetail in cart.Select(item => new OrderProductDetail
         {
             OrderId = order.OrderId,
-            ProductId = item.Product.Id,
+            ProductId = item.Product.ProductId,
+            SkuId = item.Product.SkuId,
             Quantity = item.Quantity,
             Amount = item.SubTotal,
 
@@ -192,6 +195,16 @@ public class OrderController : Controller
             _context.OrderProductDetails.Add(orderProductDetail);
         }
 
+        await _context.SaveChangesAsync();
+
+        foreach (var skuStock in cart.Select(item => new SkuStock
+        {
+            SkuId = item.Product.SkuId,
+            Quantity = -item.Quantity
+        }))
+        {   
+            _context.SkuStocks.Add(skuStock);
+        }
         await _context.SaveChangesAsync();
 
         // Clear the cart cookie
@@ -203,18 +216,19 @@ public class OrderController : Controller
 
     private async Task<List<BasketVM>> GetOrderProducts()
     {
-        var basketProducts = new Dictionary<int, int>();
+        var basketProducts = new Dictionary<long, int>();
 
         if (_accessor.HttpContext?.Request.Cookies["cart"] is not null)
         {
             var cartJson = _accessor.HttpContext.Request.Cookies["cart"];
-            basketProducts = JsonConvert.DeserializeObject<Dictionary<int, int>>(cartJson);
+            basketProducts = JsonConvert.DeserializeObject<Dictionary<long, int>>(cartJson);
         }
 
-        var products = await _productService.GetAllWithImagesAsync();
+        List<Product> products = await _productService.GetAllWithSkusAsync();
+        var result = _productService.GetProductSkuListVM(products);
 
         return (from basketProduct in basketProducts
-                let product = products.FirstOrDefault(m => m.Id == basketProduct.Key)
+                let product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key)
                 where product != null
                 let subtotal = basketProduct.Value * product.Price
                 select new BasketVM { Product = product, Quantity = basketProduct.Value, SubTotal = subtotal }).ToList();

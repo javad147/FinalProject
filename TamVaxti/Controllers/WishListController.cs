@@ -36,17 +36,19 @@ namespace TamVaxti.Controllers
 
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var products = await _userWishList.GetUserSavedWishList(user.Id);
+            List<Product> allproducts = await _productService.GetAllWithSkusAsync();
+            var result = _productService.GetProductSkuListVM(allproducts);
+            var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
 
-            var wishlistProducts = (await _productService.GetAllWithImagesAsync()).Where(p => products.Select(x=>x.ProductId).Contains(p.Id)).ToList();
+            var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
 
             return View(wishlistProducts);
-            return View("Index",products.Select(x=>x.Product).ToList());
         }
 
 
 
         [HttpGet]
-        public async Task<IActionResult> AddToWishList(int productId)
+        public async Task<IActionResult> AddToWishList(long productId)
         {
             if (!User.Identity.IsAuthenticated) return Ok();
 
@@ -55,7 +57,7 @@ namespace TamVaxti.Controllers
             {
                 Id = 0,
                 UserId = user.Id,
-                ProductId = productId
+                SkuId = productId
             };
 
             if (await _userWishList.WishListExists(userWishList) == false)
@@ -84,14 +86,18 @@ namespace TamVaxti.Controllers
 
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var products = await _userWishList.GetUserSavedWishList(user.Id);
-            var wishlistProducts = (await _productService.GetAllWithImagesAsync()).Where(p => products.Select(x => x.ProductId).Contains(p.Id)).ToList();
+            List<Product> allproducts = await _productService.GetAllWithSkusAsync();
+
+            var result = _productService.GetProductSkuListVM(allproducts);
+            var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
+            var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
 
             // Code to add product to user's wish list
             return View("_WistListProducts", wishlistProducts);
         }
 
         [HttpGet]
-        public async Task<IActionResult> RemoveProductFromWishList(int productId)
+        public async Task<IActionResult> RemoveProductFromWishList(long productId)
         {
             if (!User.Identity.IsAuthenticated) return Ok();
 
@@ -100,7 +106,7 @@ namespace TamVaxti.Controllers
             {
                 Id = 0,
                 UserId = user.Id,
-                ProductId = productId
+                SkuId = productId
             };
             var isExists = await _userWishList.WishListExists(userWishList);
             if (isExists)

@@ -5,7 +5,7 @@ function initializeWishlist() {
         (data) => {
             wishlist = data;
             $(".add-to-wishlist").each(function() {
-                var productId = $(this).data("product-id");
+                var productId = $(this).data("sku-id");
 
                 var $icon = $(this).find("i");
                 if (wishlist.includes(productId)) {
@@ -20,7 +20,7 @@ function initializeWishlist() {
     $(document).on("click",
         ".add-to-wishlist",
         function() {
-            var productId = $(this).data("product-id");
+            var productId = $(this).data("sku-id");
             var $icon = $(this).find("i");
             var index = wishlist.indexOf(productId);
             if (index !== -1) {
@@ -61,7 +61,7 @@ function initializeCart() {
         ".add-to-cart",
         function() {
             cart = Cookies.getJSON("cart") || {};
-            var productId = $(this).data("product-id");
+            var productId = $(this).data("sku-id");
 
             if (cart[productId]) {
                 // Increment the count of the product in the cart
@@ -81,7 +81,7 @@ function initializeCart() {
         ".cart-product-counter",
         function() {
             cart = Cookies.getJSON("cart") || {};
-            var productId = $(this).data("product-id");
+            var productId = $(this).data("sku-id");
             debugger;
             var index = Object.keys(cart).findIndex(key => key === productId.toString());
             if (cart[productId]) {
@@ -96,7 +96,7 @@ function initializeCart() {
         ".remove-from-cart",
         function() {
             cart = Cookies.getJSON("cart") || {};
-            var productId = $(this).data("product-id");
+            var productId = $(this).data("sku-id");
             var index = Object.keys(cart).findIndex(key => key === productId.toString());
             if (cart[productId]) {
                 delete cart[productId];

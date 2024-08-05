@@ -3,6 +3,7 @@ using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels.Baskets;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TamVaxti.Models;
 
 namespace TamVaxti.Controllers;
 
@@ -49,16 +50,17 @@ public class BasketController : Controller
 
     private async Task<IEnumerable<BasketVM>> GetCartItemsFromCookies()
     {
-        var basketProducts = new Dictionary<int, int>();
+        var basketProducts = new Dictionary<long, int>();
 
         if (_accessor.HttpContext.Request.Cookies["cart"] is not null)
             basketProducts =
-                JsonConvert.DeserializeObject<Dictionary<int, int>>(_accessor.HttpContext.Request.Cookies["cart"]);
+                JsonConvert.DeserializeObject<Dictionary<long, int>>(_accessor.HttpContext.Request.Cookies["cart"]);
 
-        var products = await _productService.GetAllWithImagesAsync();
+        List<Product> products = await _productService.GetAllWithSkusAsync();
+        var result = _productService.GetProductSkuListVM(products);
 
         return (from basketProduct in basketProducts
-            let product = products.FirstOrDefault(m => m.Id == basketProduct.Key)
+            let product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key)
             where product != null
             let subtotal = basketProduct.Value * product.Price
             select new BasketVM { Product = product, Quantity = basketProduct.Value, SubTotal = subtotal }).ToList();

@@ -22,7 +22,14 @@ namespace TamVaxti.Services.Interfaces
         public Task<AttributeOption> GetAttributeOptionsById(long id);
         public int GetSkuStockSum(long Id);
         public Task<Product> GetProductByIdAsync(int id);
-        public Task<SKU> GetSkuByIdAsync(int id);
+        public Task<SKU> GetSkuByIdAsync(long id);
         public Task DeleteSkuAsync(SKU sku);
+        public Task<List<ProductReview>> GetProductReviewById(string Id, int ProductId, long SkuId);
+        public Task<bool> AddProductReview(ProductReview model);
+        public Task<List<Product>> GetAllWithSkusAsync();
+        public Task<int> GetProductIdBySkuIdAsync(long SkuId);
+        public Task<Product> GetProductBySkuIdAsync(long skuId);
+        public List<ProductSkuListVM> GetProductSkuListVM(List<Product> products);
+        public Task SoftDeleteSku(long skuId);
     }
 }

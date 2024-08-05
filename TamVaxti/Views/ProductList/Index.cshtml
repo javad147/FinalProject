@@ -66,22 +66,26 @@
                         <h5 class="title-border">new product</h5>
                         <div class="offer-slider slide-1">
                             <div>
-                                @foreach (var product in Model.Products.OrderByDescending(x => x.Id).Take(3))
+                                @foreach (var product in Model.Products.OrderByDescending(x => x.SkuId).Take(3))
                                 {
                                     <div class="media">
-                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                             <img class="img-fluid blur-up lazyload"
-                                                 src="~/img/@product.ProductImages.FirstOrDefault(m => m.IsMain)?.ImageUrl" alt="">
+                                                 src="~/img/product/@product.MainImage" alt="">
                                         </a>
                                         <div class="media-body align-self-center">
-                                            <div class="rating">
-                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                            <div class="ratings">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
+                                                    var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
+                                                    <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
+                                                }
                                             </div>
-                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                                 <h6>@product.Name</h6>
                                             </a>
-                                            <h4>@product.Price</h4>
+                                            <h4>$@product.Price</h4>
                                         </div>
                                     </div>
                                 }
@@ -261,4 +265,3 @@
     </script>
 
 }
-
