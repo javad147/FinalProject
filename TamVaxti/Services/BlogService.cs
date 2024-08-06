@@ -20,11 +20,9 @@ namespace TamVaxti.Services
             return await _context.Blogs.CountAsync();
         }
 
-
-
         public async Task CreateAsync(BlogCreateVM blogCreateVM)
         {
-            await _context.Blogs.AddAsync(new Blog { Title = blogCreateVM.Title, Description = blogCreateVM.Description, Image = blogCreateVM.Image ,Uname= blogCreateVM.Uname,Date = blogCreateVM.Date });
+            await _context.Blogs.AddAsync(new Blog { Title = blogCreateVM.Title, Description = blogCreateVM.Description, Image = blogCreateVM.Image, Uname = blogCreateVM.Uname, Date = blogCreateVM.Date });
             await _context.SaveChangesAsync();
         }
 
@@ -85,7 +83,7 @@ namespace TamVaxti.Services
         }
         public async Task<Comment> GetCommentById(int commentId)
         {
-                return await _context.Comments.SingleOrDefaultAsync(m => m.Id == commentId);
+            return await _context.Comments.SingleOrDefaultAsync(m => m.Id == commentId);
         }
         public async Task<List<Comment>> GetCommentOfBlog(int blogId)
         {
@@ -93,7 +91,7 @@ namespace TamVaxti.Services
         }
         public async Task<List<Comment>> GetAllCommentOfBlogs()
         {
-            return await _context.Comments.Include(b=>b.Blog).ToListAsync();
+            return await _context.Comments.Include(b => b.Blog).ToListAsync();
         }
         public async Task UpdateComments(Comment comment)
         {
@@ -115,7 +113,7 @@ namespace TamVaxti.Services
         public async Task<List<BlogVM>> GetAllOrderByAsync()
         {
             var blogs = await GetAllAsync();
-            return blogs.Select(m => new BlogVM { Id = m.Id, Title = m.Title, Description = m.Description, Image=m.Image }).ToList().OrderByDescending(m => m.Id).ToList();
+            return blogs.Select(m => new BlogVM { Id = m.Id, Title = m.Title, Description = m.Description, Image = m.Image }).ToList().OrderByDescending(m => m.Id).ToList();
         }
 
         public async Task<Blog> GetByIdAsync(int id)
