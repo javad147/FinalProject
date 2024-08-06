@@ -1,5 +1,4 @@
-﻿
-@*code test start  here *@
+﻿@*code test start  here *@
 
 @model List<CategoryVM>
 @{
@@ -55,13 +54,12 @@
     }
 
     .search-form .form-group {
-        margin-right: 10px; 
+        margin-right: 10px;
     }
 
     .search-form .btn {
-        margin-left: 5px; 
+        margin-left: 5px;
     }
-
 
 </style>
 
@@ -69,7 +67,7 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-           
+
             var messageType = '@TempData["messageType"]';
             var message = '@TempData["message"]';
             if (messageType === "success") {
@@ -110,17 +108,11 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    if (!User.IsInRole("SuperAdmin"))
-                    {
-                        <div class="card-header">
-                            <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
-                                Add Category
-                            </a>
-                        </div>
-                    }
-                }
+                <div class="card-header">
+                    <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
+                        Add Category
+                    </a>
+                </div>
                 <div class="card-header">
                     <form class="form-inline search-form" method="get" asp-action="Index">
                         <div class="input-group">

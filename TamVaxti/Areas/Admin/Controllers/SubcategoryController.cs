@@ -160,6 +160,16 @@ public async Task<IActionResult> Create(SubCategoryCreateVM subcategory)
 
             if (subcategory is null) return NotFound();
 
+            Product pro = await _context.Products.Where(pro => pro.SubcategoryId == id).FirstOrDefaultAsync();
+
+            if (pro != null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "Product  for this SubCategory exist please delete the Product of SubCategory from Product menu.";
+                return RedirectToAction(nameof(Index));
+            }
+
+
             if (!string.IsNullOrEmpty(subcategory.SubcategoryImage))
             {
                 var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "subcategories");

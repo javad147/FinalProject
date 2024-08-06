@@ -55,11 +55,11 @@
     }
 
     .search-form .form-group {
-        margin-right: 10px; 
+        margin-right: 10px;
     }
 
     .search-form .btn {
-        margin-left: 5px; 
+        margin-left: 5px;
     }
 
 </style>
@@ -112,18 +112,11 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    if (!User.IsInRole("SuperAdmin"))
-                    {
-                        <div class="card-header">
-                            <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
-                                Add Subcategory
-                            </a>
-                        </div>
-                    }
-                }
-
+                <div class="card-header">
+                    <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
+                        Add Subcategory
+                    </a>
+                </div>
                 <div class="card-header">
                     <form class="form-inline search-form" method="get" asp-action="Index">
                         <div class="input-group">
@@ -146,10 +139,10 @@
                         <table class="table all-package table-subcategory " id="editableTable">
                             <thead>
                                 <tr>
-                                 
+
                                     <th align="left">Image</th>
-                                    <th>Category Name</th> 
                                     <th>Sub Category Name</th>
+                                    <th>Category Name</th>
                                     <th class="td-status">Published</th>
                                     <th>Option</th>
                                 </tr>
@@ -159,7 +152,7 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        
+
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.SubcategoryImage))
                                             {
@@ -171,9 +164,10 @@
 
                                             }
                                         </td>
-                                        <td class="text-align-left" data-field="category">@item.CategoryName</td> 
+
 
                                         <td data-field="name">@item.Name</td>
+                                        <td class="text-align-left" data-field="category">@item.CategoryName</td>
                                         <td class="td-status">
                                             @if (item.IsPublished)
                                             {
@@ -214,7 +208,7 @@
 
 <script>
     function clearSearch() {
-        
+
         window.location.href = '@Url.Action("Index")';
     }
 </script>
