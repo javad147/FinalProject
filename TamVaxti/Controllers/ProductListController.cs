@@ -50,7 +50,8 @@ namespace TamVaxti.Controllers
       //  [ValidateAntiForgeryToken]
         public async Task<IActionResult> FilterProducts([FromBody] FilterProductsRequest request)
         {
-            List<Product> products = await _productService.GetAllWithImagesAsync();
+            List<Product> result = await _productService.GetAllWithSkusAsync();
+            var products = _productService.GetProductSkuListVM(result);
 
             if (request.SelectedCategoryIds != null && request.SelectedCategoryIds.Any())
             {

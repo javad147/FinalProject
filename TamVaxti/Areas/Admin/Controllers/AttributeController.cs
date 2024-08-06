@@ -129,6 +129,14 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            AttributeOption Att = await _context.AttributeOptions.Where(Att => Att.AttributeId == id).FirstOrDefaultAsync();
+            if (Att != null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "Attribute Option for this Attribute exist please delete the Attribute Option of Attribute from Attribute Options menu.";
+                return RedirectToAction(nameof(Index));
+            }
+
             await _attributeService.DeleteAsync(attribute);
             TempData["messageType"] = "error";
             TempData["message"] = "Attribute Deleted Successfully.";
