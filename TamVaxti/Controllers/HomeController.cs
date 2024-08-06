@@ -44,7 +44,8 @@ namespace TamVaxti.Controllers
         public async Task<IActionResult> Index()
         {
             List<Category> categories = await _categoryService.GetAllAsync();
-            List<Product> products = await _productService.GetAllWithImagesAsync();
+            List<Product> products = await _productService.GetAllWithSkusAsync();
+            var result = _productService.GetProductSkuListVM(products);
             About aboutParts = await _context.AboutParts.FirstOrDefaultAsync();
             List<Position> positions = await _context.Positions.ToListAsync();
             List<Expert> experts = await _expertService.GetAllAsync();
@@ -68,7 +69,7 @@ namespace TamVaxti.Controllers
             HomeVM model = new()
             {
                 Categories = categories,
-                Products = products,
+                Products = result,
                 AboutParts = aboutParts,
                 Experts = experts,
                 Positions = positions,
