@@ -41,12 +41,12 @@ namespace TamVaxti.Services
         }
         public async Task<List<Brand>> GetAllActiveAsync()
         {
-            return await _context.Brand.OrderByDescending(b=>b.Id).Where(m => !m.SoftDeleted).ToListAsync();
+            return await _context.Brand.OrderByDescending(b=>b.Id).Where(m => m.IsPublished && !m.SoftDeleted).ToListAsync();
         }
 
         public async Task<List<Brand>> GetAllAsync()
         {
-            return await _context.Brand.OrderByDescending(b => b.Id).ToListAsync();
+            return await _context.Brand.OrderByDescending(b => b.Id).Where(m => !m.SoftDeleted).ToListAsync();
         }
 
         public async Task UpdateAsync(Brand brand)

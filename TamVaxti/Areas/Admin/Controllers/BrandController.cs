@@ -31,7 +31,7 @@ namespace TamVaxti.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
-            var brands = await _brandService.GetAllActiveAsync();
+            var brands = await _brandService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {
