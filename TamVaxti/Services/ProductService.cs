@@ -223,6 +223,7 @@ namespace TamVaxti.Services
                     Name = product.Name + " (" + sku.SkuCode + ")",
                     Description = product.Description,
                     MainImage = sku.ImageUrl1 ?? sku.ImageUrl2 ?? sku.ImageUrl3 ?? sku.ImageUrl4 ?? product.MainImage,
+                    CategoryId = product.CategoryId,
                     SkuId = sku.Id,
                     SkuCode = sku.SkuCode,
                     Price = sku.Price,
