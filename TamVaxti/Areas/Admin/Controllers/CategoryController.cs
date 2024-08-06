@@ -150,7 +150,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             if (pro != null)
             {
                 TempData["messageType"] = "error";
-                TempData["message"] = "Product  for this Category exist please delete the Product of Category from Product menu.";
+                TempData["message"] = "Product for this Category exist please delete the Product of Category from Product menu.";
                 return RedirectToAction(nameof(Index));
             }
 

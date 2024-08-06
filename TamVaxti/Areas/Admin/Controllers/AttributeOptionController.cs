@@ -115,10 +115,6 @@ namespace TamVaxti.Areas.Admin.Controllers
             return View(attributeOptions);
         }
 
-
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(long id)
@@ -127,6 +123,14 @@ namespace TamVaxti.Areas.Admin.Controllers
             if (attribute == null)
             {
                 return NotFound();
+            }
+
+            AttributeOptionSKU Att = await _context.AttributeOptionSKUs.Where(Att => Att.AttributeOptionId == id).FirstOrDefaultAsync();
+            if (Att != null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "Product for this Attribute Option exist please delete the Product of Attribute Option from Product menu.";
+                return RedirectToAction(nameof(Index));
             }
 
             await _attributeOptionService.DeleteAsync(attribute);
@@ -167,11 +171,6 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             return View(viewModel);
         }
-
-        
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
