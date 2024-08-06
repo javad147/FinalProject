@@ -51,7 +51,11 @@
                         </div>
                     </div>
                 </td>
-                <td><a href="#" class="icon"><i class="ti-close"></i></a></td>
+                <td>
+                    <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId">
+                        <i class="ti-close"></i>
+                    </a>
+                </td>
                 <td>
                     <h2 class="td-color">$@cartItem.SubTotal</h2>
                 </td>
