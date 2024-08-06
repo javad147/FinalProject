@@ -100,35 +100,29 @@
                             {
                                 <div id="tab-@category.Id" class="tab-content active @(index == 0 ? "default" : "")">
                                     <div class="row product-tab">
-                                        @foreach (var product in Model.Products.Where(x => x.CategoryId == category.Id && !x.SoftDeleted))
+                                        @foreach (var product in Model.Products.Where(x => x.CategoryId == category.Id))
                                         {
                                             <div class="tab-box">
                                                 <div class="product-box2">
                                                     <div class="media">
-                                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                                             <img class="img-fluid blur-up lazyload"
-                                                                 src="/img/@product.ProductImages.FirstOrDefault()?.ImageUrl" alt="">
+                                                                 src="/img/product/@product.MainImage" alt="">
                                                         </a>
                                                         <div class="media-body align-self-center">
-                                                            <div class="rating">
-                                                                @{
-                                                                    var randomRating = new Random().Next(1, 5);
-                                                                }
-                                                                @for (var i = 0; i < randomRating; i++)
+                                                            <div class="ratings">
+                                                                @for (int i = 1; i <= 5; i++)
                                                                 {
-                                                                    <i class="fa fa-star" style="color: #ffa200 !important;"></i>
+                                                                    var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
+                                                                    var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
+                                                                    <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
                                                                 }
-                                                                @for (var i = randomRating; i < 5; i++)
-                                                                {
-                                                                    <i class="fa fa-star" style="color: gray !important;"></i>
-                                                                }
-
                                                             </div>
-                                                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                                                 <h6>@product.Name</h6>
                                                             </a>
                                                             <h4>
-                                                                @product.DiscountPrice <del>@product.Price</del>
+                                                                @*@product.DiscountPrice <del>*@$@product.Price @*</del>*@
                                                             </h4>
                                                         </div>
                                                     </div>
@@ -161,7 +155,7 @@
                 </div>
                 <div class="product-4 product-m no-arrow">
 
-                    @foreach (var product in Model.Products.OrderByDescending(x => x.Id).Take(4))
+                    @foreach (var product in Model.Products.OrderByDescending(x => x.SkuId).Take(4))
                     {
                         <div class="product-box product-wrap">
                             <div class="img-wrapper">
@@ -173,55 +167,47 @@
                                     </span>
                                 </div>
                                 <div class="front">
-                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
-                                        <img src="/img/@product.ProductImages.FirstOrDefault(x => x.IsMain)?.ImageUrl"
+                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                                        <img src="/img/product/@product.MainImage"
                                              class="img-fluid blur-up lazyload bg-img" alt="">
                                     </a>
                                 </div>
                                 <div class="back">
-                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
-                                        <img src="/img/@product.ProductImages.FirstOrDefault(x => !x.IsMain)?.ImageUrl"
+                                        <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                                        <img src="/img/product/@product.MainImage"
                                              class="img-fluid blur-up lazyload bg-img" alt="">
                                     </a>
                                 </div>
                                 <div class="cart-box">
-                                    <button onclick="openCart()" title="Add to cart">
+                                    <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
                                         <i class="ti-shopping-cart"></i>
-                                    </button>
-                                    <a href="javascript:void(0)" title="Add to Wishlist">
-                                        <i class="ti-heart"
-                                           aria-hidden="true">
-                                        </i>
                                     </a>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#quick-view"
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a href="javascript:void(0)" class="add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId" title="Add to Wishlist">
+                                            <i class="ti-heart" aria-hidden="true"></i>
+                                        </a>
+                                    }
+                                    @*<a href="#" data-bs-toggle="modal" data-bs-target="#quick-view"
                                        title="Quick View">
                                         <i class="ti-search" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="compare.html" title="Compare">
-                                        <i class="ti-reload"
-                                           aria-hidden="true">
-                                        </i>
-                                    </a>
+                                    </a>*@
                                 </div>
                             </div>
                             <div class="product-detail text-center">
-                                <div class="rating">
-                                    @{
-                                        var randomRating = new Random().Next(1, 5);
-                                    }
-                                    @for (var i = 0; i < randomRating; i++)
+                                <div class="ratings">
+                                    @for (int i = 1; i <= 5; i++)
                                     {
-                                        <i class="fa fa-star" style="color: #ffa200 !important;"></i>
-                                    }
-                                    @for (var i = randomRating; i < 5; i++)
-                                    {
-                                        <i class="fa fa-star" style="color: gray !important;"></i>
+                                         var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
+                                         var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
+                                         <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
                                     }
                                 </div>
-                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.Id">
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                     <h6>@product.Name</h6>
                                 </a>
-                                <h4>@product.Price</h4>
+                                <h4>$@product.Price</h4>
                             </div>
                         </div>
                     }
