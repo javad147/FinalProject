@@ -3,6 +3,7 @@
     public class ProductVM
     {
         public int Id { get; set; }
+        public long SkuId { get; set; }
         public string Image { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
