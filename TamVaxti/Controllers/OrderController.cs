@@ -86,8 +86,10 @@ public class OrderController : Controller
                 var product = od.Product;
                 mod.Products.Add(new ProductVM()
                 {
+                    SkuId = od.SKU.Id,
                     Name = product.Name + " (" + od.SKU.SkuCode + ")",
-                    Image = od.SKU.ImageUrl1 ?? od.SKU.ImageUrl2 ?? od.SKU.ImageUrl3 ?? od.SKU.ImageUrl4 ?? product.MainImage,
+                    Image = !string.IsNullOrEmpty(od.SKU.ImageUrl1) ? od.SKU.ImageUrl1 : !string.IsNullOrEmpty(od.SKU.ImageUrl2) ? od.SKU.ImageUrl2
+                            : !string.IsNullOrEmpty(od.SKU.ImageUrl3) ? od.SKU.ImageUrl3 : !string.IsNullOrEmpty(od.SKU.ImageUrl4) ? od.SKU.ImageUrl4 : product.MainImage,
                     Rating = RoundRating(_context.Product_Reviews
                         .Where(pr => pr.SkuId == od.SkuId && pr.Status)
                        .Average(pr => (double?)pr.Rating) ?? 0),

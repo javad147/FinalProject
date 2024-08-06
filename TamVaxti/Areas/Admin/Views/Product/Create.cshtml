@@ -7,14 +7,14 @@
                             <div class="col-lg-6">
                                 <div class="page-header-left">
                                     <h3>Add Products
-                                        <small>Multikart Admin panel</small>
+                                        <small>Add product details panel</small>
                                     </h3>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <ol class="breadcrumb pull-right">
                                     <li class="breadcrumb-item">
-                                        <a href="index.html">
+                                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
                                             <i data-feather="home"></i>
                                         </a>
                                     </li>
@@ -39,20 +39,26 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Description" class="control-label"></label>
-                                    <input asp-for="Description" class="form-control" data-val="true" data-val-required="Description is required." />
+                                    <textarea asp-for="Description" id="ProductDescription" class="form-control mb-2"></textarea>
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="SubcategoryId" class="control-label"></label>
-                                    <select asp-for="SubcategoryId" class="form-control" asp-items="ViewBag.subcategories"></select>
+                                    <select asp-for="SubcategoryId" class="form-control" asp-items="ViewBag.subcategories" onchange="showCategoryName(this)">
+                                        <option value="0">Select Subcategory</option>
+                                    </select>
                                     <span asp-validation-for="SubcategoryId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Category Name : </label>
+                                    <b><span id="categoryName"></span></b>
                                 </div>
                                 <div class="form-group">
                                     <label>Main Image</label>
                                     <input type="file" name="MainImage" class="form-control" data-val="true" data-val-required="Main image is required." accept="image/*" />
                                     <span asp-validation-for="MainImage" class="text-danger"></span>
                                 </div>
-
+                                <p style="color: crimson;">* Upload a photo in 800x800 resolution, under 1 MB, in .jpg, .png, or .jpeg format.</p>
                                 <h4>SKUs</h4>
                                 <table class="table" id="skus-table">
                                     <thead>
@@ -139,7 +145,26 @@
 
 @section Scripts {
     @*<partial name="_ValidationScriptsPartial" />*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.9.2/ckeditor.js"></script>
     <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('ProductDescription');
+        });
+
+        function showCategoryName(selectElement) {
+            var subcategoryId = selectElement.value;
+            if (subcategoryId) {
+                fetch(`/Admin/Product/GetCategoryNameBySubCategoryId?Id=${subcategoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('categoryName').innerText = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                document.getElementById('categoryName').innerText = '';
+            }
+        }
+
         document.getElementById('add-sku-btn').addEventListener('click', function () {
             var table = document.getElementById('skus-table').getElementsByTagName('tbody')[0];
             var rowCount = table.rows.length;

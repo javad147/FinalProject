@@ -183,7 +183,7 @@ namespace TamVaxti.Services
                                     .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                                     .ThenInclude(s => s.SkuStock)
                                     .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                                    .ThenInclude(s => s.ProductReviews)
+                                    .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
                                     .OrderByDescending(o => o.Id)
                                     .ToListAsync();
         }
@@ -208,7 +208,7 @@ namespace TamVaxti.Services
                                     .ThenInclude(ao => ao.Attribute)
                                 .Include(s => s.Product)
                                     .ThenInclude(p => p.SKUs.Where(s => !s.SoftDeleted))
-                                    .ThenInclude(s => s.ProductReviews)
+                                    .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
                                 .FirstOrDefaultAsync();
 
             return sku?.Product;
@@ -222,7 +222,8 @@ namespace TamVaxti.Services
                     ProductId = product.Id,
                     Name = product.Name + " (" + sku.SkuCode + ")",
                     Description = product.Description,
-                    MainImage = sku.ImageUrl1 ?? sku.ImageUrl2 ?? sku.ImageUrl3 ?? sku.ImageUrl4 ?? product.MainImage,
+                    MainImage = !string.IsNullOrEmpty(sku.ImageUrl1) ? sku.ImageUrl1 : !string.IsNullOrEmpty(sku.ImageUrl2) ? sku.ImageUrl2 
+                                : !string.IsNullOrEmpty(sku.ImageUrl3) ? sku.ImageUrl3 : !string.IsNullOrEmpty(sku.ImageUrl4) ? sku.ImageUrl4 : product.MainImage,
                     CategoryId = product.CategoryId,
                     SkuId = sku.Id,
                     SkuCode = sku.SkuCode,

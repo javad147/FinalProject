@@ -337,6 +337,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
 
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var Categoryres = await _subCategoryService.GetWithCategoryAsync(product.SubcategoryId);
+            ViewBag.CategoryName = Categoryres != null ? Categoryres.Category.Name : "";
 
             //return Ok(product);
 
@@ -354,6 +356,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var Categoryres = await _subCategoryService.GetWithCategoryAsync(request.SubcategoryId);
+            ViewBag.CategoryName = Categoryres != null ? Categoryres.Category.Name : "";
             var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);
             request.CategoryId = category.CategoryId;
 
@@ -571,6 +575,17 @@ namespace TamVaxti.Areas.Admin.Controllers
                 string path = Path.Combine(_env.WebRootPath, "img", "product", img);
                 path.DeleteFileFromLocal();
             }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCategoryNameBySubCategoryId(int id)
+        {
+            var res = await _subCategoryService.GetWithCategoryAsync(id);
+            if (res == null)
+            {
+                return Json(null);
+            }
+            return Json(res.Category.Name);
         }
 
     }
