@@ -20,7 +20,12 @@ namespace TamVaxti.Services
 
         public async Task CreateAsync(CategoryCreateVM category)
         {
-            await _context.Categories.AddAsync(new Category { Name = category.Name , CategoryImage = category.CategoryImage ,IsPublished = category.IsPublished  });
+            await _context.Categories.AddAsync(new Category { Name = category.Name , 
+                                                CategoryImage = category.CategoryImage ,
+                                                IsPublished = category.IsPublished , 
+                                                ShowInMenu = category.ShowInMenu,
+                                                ShowOnCategoryHomePage = category.ShowOnCategoryHomePage,
+                                                ShowOnTrendingHomePage = category.ShowOnTrendingHomePage  });
             await _context.SaveChangesAsync();
         }
 
@@ -34,6 +39,9 @@ namespace TamVaxti.Services
         {
             category.Name = categoryEdit.Name;
             category.IsPublished = categoryEdit.IsPublished;
+            category.ShowInMenu = categoryEdit.ShowInMenu;
+            category.ShowOnCategoryHomePage = categoryEdit.ShowOnCategoryHomePage;
+            category.ShowOnTrendingHomePage = categoryEdit.ShowOnTrendingHomePage;
 
             await _context.SaveChangesAsync();
         }
@@ -78,7 +86,13 @@ namespace TamVaxti.Services
                                                      .OrderByDescending(m => m.Id)
                                                      .ToListAsync();
 
-            return categories.Select(m => new CategoryVM { Id = m.Id, Name = m.Name , CategoryImage = m.CategoryImage , IsPublished = m.IsPublished}).ToList();
+            return categories.Select(m => new CategoryVM {      Id = m.Id, Name = m.Name , 
+                                                                CategoryImage = m.CategoryImage , 
+                                                                IsPublished = m.IsPublished,
+                                                                ShowInMenu = m.ShowInMenu,
+                                                                ShowOnCategoryHomePage = m.ShowOnCategoryHomePage,
+                                                                ShowOnTrendingHomePage = m.ShowOnTrendingHomePage
+                                                                }).ToList();
         }
 
         public async Task<Category> GetByIdAsync(int id)

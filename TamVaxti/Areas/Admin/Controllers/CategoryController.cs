@@ -41,7 +41,10 @@ namespace TamVaxti.Areas.Admin.Controllers
                 Id = c.Id,
                 Name = c.Name,
                 CategoryImage = c.CategoryImage,
-                IsPublished = c.IsPublished
+                IsPublished = c.IsPublished,
+                ShowInMenu = c.ShowInMenu,
+                ShowOnCategoryHomePage = c.ShowOnCategoryHomePage,
+                ShowOnTrendingHomePage = c.ShowOnTrendingHomePage
             }).ToList();
 
             ViewData["CurrentFilter"] = searchString;
@@ -114,8 +117,10 @@ namespace TamVaxti.Areas.Admin.Controllers
             {
                 Name = category.Name,
                 CategoryImage = imagePath,
-                IsPublished = category.IsPublished
-
+                IsPublished = category.IsPublished,
+                ShowInMenu = category.ShowInMenu,
+                ShowOnCategoryHomePage = category.ShowOnCategoryHomePage,
+                ShowOnTrendingHomePage = category.ShowOnTrendingHomePage,
             };
 
             await _categoryService.CreateAsync(newCategory);
@@ -130,6 +135,24 @@ namespace TamVaxti.Areas.Admin.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null) return BadRequest();
+
+            // agaar id --> subcateg! also and product !
+
+            SubCategory sub = await _context.SubCategories.Where(sub => sub.CategoryId == id).FirstOrDefaultAsync();
+            if(sub!= null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "SubCategory for this Category exist please delete the SubCategory of Category from SubCategory menu.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            Product pro = await _context.Products.Where(pro => pro.CategoryId == id).FirstOrDefaultAsync();
+            if (pro != null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "Product  for this Category exist please delete the Product of Category from Product menu.";
+                return RedirectToAction(nameof(Index));
+            }
 
 
             Category category = await _context.Categories.FindAsync(id);
@@ -170,7 +193,11 @@ namespace TamVaxti.Areas.Admin.Controllers
                 Id = category.Id,
                 Name = category.Name,
                 CategoryImage = category.CategoryImage,
-                IsPublished = category.IsPublished 
+                IsPublished = category.IsPublished,
+                ShowInMenu = category.ShowInMenu,
+                ShowOnCategoryHomePage = category.ShowOnCategoryHomePage,
+                ShowOnTrendingHomePage = category.ShowOnTrendingHomePage    
+
             });
         }
 
@@ -232,6 +259,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                             }
 
                             existCategory.Name = category.Name;
+
 
                             await _categoryService.EditAsync(existCategory, category);
             TempData["messageType"] = "success";

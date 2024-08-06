@@ -14,5 +14,10 @@ namespace TamVaxti.ViewModels.Categories
         public IFormFile ImageFile { get; set; } // For file upload
 
         public bool IsPublished { get; set; }
+
+        public bool ShowInMenu { get; set; }
+        public bool ShowOnCategoryHomePage { get; set; }
+
+        public bool ShowOnTrendingHomePage { get; set; }
     }
 }

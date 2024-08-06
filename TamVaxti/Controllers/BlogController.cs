@@ -3,6 +3,7 @@ using TamVaxti.Models;
 using TamVaxti.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace TamVaxti.Controllers
 {
@@ -19,10 +20,21 @@ namespace TamVaxti.Controllers
         [HttpPost]
         public async Task<IActionResult> PostComment(Comment comment)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+                comment.Name = userName;
+                comment.Email = userEmail;
+            }
+
             if (ModelState.IsValid)
             {
                 comment.Date = DateTime.Now;
                 await _blogService.AddCommentAsync(comment);
+                TempData["messageType"] = "success";
+                TempData["message"] = "Comment Posted Successfully.";
                 return RedirectToAction("Details", new { id = comment.BlogId });
             }
 
