@@ -41,13 +41,19 @@
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="Description" class="control-label"></label>
-                                    <input asp-for="Description" class="form-control" data-val="true" data-val-required="Description is required." />
+                                    <textarea asp-for="Description" id="ProductDescription" class="form-control mb-2"></textarea>
                                     <span asp-validation-for="Description" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <label asp-for="SubcategoryId" class="control-label"></label>
-                                    <select asp-for="SubcategoryId" class="form-control" asp-items="ViewBag.subcategories"></select>
+                                    <select asp-for="SubcategoryId" class="form-control" asp-items="ViewBag.subcategories" onchange="showCategoryName(this)">
+                                        <option value="0">Select Subcategory</option>
+                                    </select>
                                     <span asp-validation-for="SubcategoryId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Category Name : </label>
+                                    <b><span id="categoryName">@ViewBag.CategoryName</span></b>
                                 </div>
                                 <div class="form-group">
                                     <label>Main Image</label>
@@ -58,7 +64,8 @@
                                     }
                                     <span asp-validation-for="MainImage" class="text-danger"></span>
                                 </div>
-
+                                <p style="color: crimson;">* Upload a photo in 800x800 resolution, under 1 MB, in .jpg, .png, or .jpeg format.</p>
+                                
                                 <h4>SKUs</h4>
                                 <table class="table" id="skus-table">
                                     <thead>
@@ -170,13 +177,33 @@
 
 @section Scripts {
     @*<partial name="_ValidationScriptsPartial" />*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.9.2/ckeditor.js"></script>
     <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('ProductDescription');
+        });
+
         function deleteSku(id) {
             if (confirm('Are you sure you want to delete this sku?')) {
                 document.getElementById('skuId').value = id;
                 document.getElementById('deleteSkuForm').submit();
             }
         }
+
+        function showCategoryName(selectElement) {
+            var subcategoryId = selectElement.value;
+            if (subcategoryId) {
+                fetch(`/Admin/Product/GetCategoryNameBySubCategoryId?Id=${subcategoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('categoryName').innerText = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                document.getElementById('categoryName').innerText = '';
+            }
+        }
+
         document.getElementById('add-sku-btn').addEventListener('click', function () {
             var table = document.getElementById('skus-table').getElementsByTagName('tbody')[0];
             var rowCount = table.rows.length;
