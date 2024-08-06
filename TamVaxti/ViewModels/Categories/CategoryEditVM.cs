@@ -18,6 +18,11 @@ namespace TamVaxti.ViewModels.Categories
 
         public bool IsPublished { get; set; }
 
+        public bool ShowInMenu { get; set; }
+        public bool ShowOnCategoryHomePage { get; set; }
+
+        public bool ShowOnTrendingHomePage { get; set; }
+
         public bool RemoveImage { get; set; }
 
 

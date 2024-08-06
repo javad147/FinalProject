@@ -96,6 +96,24 @@
                     <span class="text-danger" asp-validation-for="IsPublished"></span>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-control-label">Is Show In Menu</label>
+                    <input asp-for="ShowInMenu" type="checkbox" class="form-check-input">
+                    <span class="text-danger" asp-validation-for="ShowInMenu"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label">Is Show On Category Home Page</label>
+                    <input asp-for="ShowOnCategoryHomePage" type="checkbox" class="form-check-input">
+                    <span class="text-danger" asp-validation-for="ShowOnCategoryHomePage"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label">Is Show On Trending Home Page</label>
+                    <input asp-for="ShowOnTrendingHomePage" type="checkbox" class="form-check-input">
+                    <span class="text-danger" asp-validation-for="ShowOnTrendingHomePage"></span>
+                </div>
+
                 <button type="submit" class="btn btn-primary btn-sm">
                     <i class="fa fa-dot-circle-o"></i> Submit
                 </button>
