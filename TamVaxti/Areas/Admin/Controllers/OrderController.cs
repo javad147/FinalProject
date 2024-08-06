@@ -28,13 +28,39 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string searchString = null)
         {
-            dynamic orders = await _orderService.GetAllOrdersPaginatedAsync(page, 100);
+            List<Order> orders = await _orderService.GetAllOrdersPaginatedAsync(page, 100);
+
+
+            var userIds = orders.Select(o => o.CustomerId).ToList();
+
+            var users = await _userManager.Users
+            .Where(u => userIds.Contains(u.Id))
+            .Select(u => new { u.Id, u.FullName })
+            .ToListAsync();
+
+            var orderViewModels = orders.Select(o => new OrderViewModel
+            {
+                OrderId = o.OrderId,
+                CustomerName = users.FirstOrDefault(u => u.Id == o.CustomerId)?.FullName,
+                OrderDate = o.OrderDate,
+                Payments = o.Payments,
+                TotalAmount = o.TotalAmount,
+                DeliveryStatus = o.DeliveryStatus
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                orderViewModels = orderViewModels.Where(o => o.CustomerName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
 
             int pageCount = await GetPageCountAsync(4);
 
-            Paginate<Order> model = new(orders, pageCount, page);
+            //Paginate<Order> model = new(orders, pageCount, page);
+            Paginate<OrderViewModel> model = new Paginate<OrderViewModel>(orderViewModels, pageCount, page);
+
             /*orders = from order in _context.Orders
                         join user in _userManager.Users.ToList()
                         on order.CustomerId equals user.Id
@@ -45,8 +71,16 @@ namespace TamVaxti.Areas.Admin.Controllers
                             Payments = order.Payments.ToList()
                         };
             var res = await orders.ToListAsync();*/
-            return View(orders);
+
+
+            ViewData["CurrentFilter"] = searchString;
+
+            return View(model);
+
+            //return View(orders);
         }
+
+
 
         private async Task<int> GetPageCountAsync(int take)
         {
@@ -169,7 +203,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
-            
+
         }
 
     }
