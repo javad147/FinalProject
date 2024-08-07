@@ -10,49 +10,60 @@
             </a>
         </div>
     </div>
-    <div class="cart_media">
-        <ul class="cart_product">
-            @foreach (var cartItem in Model)
-            {
-                <li>
-                    <div class="media">
-                        <a href="#">
-                            <img alt="" class="me-3" src="/img/product/@cartItem.Product.MainImage">
-                        </a>
-                        <div class="media-body">
+    @if (Model != null && Model.Any())
+    {
+        <div class="cart_media">
+            <ul class="cart_product">
+                @foreach (var cartItem in Model)
+                {
+                    <li>
+                        <div class="media">
                             <a href="#">
-                                <h4>@cartItem.Product.Name</h4>
+                                <img alt="" class="me-3" src="/img/product/@cartItem.Product.MainImage">
                             </a>
-                            <h4>
-                                <span>@cartItem.Quantity x $ @cartItem.Product.Price</span>
-                            </h4>
+                            <div class="media-body">
+                                <a href="#">
+                                    <h4>@cartItem.Product.Name</h4>
+                                </a>
+                                <h4>
+                                    <span>@cartItem.Quantity x $ @cartItem.Product.Price</span>
+                                </h4>
+                            </div>
                         </div>
-                    </div>
-                    <div class="close-circle">
-                        <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId">
-                            <i class="ti-trash"></i>
-                        </a>
+                        <div class="close-circle">
+                            <a href="#" class="remove-from-cart" data-product-id="@cartItem.Product.ProductId" data-sku-id="@cartItem.Product.SkuId">
+                                <i class="ti-trash"></i>
+                            </a>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+            <ul class="cart_total">
+                <li>
+                    <div class="total">
+                        <h5>subtotal : <span>$@Model.Sum(x => x.SubTotal)</span></h5>
                     </div>
                 </li>
-            }
+                <li>
 
-        </ul>
-        <ul class="cart_total">
-            <li>
-                <div class="total">
-                    <h5>subtotal : <span>$@Model.Sum(x => x.SubTotal)</span></h5>
-                </div>
-            </li>
-            <li>
-                @if (Model.Any())
-                {
                     <div class="buttons">
                         <a asp-controller="Basket" asp-action="Cart" class="btn btn-solid btn-xs view-cart">view cart</a>
                         <a asp-controller="Order" asp-action="CheckOut" class="btn btn-solid btn-xs checkout">checkout</a>
                     </div>
-                }
 
-            </li>
-        </ul>
-    </div>
+
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+<div class=" text-center alert alert-warning cart-alert mt-4" role="alert">
+    Your cart is empty.
+</div>
+<div class="buttons text-center">
+    <a asp-controller="ProductList" asp-action="Index" class="btn btn-solid btn-xs view-cart">Shop Now</a>
+</div>
+    }
 </div>
