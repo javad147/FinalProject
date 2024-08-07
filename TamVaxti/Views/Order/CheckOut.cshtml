@@ -259,6 +259,7 @@
                     refreshCartView();
                 },
                 error: function (error) {
+                    alert("To complete your order, please ensure all fields are filled out.");
                     $(this).attr("disabled", true);
 
                     console.log(error);
