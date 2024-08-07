@@ -117,8 +117,17 @@ public class OrderController : Controller
         var user = await GetUser();
 
         var userShippingAddress = await _context.UserShippingAddress.FirstOrDefaultAsync(x => x.UserId == user.Id);
-        userShippingAddress.User = user;
-
+        if(userShippingAddress != null)
+        {
+            userShippingAddress.User = user;
+        }
+        else
+        {
+            userShippingAddress = new UserShippingAddress
+            {
+                User = user
+            };
+        }
 
         var checkoutVM = new CheckoutVM
         {
