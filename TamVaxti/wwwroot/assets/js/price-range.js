@@ -2395,7 +2395,7 @@ $(function() {
         prefix: '$',
         onStart: updateInputs,
         onChange: updateInputs,
-        step: 100,
+        step: 10,
         prettify_enabled: true,
         prettify_separator: ".",
         values_separator: " - ",
