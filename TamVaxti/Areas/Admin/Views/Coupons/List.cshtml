@@ -86,12 +86,20 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <form class="form-inline search-form search-box">
-                            <div class="form-group">
-                                <input class="form-control-plaintext" type="search" placeholder="Search..">
+                        <form class="form-inline search-form" method="get" asp-action="List">
+                            <div class="input-group">
+                                <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
+                                <div class="input-group-append mr-2">
+                                    <button type="submit" class="btn btn-primary ml-2">Search</button>
+                                    @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                                    {
+                                        <button type="button" class="btn btn-secondary" onclick="clearCouponSearch()">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    }
+                                </div>
                             </div>
                         </form>
-
                         <a href="@Url.Action("Create", "Coupons")" class="btn btn-primary mt-md-0 mt-2">Add New Coupon</a>
 
                     </div>
@@ -170,30 +178,34 @@
 </div>
 
 <script>
-document.getElementById('deleteSelectedBtn').addEventListener('click', function () {
-    var checkboxes = document.querySelectorAll('.check-it:checked');
-    if (checkboxes.length === 0) {
-        alert('Please select at least one coupon to delete.');
-        return;
+    document.getElementById('deleteSelectedBtn').addEventListener('click', function () {
+        var checkboxes = document.querySelectorAll('.check-it:checked');
+        if (checkboxes.length === 0) {
+            alert('Please select at least one coupon to delete.');
+            return;
+        }
+
+        if (confirm('Are you sure you want to delete the selected coupons?')) {
+            var ids = Array.from(checkboxes).map(cb => cb.value);
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("DeleteSelected", "Coupons")';
+            form.style.display = 'none';
+
+            ids.forEach(id => {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'ids';
+                input.value = id;
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+
+    function clearCouponSearch() {
+        window.location.href = '@Url.Action("List")';
     }
-
-    if (confirm('Are you sure you want to delete the selected coupons?')) {
-        var ids = Array.from(checkboxes).map(cb => cb.value);
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '@Url.Action("DeleteSelected", "Coupons")';
-        form.style.display = 'none';
-
-        ids.forEach(id => {
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'ids';
-            input.value = id;
-            form.appendChild(input);
-        });
-
-        document.body.appendChild(form);
-        form.submit();
-    }
-});
 </script>
