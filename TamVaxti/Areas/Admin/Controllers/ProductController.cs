@@ -77,17 +77,22 @@ namespace TamVaxti.Areas.Admin.Controllers
             return View(reviews);
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             var paginatedDatas = await _productService.GetAllPaginatedAsync(page, 100);
 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                paginatedDatas = paginatedDatas.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
             List<ProductVM> mappedDatas = _productService.GetMappedDatas(paginatedDatas);
 
-
             int pageCount = await GetPageCountAsync(1);
-            
+
+            ViewData["CurrentFilter"] = searchString;
+
             Paginate<ProductVM> model = new(mappedDatas, pageCount, page);
 
             return View(model);
