@@ -165,7 +165,8 @@ namespace TamVaxti.Areas.Admin.Controllers
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
-                    Group = new SelectListGroup { Name = a.Type } // Assuming Type is needed
+                    Group = new SelectListGroup { Name = a.Type }, 
+                    Selected = a.Id == attributeOption.AttributeId
                 }).ToList()
             };
 
