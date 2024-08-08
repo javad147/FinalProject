@@ -5,6 +5,8 @@ using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels.Products;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TamVaxti.Helpers;
+using System.Linq;
 
 namespace TamVaxti.Services
 {
@@ -244,6 +246,42 @@ namespace TamVaxti.Services
                 })).ToList();
 
             return result;
+        }
+
+        public PaginatedList<ProductSkuListVM> GetProductSkuListVMPaginated(List<ProductSkuListVM> products, int pageIndex, int pageSize, string sortOrder)
+        {
+            IQueryable<ProductSkuListVM> result = products.AsQueryable();
+
+            switch (sortOrder)
+            {
+                case "Date":
+                    result = result.OrderBy(p => p.SkuId);
+                    break;
+                case "Name":
+                    result = result.OrderBy(p => p.Name);
+                    break;
+                case "name_desc":
+                    result = result.OrderByDescending(p => p.Name);
+                    break;
+                case "Price":
+                    result = result.OrderBy(p => p.Price);
+                    break;
+                case "price_desc":
+                    result = result.OrderByDescending(p => p.Price);
+                    break;
+                default:
+                    result = result.OrderByDescending(p => p.SkuId);
+                    break;
+            }
+
+            int totalCount = result.Count();
+
+            result = result.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+
+            var paginatedResult = result.ToList();
+
+            return new PaginatedList<ProductSkuListVM>(paginatedResult, totalCount, pageIndex, pageSize);
+
         }
 
         public async Task SoftDeleteSku(long skuId)
