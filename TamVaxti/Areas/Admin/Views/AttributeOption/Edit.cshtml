@@ -51,48 +51,26 @@
                     <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         @Html.HiddenFor(model => model.Id)
                         @Html.HiddenFor(model => model.ExistingImageUrl)
+                        @Html.HiddenFor(model => model.SelectedCategoryId)
                         <div class="form-group">
                             <label asp-for="Value" class="control-label">Value</label>
                             <input asp-for="Value" class="form-control" />
                             <span asp-validation-for="Value" class="text-danger"></span>
                         </div>
 
-     @*                   <div class="form-group">
+                        <div class="form-group">
                             <label asp-for="SelectedCategoryId" class="control-label">Category</label>
                             <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
                                 <option value="">-- Select a Category --</option>
                                 @foreach (var item in Model.Attributes)
                                 {
-                                    <option value="@item.Value" data-type="@item.Group.Name" @(item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "")>@item.Text</option>
-                                }
-                            </select>
-                            <span asp-validation-for="SelectedCategoryId" class="text-danger"></span>
-                        </div>*@
-
-                     @*   <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
-                            <option value="">-- Select a Category --</option>
-                            @foreach (var item in Model.Attributes)
-                            {
-                                var selected = item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "";
-                                <option value="@item.Value" data-type="@item.Group.Name" @Html.Raw(selected)>@item.Text</option>
-                            }
-                        </select>*@
-
-
-                         <div class="form-group">
-                            <label asp-for="SelectedCategoryId" class="control-label">Category</label>
-                            <select asp-for="SelectedCategoryId" class="form-control" onchange="categoryChanged()">
-                                <option value="">-- Select a Category --</option>
-                                @foreach (var item in Model.Attributes)
-                                {
-                                    string selected = item.Value == Model.SelectedCategoryId.ToString() ? "selected" : "";
-                                    <option value="@item.Value" data-type="@item.Group.Name" selected>@item.Text</option>
+                                    <option value="@item.Value" data-type="@item.Group.Name">@item.Text</option>
                                 }
                             </select>
                             <span asp-validation-for="SelectedCategoryId" class="text-danger"></span>
                         </div>
 
-                           
+
                         <div id="conditional-fields" style="display: none;">
                             <div id="color-field" class="form-group" style="display: none;">
                                 <label asp-for="Color" class="control-label">Color</label>
@@ -100,17 +78,6 @@
                                 <span asp-validation-for="Color" class="text-danger"></span>
                             </div>
 
-
-                            @*working code*@
-                          @*  <div id="image-url-field" class="form-group" style="display: none;">
-                                <label asp-for="ImageUrl" class="control-label">Image Upload</label>
-                                <input asp-for="ImageUrl" type="file" class="form-control" />
-                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                                @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
-                                {
-                                    <img src="~/img/attributes/@Model.ExistingImageUrl" alt="Current Image" style="max-width: 100px; max-height: 100px;" class="mt-2"/>
-                                }
-                            </div>*@
 
                             <div id="image-url-field" class="form-group" style="display: none;">
                                 <label asp-for="ImageUrl" class="control-label">Image Upload</label>
@@ -123,7 +90,7 @@
                                     </div>
                                 }
                             </div>
-                       
+
 
                         </div>
 
@@ -144,7 +111,7 @@
         var selectedCategoryId = $('select[name="SelectedCategoryId"]').val();
         var selectedOption = $('select[name="SelectedCategoryId"] option:selected');
         var categoryType = selectedOption.data('type');
-
+        console.log(selectedOption.data('type'));
         if (categoryType) {
             if (categoryType === 'Image') {
                 $('#color-field').hide();

@@ -21,6 +21,8 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         // GET: Admin/Coupons
+
+        [HttpGet]
         public async Task<IActionResult> List(string searchString)
         {
             var coupons = from c in _context.Coupons
@@ -28,11 +30,19 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                coupons = coupons.Where(s => s.CouponTitle.Contains(searchString) || s.CouponCode.Contains(searchString));
+                var couponList = await coupons.ToListAsync();
+
+                couponList = couponList.Where(s => s.CouponTitle.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                                                   || s.CouponCode.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                ViewData["CurrentFilter"] = searchString;
+                return View(couponList);
             }
 
+            ViewData["CurrentFilter"] = searchString;
             return View(await coupons.ToListAsync());
         }
+
 
         // GET: Admin/Coupons/Create
         public IActionResult Create()
