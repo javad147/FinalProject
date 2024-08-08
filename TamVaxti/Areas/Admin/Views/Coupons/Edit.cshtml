@@ -95,12 +95,13 @@
                                     <div class="form-group row">
                                         <label asp-for="DiscountType" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            <input asp-for="DiscountType" value="Percent" class="form-control" readonly="true" />
-                                            @* <select asp-for="DiscountType" class="custom-select w-100 form-control" required="required">
-                                                <option>"--Select--"</option>
+                                            @*<input asp-for="DiscountType" class="form-control"/>*@
+                                            <select asp-for="DiscountType" class="custom-select w-100 form-control">
+                                                <option value="">"--Select--"</option>
                                                 <option value="Percent">Percent</option>
-                                            </select> *@
-                                            @* <span asp-validation-for="DiscountType" class="text-danger">Discount Type is required</span> *@
+                                                <option value="Value">Value</option>
+                                            </select> 
+                                            <span asp-validation-for="DiscountType" class="text-danger"></span>
                                         </div>
                                     </div>
 
