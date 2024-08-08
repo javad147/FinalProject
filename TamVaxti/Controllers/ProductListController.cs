@@ -4,6 +4,9 @@ using TamVaxti.Services.Interfaces;
 using TamVaxti.ViewModels;
 using TamVaxti.ViewModels.Products;
 using Microsoft.AspNetCore.Mvc;
+using TamVaxti.Helpers;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace TamVaxti.Controllers
 {
@@ -18,10 +21,15 @@ namespace TamVaxti.Controllers
             _categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index(int? categoryId)
+        public async Task<IActionResult> Index(int? categoryId, string sortOrder, int? pageNumber)
         {
-            List<CategoryFilterVM> categories = await _categoryService.GetAllAsFilterAsync();
+            int pageSize = 10;
+            int pageIndex = pageNumber ?? 1;
 
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["CurrentPageSize"] = pageSize;
+
+            List<CategoryFilterVM> categories = await _categoryService.GetAllAsFilterAsync();
 
             foreach (var category in categories)
             {
@@ -31,12 +39,15 @@ namespace TamVaxti.Controllers
                 }
             }
 
-            List<Product> products = await _productService.GetAllWithSkusAsync();
+            List<Product> productList = await _productService.GetAllWithSkusAsync();
+            var products = _productService.GetProductSkuListVM(productList);
+
             if (categoryId is not null)
             {
                 products = products.Where(p => p.CategoryId == categoryId).ToList();
             }
-            var result = _productService.GetProductSkuListVM(products);
+
+            var result = _productService.GetProductSkuListVMPaginated(products, pageIndex, pageSize, sortOrder);
 
             var model = new ProductListVM()
             {
@@ -50,8 +61,14 @@ namespace TamVaxti.Controllers
       //  [ValidateAntiForgeryToken]
         public async Task<IActionResult> FilterProducts([FromBody] FilterProductsRequest request)
         {
-            List<Product> result = await _productService.GetAllWithSkusAsync();
-            var products = _productService.GetProductSkuListVM(result);
+            int pageSize = request.pageSize ?? 10;
+            int pageIndex = request.pageNumber ?? 1;
+
+            ViewData["CurrentSort"] = request.sortOrder;
+            ViewData["CurrentPageSize"] = pageSize;
+
+            List<Product> productList = await _productService.GetAllWithSkusAsync();
+            var products = _productService.GetProductSkuListVM(productList);
 
             if (request.SelectedCategoryIds != null && request.SelectedCategoryIds.Any())
             {
@@ -67,13 +84,18 @@ namespace TamVaxti.Controllers
                 products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
             }
 
-            return PartialView("_ProductListPartial", products);
+            var result = _productService.GetProductSkuListVMPaginated(products, pageIndex, pageSize, request.sortOrder);
+
+            return PartialView("_ProductListPartial", result);
         }
 
         public class FilterProductsRequest
         {
             public List<int> SelectedCategoryIds { get; set; }
             public string PriceRange { get; set; }
+            public string? sortOrder { get; set; }
+            public int? pageSize { get; set; }
+            public int? pageNumber { get; set; }
         }
     }
 }
