@@ -104,7 +104,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 var lowerCaseSearchString = searchString.ToLower();
-                reviews = reviews.Where(c => c.ProductName.ToLower().Contains(lowerCaseSearchString));
+                reviews = reviews.Where(c => c.ProductName.ToLower().Contains(lowerCaseSearchString)
+                                          || c.CustomerName.ToLower().Contains(lowerCaseSearchString));
             }
 
             if (!string.IsNullOrEmpty(statusFilter))

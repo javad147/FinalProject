@@ -249,7 +249,6 @@ else
                                     <th>Customer Name</th>
                                     <th>Product Name</th>
                                     <th>Rating</th>
-                                    <th>Review Description</th>
                                     <th class="td-status">Publish Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -273,7 +272,6 @@ else
                                                     }
                                                 </div>
                                             </td>
-                                            <td>@review.ReviewDescription</td>
                                             <td class="td-status">
                                                 @if (review.PublishStatus == "Published")
                                                 {
@@ -292,12 +290,11 @@ else
                                                 }
                                             </td>
                                             <td>
-                                                <a onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')">
-                                                    <i class="fa fa-edit fa-2x ms-2" title="Edit"></i>
-                                                </a>
-
                                                 <a onclick="openDetailsModal(@review.ReviewId)">
                                                     <i class="fa fa-eye fa-2x" title="Details"></i>
+                                                </a>
+                                                <a onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')" class="ms-2">
+                                                    <i class="fa fa-edit fa-2x" title="Edit"></i>
                                                 </a>
                                             </td>
                                         </tr>
@@ -349,18 +346,35 @@ else
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <p><strong>Customer Name:</strong> <span id="CustomerName"></span></p>
-                <p><strong>Product Name:</strong> <span id="ProductName"></span></p>
-                <p>
-                    <strong>Rating:</strong> <span id="Rating"></span>
-                </p>
-                <p><strong>Publish Status:</strong> <span id="publishStatus"></span></p>
-                <p><strong>Review Description:</strong></p>
-                <p><span id="ReviewDescription"></span></p>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="card">
+                    <div class="card-body">
+                        <!-- First Row: Customer Name & Product Name -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Customer Name:</strong> <span id="CustomerName" class="text-secondary"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Product Name:</strong> <span id="ProductName" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                        <!-- Second Row: Rating -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Rating:</strong> <span id="Rating" class="text-secondary"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Publish Status:</strong> <span id="publishStatus" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                        <!-- Third Row: Review Description -->
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-0"><strong>Review Description:</strong></p>
+                                <p class="text-secondary"><span id="ReviewDescription"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -411,10 +425,12 @@ else
                         $('#ProductName').text(response.data.productName);
                         $('#CustomerName').text(response.data.customerName);
                         $('#ReviewDescription').text(response.data.reviewDescription);
-                        // $('#Rating').text(response.data.rating);
                         $('#publishStatus').text(response.data.publishStatus);
 
                         var rating = response.data.rating;
+
+                        $('#Rating').empty();
+
                         for (var i = 1; i <= 5; i++) {
                             if (i <= rating) {
                                 $('#Rating').append('<span class="star filled">&#9733;</span>');
@@ -433,7 +449,6 @@ else
                 }
             });
         }
-
 
         function clearSearch() {
             window.location.href = '@Url.Action("ProductReview", "Product")';
