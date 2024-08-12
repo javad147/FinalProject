@@ -1,4 +1,5 @@
-﻿using TamVaxti.Models;
+﻿using TamVaxti.Helpers;
+using TamVaxti.Models;
 using TamVaxti.ViewModels.Products;
 
 namespace TamVaxti.Services.Interfaces
@@ -31,5 +32,6 @@ namespace TamVaxti.Services.Interfaces
         public Task<Product> GetProductBySkuIdAsync(long skuId);
         public List<ProductSkuListVM> GetProductSkuListVM(List<Product> products);
         public Task SoftDeleteSku(long skuId);
+        public PaginatedList<ProductSkuListVM> GetProductSkuListVMPaginated(List<ProductSkuListVM> products, int pageIndex, int pageSize, string sortOrder);
     }
 }

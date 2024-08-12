@@ -114,9 +114,9 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="product-filter-content">
-                                                    <div class="search-count">
+                                                    @*<div class="search-count">
                                                         <h5>Showing Products 1-24 of 10 Result</h5>
-                                                    </div>
+                                                    </div>*@
                                                     <div class="collection-view">
                                                         <ul>
                                                             <li><i class="fa fa-th grid-layout-view"></i></li>
@@ -144,80 +144,28 @@
                                                         </ul>
                                                     </div>
                                                     <div class="product-page-per-view">
-                                                        <select>
-                                                            <option value="High to low">
-                                                                24 Products Par Page
-                                                            </option>
-                                                            <option value="Low to High">
-                                                                50 Products Par Page
-                                                            </option>
-                                                            <option value="Low to High">
-                                                                100 Products Par Page
-                                                            </option>
+                                                        <select class="pageSize" onchange="updateModel()">
+                                                            <!option value="10" @(ViewData["CurrentPageSize"]?.ToString() == "10" ? "selected" : "")>10 Products Per Page</!option>
+                                                            <!option value="25" @(ViewData["CurrentPageSize"]?.ToString() == "25" ? "selected" : "")>25 Products Per Page</!option>
+                                                            <!option value="50" @(ViewData["CurrentPageSize"]?.ToString() == "50" ? "selected" : "")>50 Products Per Page</!option>
                                                         </select>
                                                     </div>
                                                     <div class="product-page-filter">
-                                                        <select>
-                                                            <option value="High to low">Sorting items</option>
-                                                            <option value="Low to High">50 Products</option>
-                                                            <option value="Low to High">100 Products</option>
+                                                        <select class="sortOrder" onchange="updateModel()">
+                                                            <option value="">Latest  </option>
+                                                            <!option value="Date" @(ViewData["CurrentSort"]?.ToString() == "Date" ? "selected" : "")>Oldest  </!option>
+                                                            <!option value="Price" @(ViewData["CurrentSort"]?.ToString() == "Price" ? "selected" : "")>Price (Low to High)  </!option>
+                                                            <!option value="price_desc" @(ViewData["CurrentSort"]?.ToString() == "price_desc" ? "selected" : "")>Price (High to Low)  </!option>
+                                                            <!option value="Name" @(ViewData["CurrentSort"]?.ToString() == "Name" ? "selected" : "")>Name (Ascending)  </!option>
+                                                            <!option value="name_desc" @(ViewData["CurrentSort"]?.ToString() == "name_desc" ? "selected" : "")>Name (Descending)  </!option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="product-wrapper-grid">
-                                        <div class="row margin-res" id="product-list">
-                                            @await Html.PartialAsync("_ProductListPartial", Model.Products)
-                                        </div>
-                                    </div>
-                                    <div class="product-pagination">
-                                        <div class="theme-paggination-block">
-                                            <div class="row">
-                                                <div class="col-xl-6 col-md-6 col-sm-12">
-                                                    <nav aria-label="Page navigation">
-                                                        <ul class="pagination">
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="#"
-                                                                   aria-label="Previous">
-                                                                    <span aria-hidden="true">
-                                                                        <i class="fa fa-chevron-left"
-                                                                           aria-hidden="true"></i>
-                                                                    </span> <span class="sr-only">Previous</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="page-item active">
-                                                                <a class="page-link"
-                                                                   href="#">1</a>
-                                                            </li>
-                                                            <li class="page-item">
-                                                                <a class="page-link"
-                                                                   href="#">2</a>
-                                                            </li>
-                                                            <li class="page-item">
-                                                                <a class="page-link"
-                                                                   href="#">3</a>
-                                                            </li>
-                                                            <li class="page-item">
-                                                                <a class="page-link" href="#"
-                                                                   aria-label="Next">
-                                                                    <span aria-hidden="true">
-                                                                        <i class="fa fa-chevron-right"
-                                                                           aria-hidden="true"></i>
-                                                                    </span> <span class="sr-only">Next</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </nav>
-                                                </div>
-                                                <div class="col-xl-6 col-md-6 col-sm-12">
-                                                    <div class="product-search-count-bottom">
-                                                        <h5>Showing Products 1-24 of 10 Result</h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div id="product-list"> 
+                                         @await Html.PartialAsync("_ProductListPartial", Model.Products)
                                     </div>
                                 </div>
                             </div>
@@ -235,16 +183,18 @@
     <script src="~/assets/js/price-range.js"></script>
 
     <script>
-        function updateModel() {
+        function updateModel(pageNumber = 1) {
             var priceRange = $(".js-range-slider").val();
             var selectedCategoryIds = Array.from(document.querySelectorAll('.category-filter-checkbox:checked'), checkbox => parseInt(checkbox.value));
+            var sortOrder = $('.sortOrder').val();
+            var pageSize = $('.pageSize').val();
 
             fetch('@Url.Action("FilterProducts", "ProductList")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ selectedCategoryIds: selectedCategoryIds, priceRange: priceRange })
+                body: JSON.stringify({ selectedCategoryIds: selectedCategoryIds, priceRange: priceRange, sortOrder: sortOrder, pageSize: pageSize, pageNumber: pageNumber })
             })
                 .then(response => response.text())
                 .then(html => {

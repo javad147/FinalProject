@@ -25,7 +25,6 @@ namespace TamVaxti.Models
         [Required]
         public bool AllowFreeShipping { get; set; }
 
-        [Required]
         public int Quantity { get; set; }
 
         [Required]
@@ -50,11 +49,14 @@ namespace TamVaxti.Models
         [Range(0, 9999999999999999.99)]
         public decimal? MaximumSpend { get; set; }
 
+        [Required]
+        [Range(0, 999999)]
         public int? PerLimit { get; set; }
 
-        public int? PerCustomer { get; set; }
-
         [Required]
+        [Range(0,999999)]
+        public int? PerCustomer { get; set; }
+        
         public DateTime CreatedDate { get; set; }
 
         [Required]
@@ -62,6 +64,14 @@ namespace TamVaxti.Models
 
         public DateTime? DeletedDate { get; set; }
     }
-
-}
+    public class CouponResponse
+    { 
+        public string Response { get; set; }
+        public string Message { get; set; }
+        public string DiscountType { get; set; }
+        public decimal? DiscountPercentage { get; set; }
+        public decimal? DiscountValue { get; set; }
+        public decimal? DiscountAmount { get; set; }
+    }
+ }
 

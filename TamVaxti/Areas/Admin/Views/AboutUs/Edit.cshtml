@@ -82,6 +82,7 @@
                                     }
                                     <label class="col-form-label pt-0">Upload Image</label>
                                     <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                                    <span>Upload a photo in 1370x385 resolution, 274:77 aspect ratio, under 20 KB, in .jpg, .png, .webp, or .jpeg format.</span>
                                 </div>
                             </div>
                         </div>
@@ -127,6 +128,7 @@
                                                     <label class="col-form-label pt-0">Upload Image</label>
                                                     <input asp-for="@Model.AboutUsTeam[i].ImageFile" type="file" class="form-control mb-2" />
                                                     <input asp-for="@Model.AboutUsTeam[i].ImageName" type="hidden" />
+                                                    <span>Upload a photo in 377x494 resolution, 29:38 aspect ratio, under 10 KB, in .jpg, .png, .webp, or .jpeg format.</span>
                                                     <button type="button" class="btn btn-danger mt-2 remove-team">Remove</button>
                                                 </div>
                                             </div>
@@ -181,6 +183,7 @@
                                                 ${historyItem.imageName ? `<img src="/img/about/${historyItem.imageName}" alt="Image" class="custom-image mb-2" />` : ''}
                                             <label class="col-form-label pt-0">Upload Image</label>
                                             <input name="AboutHistory[${index}].ImageFile" type="file" class="form-control mb-2" />
+                                             <span>Upload a photo in 250x250 resolution, 1:1 aspect ratio, under 5 KB, in .jpg, .png, .webp, or .jpeg format.</span>
                                             <input name="AboutHistory[${index}].ImageName" type="hidden" value="${historyItem.imageName}" />
                                             <button type="button" class="btn btn-danger mt-2 remove-history mt-2">Remove</button>
                                         </div>
@@ -206,6 +209,7 @@
                                             <div class="col-sm-6">
                                                 <label class="col-form-label pt-0">Upload Image</label>
                                                 <input type="file" name="AboutHistory[${index}].ImageFile" class="form-control mb-2" />
+                                                 <span>Upload a photo in 250x250 resolution, 1:1 aspect ratio, under 5 KB, in .jpg, .png, .webp, or .jpeg format.</span>
                                                 <input type="hidden" name="AboutHistory[${index}].ImageName" />
                                                         <button type="button" class="btn btn-danger mt-3 remove-history">Remove</button>
                                             </div>
@@ -235,6 +239,7 @@
                                                     <label class="col-form-label pt-0">Upload Image</label>
                                                     <input type="file" name="AboutUsTeam[${index}].ImageFile" class="form-control mb-2" />
                                                     <input type="hidden" name="AboutUsTeam[${index}].ImageName" />
+                                                    <span>Upload a photo in 377x494 resolution, 29:38 aspect ratio, under 10 KB, in .jpg, .png, .webp, or .jpeg format</span>
                                                     <button type="button" class="btn btn-danger mt-3 remove-team">Remove</button>
                                                 </div>
 
