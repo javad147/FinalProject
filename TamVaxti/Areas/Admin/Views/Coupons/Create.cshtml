@@ -52,7 +52,6 @@
                                     <div class="form-group row">
                                         <label asp-for="CouponTitle" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            <span>@Model.CouponTitle</span> <span>@Model.DiscountType</span>
                                             <input asp-for="CouponTitle" class="form-control" />
                                             <span asp-validation-for="CouponTitle" class="text-danger"></span>
                                         </div>
@@ -86,13 +85,13 @@
                                             <span asp-validation-for="EndDate" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
+                                    @*<div class="form-group row">
                                         <label asp-for="Quantity" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
                                             <input asp-for="Quantity" class="form-control" />
                                             <span asp-validation-for="Quantity" class="text-danger"></span>
                                         </div>
-                                    </div>
+                                    </div>*@
                                     <div class="form-group row">
                                         <label asp-for="DiscountType" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
@@ -144,12 +143,14 @@
                                 <label asp-for="PerLimit" class="col-xl-3 col-md-4 control-label"></label>
                                 <div class="col-md-7">
                                     <input asp-for="PerLimit" class="form-control" type="number" />
+                                    <span asp-validation-for="PerLimit" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label asp-for="PerCustomer" class="col-xl-3 col-md-4 control-label"></label>
                                 <div class="col-md-7">
                                     <input asp-for="PerCustomer" class="form-control" type="number" />
+                                    <span asp-validation-for="PerCustomer" class="text-danger"></span>
                                 </div>
                             </div>
 

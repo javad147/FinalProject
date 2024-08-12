@@ -44,6 +44,7 @@ public class OrderController : Controller
             .ThenInclude(op => op.Product)
             .Include(o => o.OrderProductDetails)
             .ThenInclude(op => op.SKU)
+            .OrderByDescending(o=> o.OrderId)
             .ToListAsync();
 
         // Calculate ratings in-memory, filtering published reviews
@@ -143,86 +144,104 @@ public class OrderController : Controller
     public async Task<IActionResult> SubmitOrder([FromBody] OrderCreateViewModel orderVM)
     {
         // Validate the orderViewModel data
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var cart = await GetOrderProducts();
-
-        var user = await GetUser();
-
-        decimal discountAmount = 0;
-        if (!string.IsNullOrEmpty(orderVM.CouponCode))
+        if (!ModelState.IsValid)
         {
-            var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == orderVM.CouponCode && c.IsEnabled);
-            if (coupon != null)
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            // Retrieve cart items and user
+            var cart = await GetOrderProducts();
+            var user = await GetUser();
+
+            // Calculate discount amount if a coupon code is provided
+            var couponResult = await CalculateCouponDiscount(orderVM.CouponCode);
+            if (couponResult.Response == "success")
             {
-                discountAmount = cart.Sum(x => x.SubTotal) * (coupon.DiscountValue / 100);
-                orderVM.CouponDiscountAmount = discountAmount;
-                orderVM.CouponDiscountPercentage = coupon.DiscountValue;
+                orderVM.CouponDiscountAmount = couponResult.DiscountAmount;
+                orderVM.CouponDiscountPercentage = couponResult.DiscountPercentage;
             }
             else
             {
                 orderVM.CouponCode = string.Empty;
+                orderVM.CouponDiscountAmount = 0;
+                orderVM.CouponDiscountPercentage = 0;
             }
+
+            // Create a new order
+            var subtotal = cart.Sum(x => x.SubTotal);
+            var discountAmount = orderVM.CouponDiscountAmount ?? 0;
+            var order = new Order
+            {
+                CustomerId = user.Id,
+                OrderDate = DateTime.Now,
+                Subtotal = subtotal - discountAmount,
+                ShippingCharges = 0, // Set as needed
+                CouponCode = orderVM.CouponCode,
+                CouponDiscountAmount = orderVM.CouponDiscountAmount,
+                CouponDiscountPercentage = orderVM.CouponDiscountPercentage,
+                Tax = subtotal * 0.05m, // Assuming tax is 5% of subtotal
+                ShippingAddress = GetShippingAddress(orderVM),
+                DeliveryAddress = GetShippingAddress(orderVM),
+                DeliveryStatus = "Pending"
+            };
+
+            // Add the order to the database
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            // Create and add the payment record
+            var payment = new Payment
+            {
+                OrderId = order.OrderId,
+                PaymentMode = orderVM.PaymentMode,
+                PaymentAmount = order.Subtotal + order.Tax - discountAmount, // Calculate payment amount
+                PaymentDate = DateTime.Now,
+                PaymentStatus = "Paid"
+            };
+            _context.Payments.Add(payment);
+
+            // Add order product details
+            foreach (var item in cart)
+            {
+                var orderProductDetail = new OrderProductDetail
+                {
+                    OrderId = order.OrderId,
+                    ProductId = item.Product.ProductId,
+                    SkuId = item.Product.SkuId,
+                    Quantity = item.Quantity,
+                    Amount = item.SubTotal
+                };
+                _context.OrderProductDetails.Add(orderProductDetail);
+            }
+
+            // Add SKU stock adjustments
+            foreach (var item in cart)
+            {
+                var skuStock = new SkuStock
+                {
+                    SkuId = item.Product.SkuId,
+                    Quantity = -item.Quantity
+                };
+                _context.SkuStocks.Add(skuStock);
+            }
+
+            // Save all changes to the database
+            await _context.SaveChangesAsync();
+
+            // Clear the cart cookie
+            _accessor.HttpContext?.Response.Cookies.Delete("cart");
+
+            // Return success response with the created order
+            return Ok(new { orderId = order.OrderId });
         }
-
-        var order = new Order
+        catch (Exception ex)
         {
-            CustomerId = user.Id,
-            OrderDate = DateTime.Now,
-            Subtotal = cart.Sum(x => x.SubTotal) - discountAmount,
-            ShippingCharges = 0,
-            CouponCode = orderVM.CouponCode,
-            CouponDiscountAmount = orderVM.CouponDiscountAmount,
-            CouponDiscountPercentage = orderVM.CouponDiscountPercentage,
-            Tax = cart.Sum(x => x.SubTotal) * 0.05m,
-            ShippingAddress = GetShippingAddress(orderVM),
-            DeliveryAddress = GetShippingAddress(orderVM),
-            DeliveryStatus = "Pending"
-        };
-        _context.Orders.Add(order);
-        await _context.SaveChangesAsync();
-
-        var payment = new Payment()
-        {
-            OrderId = order.OrderId,
-            PaymentMode = orderVM.PaymentMode,
-            PaymentAmount = order.TotalAmount,
-            PaymentDate = order.OrderDate,
-            PaymentStatus = "Paid"
-        };
-        _context.Payments.Add(payment);
-        await _context.SaveChangesAsync();
-
-        foreach (var orderProductDetail in cart.Select(item => new OrderProductDetail
-        {
-            OrderId = order.OrderId,
-            ProductId = item.Product.ProductId,
-            SkuId = item.Product.SkuId,
-            Quantity = item.Quantity,
-            Amount = item.SubTotal,
-
-        }))
-        {
-            _context.OrderProductDetails.Add(orderProductDetail);
+            // Log the exception (consider using a logging framework)
+            // For now, just return a generic error message
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
-
-        await _context.SaveChangesAsync();
-
-        foreach (var skuStock in cart.Select(item => new SkuStock
-        {
-            SkuId = item.Product.SkuId,
-            Quantity = -item.Quantity
-        }))
-        {   
-            _context.SkuStocks.Add(skuStock);
-        }
-        await _context.SaveChangesAsync();
-
-        // Clear the cart cookie
-        _accessor.HttpContext?.Response.Cookies.Delete("cart");
-
-        // Return a success response
-        return Ok(order);
     }
 
     private async Task<List<BasketVM>> GetOrderProducts()
@@ -263,19 +282,70 @@ public class OrderController : Controller
     [HttpPost]
     public async Task<IActionResult> ApplyCoupon([FromBody] string couponCode)
     {
-        // Validate the coupon code
+        var result = await CalculateCouponDiscount(couponCode);
+        return result.Response == "success" ? Ok(result) : BadRequest(result.Message);
+    }
+
+    private async Task<CouponResponse> CalculateCouponDiscount(string couponCode)
+    {
         var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode == couponCode && c.IsEnabled);
         if (coupon == null)
         {
-            return BadRequest("Invalid or expired coupon code.");
+            return new CouponResponse { Response = "error", Message = "Invalid coupon code." };
+        }
+        if (coupon.StartDate > DateTime.Now || coupon.EndDate < DateTime.Now)
+        {
+            return new CouponResponse { Response = "error", Message = "Expired coupon code." };
         }
 
-        // Calculate the discount
-        var discount = coupon.DiscountValue;
+        // Get count of usage of coupon and compare if it is completed or not.
+        var couponClaimCount = await _context.Orders.Where(o => o.CouponCode == couponCode).CountAsync();
+        if (coupon.PerLimit !=null  && coupon.PerLimit == couponClaimCount)
+        {
+            return new CouponResponse { Response = "error", Message = "Expired coupon code." };
+        }
+        // Get count of usage of coupon and compare if it is completed or not.
+        var user = await _userManager.FindByNameAsync(User.Identity.Name);
+        var userClaimCount = await _context.Orders.Where(o => o.CouponCode == couponCode && o.CustomerId == user.Id).CountAsync();
+        if (coupon.PerCustomer != null && coupon.PerCustomer == userClaimCount)
+        {
+            return new CouponResponse { Response = "error", Message = "Expired coupon code." };
+        }
 
-        // Return the discount percentage
-        return Ok(discount);
+        // Calculate the total amount in the cart
+        var cart = await GetOrderProducts();
+        var totalAmount = cart.Sum(x => x.SubTotal);
+
+        // If cart amount is less then minimum spend amount.
+        if (coupon.MinimumSpend != null && totalAmount < coupon.MinimumSpend)
+        {
+            return new CouponResponse { Response = "error", Message = $"The total amount must be at least ${coupon.MinimumSpend} to apply this coupon." };
+        }
+
+        // Calculate the applicable amount based on MaximumSpend if it is greater than 0
+        var applicableAmount = coupon.MaximumSpend > 0 && totalAmount > coupon.MaximumSpend ? coupon.MaximumSpend : totalAmount;
+
+        // Calculate the discount
+        var discount = coupon.DiscountType == "Percent"
+            ? applicableAmount * (coupon.DiscountValue / 100)
+            : coupon.DiscountValue;
+
+        // Ensure the discount does not exceed the applicable amount
+        discount = discount < applicableAmount ? discount : applicableAmount;
+
+        // Check if the total amount meets the minimum spend requirement
+
+
+        // Return the discount type and value
+        //return Ok(new { coupon.DiscountType, coupon.DiscountValue, discount });
+        return new CouponResponse { Response = "success",
+            DiscountType = coupon.DiscountType,
+            DiscountAmount = discount,
+            DiscountValue = coupon.DiscountValue,
+            DiscountPercentage = coupon.DiscountType == "Percent" ? coupon.DiscountValue : (discount / totalAmount) * 100,
+            Message = "Coupon applied successfully!" };
     }
+
 }
 
 public class OrderCreateViewModel
