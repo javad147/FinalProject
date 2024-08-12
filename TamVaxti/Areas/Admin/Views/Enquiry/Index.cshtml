@@ -1,6 +1,4 @@
-﻿
-
-@model IEnumerable<TamVaxti.ViewModels.Enquiry.EnquiryVM>
+﻿@model IEnumerable<TamVaxti.ViewModels.Enquiry.EnquiryVM>
 
 @{
     ViewData["Title"] = "Enquiries";
@@ -72,12 +70,113 @@
         }
 
     .card-small {
-        height: 100px; 
-        overflow: hidden; 
+        height: 100px;
+        overflow: hidden;
     }
+    /* Modal Header Styling */
+    .modal-header {
+        background-color: #007bff; /* Bootstrap primary color */
+        color: #ffffff; /* White text color */
+        border-bottom: none; /* Remove border from bottom */
+    }
+
+    /* Modal Title */
+    .modal-title {
+        font-size: 1.5rem; /* Medium font size */
+        color : #ffffff
+    }
+
+    /* Modal Body and Card */
+    .modal-body .card {
+        border: none; /* Remove border from card */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+    /* Card Body */
+    .card-body {
+        padding: 20px;
+        font-size: 1rem; /* Medium font size */
+        line-height: 1.5;
+    }
+
+        /* Paragraphs within Modal */
+        .card-body p {
+            margin-bottom: 10px;
+            font-weight: 500; /* Medium font weight */
+            color: #333333; /* Dark text color */
+        }
+
+        /* Span Elements for Details */
+        .card-body span {
+            font-weight: 400; /* Regular font weight */
+            color: #6c757d; /* Secondary text color */
+        }
+
+    /* Modal Footer */
+    .modal-footer {
+        border-top: none; /* Remove border from top */
+    }
+
+        /* Buttons in Modal Footer */
+        .modal-footer .btn {
+            font-size: 1rem; /* Medium font size */
+            padding: 10px 20px;
+        }
+
+    /* Close Button Styling */
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem; /* Medium-large size for the close button */
+        color: #ffffff; /* White color for the close button */
+    }
+
+        .btn-close:hover {
+            color: #ffdddd; /* Slight hover effect */
+        }
+
+    /* Modal Size Adjustments */
+    .modal-lg {
+        max-width: 800px; /* Adjust maximum width for the modal */
+    }
+
+    /* Text Secondary Override */
+    .text-secondary {
+        color: #6c757d !important; /* Override default Bootstrap text-secondary color */
+    }
+
+    .no-enquiries {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px; /* Adjust height as needed */
+        background-color: #e9ecef; /* Soft grey background */
+        border-radius: 8px;
+        margin-top: 20px; /* Space from the top */
+        padding: 20px; /* Padding inside the box */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        text-align: center;
+    }
+
+        .no-enquiries p {
+            font-size: 1.3rem; /* Medium-sized text */
+            color: #495057; /* Slightly darker text color */
+            margin: 0;
+            font-weight: 600; /* Bold text */
+            letter-spacing: 0.5px; /* Slight letter spacing */
+        }
+
+        .no-enquiries::before {
+            content: "\f071"; /* FontAwesome exclamation triangle */
+            font-family: FontAwesome;
+            font-size: 2rem;
+            color: #dc3545; /* Red color for the icon */
+            margin-right: 10px; /* Space between icon and text */
+        }
+
+
+
 </style>
-
-
 
 <div class="container-fluid">
     <div class="page-header">
@@ -85,8 +184,8 @@
             <div class="col-lg-6">
                 <div class="page-header-left">
                     <h3>
-                        Enquiries 
-                        <small>Contact Form Enquiries </small>
+                        Enquiries
+                        <small>Contact Form Enquiries</small>
                     </h3>
                 </div>
             </div>
@@ -104,14 +203,27 @@
     </div>
 </div>
 
+
 <div class="card card-small">
     <div class="card-body">
         <div class="search-form-container">
             <form class="search-form" method="get" asp-action="Index">
-                <div class="input-group mr-2">
+                <div class="input-group">
+                    <!-- Search Input -->
                     <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
-                    <div class="input-group-append mr-2">
-                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+
+                    <!-- Status Radio Buttons with Margin -->
+                    <div class="ml-3 mt-3" style="margin-left: 15px;">
+                        <label class="mr-2">Status:</label>
+                        <input type="radio" id="read" name="statusFilter" value="Read" @(ViewData["CurrentStatus"] == "Read" ? "checked" : "")>
+                        <label for="read" class="mr-2">Read</label>
+                        <input type="radio" id="unread" name="statusFilter" value="Unread" @(ViewData["CurrentStatus"] == "Unread" ? "checked" : "")>
+                        <label for="unread" class="mr-2">Unread</label>
+                    </div>
+
+                    <!-- Search Button with Margin -->
+                    <div class="input-group-append" style="margin-left: 15px;">
+                        <button type="submit" class="btn btn-primary">Search</button>
                         @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
                         {
                             <button type="button" class="btn btn-secondary" onclick="clearSearch()">
@@ -128,7 +240,9 @@
 
 @if (!Model.Any())
 {
-    <p>No enquiries available.</p>
+    <div class="no-enquiries">
+        <p>No enquiries available.</p>
+    </div>
 }
 else
 {
@@ -140,9 +254,8 @@ else
                         <table class="table table-responsive">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
+                                    <th>Id</th>
+                                    <th>Name</th>
                                     <th>Phone</th>
                                     <th>Email</th>
                                     <th>Message</th>
@@ -156,9 +269,8 @@ else
                                     foreach (var enquiry in Model)
                                     {
                                         <tr>
-                                            <td>@index.ToString("D2")</td>
-                                            <td>@enquiry.FirstName</td>
-                                            <td>@enquiry.LastName</td>
+                                            <td>@enquiry.Id</td>
+                                            <td>@enquiry.FirstName @enquiry.LastName</td>
                                             <td>@enquiry.Phone</td>
                                             <td>@enquiry.EmailId</td>
                                             <td>@enquiry.ShortMessage</td>
@@ -180,7 +292,8 @@ else
                                                 }
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm" onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')">Edit</button>
+                                                <i class="fa fa-eye fa-2x ms-2" title="View" onclick="openDetailModal('@enquiry.Id')"></i>
+                                                <i class="fa fa-edit fa-2x" onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')"></i>
                                             </td>
                                         </tr>
                                         index++;
@@ -195,7 +308,7 @@ else
     </div>
 }
 
-
+<!-- Edit Enquiry Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -204,7 +317,6 @@ else
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-
             </div>
             <div class="modal-body">
                 <form id="editForm">
@@ -223,11 +335,89 @@ else
     </div>
 </div>
 
+
+<!-- Enquiry Details Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- Increased size for better content display -->
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <!-- Added background color for header -->
+                <h5 class="modal-title" id="detailModalLabel">Enquiry Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <!-- Card to encapsulate details -->
+                    <div class="card-body">
+                        <!-- First Row: First Name & Last Name -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>First Name:</strong> <span id="detailFirstName" class="text-secondary"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Last Name:</strong> <span id="detailLastName" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                        <!-- Second Row: Phone & Email -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Phone:</strong> <span id="detailPhone" class="text-secondary"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-0"><strong>Email:</strong> <span id="detailEmail" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                        <!-- Third Row: Message -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p class="mb-0"><strong>Status:</strong> <span id="detailStatus" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                        <!-- Fourth Row: Status -->
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-0"><strong>Message:</strong> <span id="detailMessage" class="text-secondary"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
+
+        function openDetailModal(id) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetEnquiryDetails", "Enquiry")',
+                data: { enquiryId: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#detailFirstName').text(response.data.firstName);
+                        $('#detailLastName').text(response.data.lastName);
+                        $('#detailPhone').text(response.data.phone);
+                        $('#detailEmail').text(response.data.emailId);
+                        $('#detailMessage').text(response.data.message);
+                        $('#detailStatus').text(response.data.isReadStatus);
+                        $('#detailModal').modal('show');
+                    } else {
+                        alert('Failed to fetch details. Please try again.');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        }
+
         function openEditModal(id, status) {
             $('#EnquiryId').val(id);
-            $('#IsReadStatus').val(status); 
+            $('#IsReadStatus').val(status);
             $('#editModal').modal('show');
         }
 

@@ -59,6 +59,24 @@
                     </div>
                 }
 
+                <div class="card-header">
+                    <form class="form-inline search-form" method="get" asp-action="Index">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                                {
+                                    <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
                 <div class="card-body">
                     <div class="table-responsive table-desi">
                         <table class="table all-package table-category" id="editableTable">
@@ -112,3 +130,9 @@
         </div>
     </div>
 </div>
+
+<script>
+    function clearSearch() {
+        window.location.href = '@Url.Action("Index")';
+    }
+</script>
