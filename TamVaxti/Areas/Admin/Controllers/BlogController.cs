@@ -32,11 +32,19 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var blogs = await _blogService.GetAllOrderByAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                blogs = blogs.Where(b => b.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            ViewData["CurrentFilter"] = searchString;
             return View(blogs);
         }
+
 
         [HttpGet]
         public IActionResult Create()
