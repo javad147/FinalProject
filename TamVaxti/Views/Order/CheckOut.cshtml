@@ -228,7 +228,57 @@
         $(document).ready(function () {
             $("#div-thank-you").hide();
         });
+        document.getElementById('btnApplyCoupon').addEventListener('click', function () {
+            var couponCode = document.getElementById('txtCouponCode').value;
 
+            fetch('/Order/ApplyCoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(couponCode)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var discountType = data.discountType;
+                    var discountValue = data.discountValue;
+                    var discountAmount = data.discountAmount;
+                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
+                    var discountPercentage = '';
+
+                    // debugger;
+                    if (discountType === "Percent")
+                        discountPercentage = discountValue + '%';
+
+                    var total = subtotal - discountAmount;
+                    document.querySelector('.total .count').innerText = '$' + total.toFixed(2);
+                    document.getElementById('couponMessage').classList.remove('text-danger');
+                    document.getElementById('couponMessage').classList.add('text-success');
+                    document.getElementById('couponMessage').innerText = data.message;
+                    document.getElementById('appliedCouponCode').innerText = couponCode;
+                    document.getElementById('discountPercentage').innerText = discountPercentage;
+                    document.getElementById('discountAmount').innerText = '$' + discountAmount.toFixed(2);
+
+                    document.querySelector('.discount-details').style.display = 'block';
+                })
+                .catch(error => {
+                    document.getElementById('couponMessage').classList.remove('text-success');
+                    document.getElementById('couponMessage').classList.add('text-danger');
+                    document.getElementById('couponMessage').innerText = error.message;
+                    document.getElementById('appliedCouponCode').innerText = '';
+                    document.getElementById('discountPercentage').innerText = '';
+                    document.getElementById('discountAmount').innerText = '';
+                    document.querySelector('.discount-details').style.display = 'none';
+                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
+                    document.querySelector('.total .count').innerText = currencySymbol + subtotal.toFixed(2);
+                });
+        });
         $("#btnSubmitOrder").click(function () {
             var couponCode = document.getElementById('txtCouponCode').value;
 
@@ -245,7 +295,6 @@
                 PaymentMode: $("input[name='payment-group']:checked").val(),
                 CouponCode: couponCode
             };
-            debugger;
             $.ajax({
                 url: "/Order/SubmitOrder",
                 type: "POST",
@@ -268,48 +317,5 @@
         });
 
 
-    </script>
-    
-    <script>
-        document.getElementById('btnApplyCoupon').addEventListener('click', function () {
-            var couponCode = document.getElementById('txtCouponCode').value;
-
-            fetch('/Order/ApplyCoupon', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify(couponCode)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        document.getElementById('couponMessage').innerText = data.error;
-                    } else {
-                        var discountPercentage = data;
-                        var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
-                        var discountAmount = subtotal * (discountPercentage / 100);
-                        var total = subtotal - discountAmount;
-                        document.querySelector('.total .count').innerText = '$' + total.toFixed(2);
-                        document.getElementById('couponMessage').innerText = 'Coupon applied successfully!';
-                        document.getElementById('appliedCouponCode').innerText = couponCode;
-                        document.getElementById('discountPercentage').innerText = discountPercentage;
-                        document.getElementById('discountAmount').innerText = '$' + discountAmount.toFixed(2);
-                        document.querySelector('.discount-details').style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('couponMessage').innerText = 'An error occurred while applying the coupon.';
-                    // Reset coupon details and total amount in case of error
-                    document.getElementById('appliedCouponCode').innerText = '';
-                    document.getElementById('discountPercentage').innerText = '';
-                    document.getElementById('discountAmount').innerText = '';
-                    document.querySelector('.discount-details').style.display = 'none';
-                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
-                    document.querySelector('.total .count').innerText = '$' + subtotal.toFixed(2);
-
-                });
-        });
     </script>
 }
