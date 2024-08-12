@@ -49,6 +49,127 @@
     svg {
         display: inline;
     }
+
+    /* Modal Header Styling */
+    .modal-header {
+        background-color: #007bff; /* Bootstrap primary color */
+        color: #ffffff; /* White text color */
+        border-bottom: none; /* Remove border from bottom */
+    }
+
+    /* Modal Title */
+    .modal-title {
+        font-size: 1.5rem; /* Medium font size */
+        color: #ffffff
+    }
+
+    /* Modal Body and Card */
+    .modal-body .card {
+        border: none; /* Remove border from card */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+    /* Card Body */
+    .card-body {
+        padding: 20px;
+        font-size: 1rem; /* Medium font size */
+        line-height: 1.5;
+    }
+
+        /* Paragraphs within Modal */
+        .card-body p {
+            margin-bottom: 10px;
+            font-weight: 500; /* Medium font weight */
+            color: #333333; /* Dark text color */
+        }
+
+        /* Span Elements for Details */
+        .card-body span {
+            font-weight: 400; /* Regular font weight */
+            color: #6c757d; /* Secondary text color */
+        }
+
+    /* Modal Footer */
+    .modal-footer {
+        border-top: none; /* Remove border from top */
+    }
+
+        /* Buttons in Modal Footer */
+        .modal-footer .btn {
+            font-size: 1rem; /* Medium font size */
+            padding: 10px 20px;
+        }
+
+    /* Close Button Styling */
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem; /* Medium-large size for the close button */
+        color: #ffffff; /* White color for the close button */
+    }
+
+        .btn-close:hover {
+            color: #ffdddd; /* Slight hover effect */
+        }
+
+    /* Modal Size Adjustments */
+    .modal-lg {
+        max-width: 800px; /* Adjust maximum width for the modal */
+    }
+
+    /* Text Secondary Override */
+    .text-secondary {
+        color: #6c757d !important; /* Override default Bootstrap text-secondary color */
+    }
+
+    .no-enquiries {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px; /* Adjust height as needed */
+        background-color: #e9ecef; /* Soft grey background */
+        border-radius: 8px;
+        margin-top: 20px; /* Space from the top */
+        padding: 20px; /* Padding inside the box */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        text-align: center;
+    }
+
+        .no-enquiries p {
+            font-size: 1.3rem; /* Medium-sized text */
+            color: #495057; /* Slightly darker text color */
+            margin: 0;
+            font-weight: 600; /* Bold text */
+            letter-spacing: 0.5px; /* Slight letter spacing */
+        }
+
+        .no-enquiries::before {
+            content: "\f071"; /* FontAwesome exclamation triangle */
+            font-family: FontAwesome;
+            font-size: 2rem;
+            color: #dc3545; /* Red color for the icon */
+            margin-right: 10px; /* Space between icon and text */
+        }
+
+    .search-form-container {
+        display: flex;
+        justify-content: left;
+        margin-bottom: 20px;
+    }
+
+    .search-form {
+        max-width: 800px;
+        width: 100%;
+    }
+
+    .star {
+        color: lightgray;
+        font-size: 24px;
+    }
+
+        .star.filled {
+            color: gold;
+        }
 </style>
 <div class="container-fluid">
     <div class="page-header">
@@ -65,7 +186,7 @@
                 <ol class="breadcrumb pull-right">
                     <li class="breadcrumb-item">
                         <a asp-controller="Dashboard" asp-action="Index">
-                            <i data-feather="home"></i>s
+                            <i data-feather="home"></i>
                         </a>
                     </li>
                     <li class="breadcrumb-item active">Product Review</li>
@@ -75,13 +196,47 @@
     </div>
 </div>
 
+
+<div class="card card-small">
+    <div class="card-body">
+        <div class="search-form-container">
+            <form class="search-form" method="get" asp-action="ProductReview">
+                <div class="input-group">
+                    <!-- Search Input -->
+                    <input class="form-control" type="search" name="searchString" placeholder="Search Product Review" value="@ViewData[" CurrentFilter"]">
+
+                    <!-- Status Radio Buttons with Margin -->
+                    <div class="ml-3 mt-3" style="margin-left: 15px;">
+                        <label class="mr-2">Status:</label>
+                        <input type="radio" id="published" name="statusFilter" value="Published" @(ViewData["CurrentStatus"] == "Published" ? "checked" : "")>
+                        <label for="read" class="mr-2">Published</label>
+                        <input type="radio" id="unpublished" name="statusFilter" value="Unpublished" @(ViewData["CurrentStatus"] == "Unpublished" ? "checked" : "")>
+                        <label for="Unpublished" class="mr-2">Unpublished</label>
+                    </div>
+
+                    <!-- Search Button with Margin -->
+                    <div class="input-group-append" style="margin-left: 15px;">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                        {
+                            <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @if (!Model.Any())
 {
-    <p>No reviews available.</p>
+    <div class="no-enquiries">
+        <p>No enquiries available.</p>
+    </div>
 }
 else
 {
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -95,7 +250,7 @@ else
                                     <th>Product Name</th>
                                     <th>Rating</th>
                                     <th>Review Description</th>
-                                    <th class="td-status">Published</th>
+                                    <th class="td-status">Publish Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -107,7 +262,7 @@ else
                                         <tr>
                                             <td>@index.ToString("D2")</td>
                                             <td>@review.CustomerName</td>
-                                            <td>@review.ProductName</td>
+                                            <td>@review.ShortProductName</td>
                                             <td>
                                                 <div class="star-rating">
                                                     @{
@@ -137,7 +292,13 @@ else
                                                 }
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm" onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')">Edit</button>
+                                                <a onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')">
+                                                    <i class="fa fa-edit fa-2x ms-2" title="Edit"></i>
+                                                </a>
+
+                                                <a onclick="openDetailsModal(@review.ReviewId)">
+                                                    <i class="fa fa-eye fa-2x" title="Details"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         index++;
@@ -159,7 +320,7 @@ else
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Edit Review Status</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" title="Close" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -180,8 +341,33 @@ else
     </div>
 </div>
 
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="detailModalLabel">Product Review Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Customer Name:</strong> <span id="CustomerName"></span></p>
+                <p><strong>Product Name:</strong> <span id="ProductName"></span></p>
+                <p>
+                    <strong>Rating:</strong> <span id="Rating"></span>
+                </p>
+                <p><strong>Publish Status:</strong> <span id="publishStatus"></span></p>
+                <p><strong>Review Description:</strong></p>
+                <p><span id="ReviewDescription"></span></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    <script>
+    <script type="text/javascript">
         function openEditModal(id, status) {
             $('#ReviewId').val(id);
             $('#PublishStatus').val(status);
@@ -212,5 +398,45 @@ else
                 });
             });
         });
+
+        function openDetailsModal(id) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetProductReviewDetails", "Product")',
+                data: { ReviewId: id },
+                success: function (response) {
+                    console.log(response);
+                    debugger;
+                    if (response.success) {
+                        $('#ProductName').text(response.data.productName);
+                        $('#CustomerName').text(response.data.customerName);
+                        $('#ReviewDescription').text(response.data.reviewDescription);
+                        // $('#Rating').text(response.data.rating);
+                        $('#publishStatus').text(response.data.publishStatus);
+
+                        var rating = response.data.rating;
+                        for (var i = 1; i <= 5; i++) {
+                            if (i <= rating) {
+                                $('#Rating').append('<span class="star filled">&#9733;</span>');
+                            } else {
+                                $('#Rating').append('<span class="star">&#9733;</span>');
+                            }
+                        }
+
+                        $('#detailsModal').modal('show');
+                    } else {
+                        alert('Failed to fetch details. Please try again.');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        }
+
+
+        function clearSearch() {
+            window.location.href = '@Url.Action("ProductReview", "Product")';
+        }
     </script>
 }
