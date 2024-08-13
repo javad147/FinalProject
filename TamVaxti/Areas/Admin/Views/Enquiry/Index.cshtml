@@ -83,7 +83,7 @@
     /* Modal Title */
     .modal-title {
         font-size: 1.5rem; /* Medium font size */
-        color : #ffffff
+        color: #ffffff
     }
 
     /* Modal Body and Card */
@@ -173,8 +173,6 @@
             color: #dc3545; /* Red color for the icon */
             margin-right: 10px; /* Space between icon and text */
         }
-
-
 
 </style>
 
@@ -292,8 +290,12 @@ else
                                                 }
                                             </td>
                                             <td>
-                                                <i class="fa fa-eye fa-2x ms-2" title="View" onclick="openDetailModal('@enquiry.Id')"></i>
-                                                <i class="fa fa-edit fa-2x" onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')"></i>
+                                                <a onclick="openDetailModal('@enquiry.Id')">
+                                                    <i class="fa fa-eye fa-2x" title="View"></i>
+                                                </a>
+                                                <a onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')" class="ms-2">
+                                                    <i class="fa fa-edit fa-2x"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         index++;
