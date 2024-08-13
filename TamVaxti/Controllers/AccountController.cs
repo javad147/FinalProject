@@ -3,6 +3,9 @@ using TamVaxti.Models;
 using TamVaxti.ViewModels.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using TamVaxti.Helpers;
+using TamVaxti.Services.Interfaces;
+using System.Net.Mail;
 
 namespace TamVaxti.Controllers
 {
@@ -11,14 +14,17 @@ namespace TamVaxti.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ICompanyService _companyService;
 
         public AccountController(UserManager<AppUser> userManager, 
                                  SignInManager<AppUser> signInManager,
-                                 RoleManager<IdentityRole> roleManager)
+                                 RoleManager<IdentityRole> roleManager,
+                                 ICompanyService companyService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _companyService = companyService;
         }
 
         [HttpGet]
@@ -122,5 +128,111 @@ namespace TamVaxti.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ResetPassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var existUser = await _userManager.FindByEmailAsync(model.Email);
+
+                if (existUser == null)
+                {
+                    TempData["ErrorMessage"] = "User does not exist with this email";
+                    return View();
+                }
+
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(existUser);
+                var resetLink = Url.Action("ResetPassword", "Account",
+                    new { token = resetToken, email = model.Email }, Request.Scheme);
+
+                var company = await _companyService.GetFirstOrDefaultCompany();
+
+                var forgotPassword = new ForgotPasswordEmail
+                {
+                    Name = existUser.UserName,
+                    Link = resetLink,
+                    Company = company
+                };
+
+                string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/forgotpassword.html", forgotPassword);
+
+                await EmailHelper.SendEmailAsync(model.Email, existUser.UserName, "Password Reset Request", emailBody);
+
+                TempData["SuccessMessage"] = "Password Reset Email Sent";
+                return View();
+            }
+
+            return View(model);
+        }
+
+        public string GetEmailBodyFromFile(string filePath, dynamic forgotPassword)
+        {
+            string emailBody = System.IO.File.ReadAllText(filePath);
+            emailBody = emailBody.Replace("{{Name}}", forgotPassword.Name);
+            emailBody = emailBody.Replace("{{Link}}", forgotPassword.Link);
+            emailBody = emailBody.Replace("{{fbLink}}", forgotPassword.Company.FacebookUrl);
+            emailBody = emailBody.Replace("{{insLink}}", forgotPassword.Company.InstagramUrl);
+            emailBody = emailBody.Replace("{{twLink}}", forgotPassword.Company.XUrl);
+            emailBody = emailBody.Replace("{{gpLink}}", forgotPassword.Company.GoogleUrl);
+            return emailBody;
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid password reset token.");
+            }
+
+            var model = new ConfirmResetPassword { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ConfirmResetPassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    return View(model);
+                }
+
+                var isValidToken = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, "ResetPassword", model.Token);
+
+                if (!isValidToken)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid token.");
+                    return View(model);
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Password Reset Successfully";
+                    return View();
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(model);
+
+        }
+
     }
 }
