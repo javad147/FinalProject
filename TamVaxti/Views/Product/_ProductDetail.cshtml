@@ -59,7 +59,7 @@
                             <span class="label-text">in fashion</span>
                         </div>
                         <h3 class="price-detail">$@Model.Price</h3>
-                        <span class="quantity-detail">@Model.Quantity Left</span>
+                        <span class="quantity-detail">@(Model.Quantity <= 0 ? "Out Of Stock" : Model.Quantity + " Left")</span>
                         <ul class="size-variant mt-3 mb-3">
                             @foreach (var sku in Model.RelatedSizes)
                             {
@@ -79,10 +79,18 @@
                             }
                         </ul>
                         <div class="product-buttons">
-                            <a href="javascript:void(0)" id="cartEffect" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId"
-                               class="btn btn-solid hover-solid btn-animation add-to-cart">
-                                <i class="ti-shopping-cart"></i> add to cart
-                            </a> 
+                            @if (Model.Quantity <= 0){
+                                <button class="btn btn-solid hover-solid" disabled>
+                                    <i class="ti-shopping-cart"></i> add to cart
+                                </button> 
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0)" id="cartEffect" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId"
+                                   class="btn btn-solid hover-solid btn-animation add-to-cart">
+                                    <i class="ti-shopping-cart"></i> add to cart
+                                </a> 
+                            }
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <a href="javascript:void(0)" class="btn btn-solid add-to-wishlist" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId">

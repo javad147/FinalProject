@@ -82,7 +82,7 @@
                                     <ul class="qty">
                                         @foreach (var item in Model.Products)
                                         {
-                                            <li>@item.Product.Name × @item.Quantity <span>$@item.SubTotal</span></li>
+                                            <li><div style="width: 55%;float: left!important;margin-bottom: 10px;">@item.Product.Name × @item.Quantity</div> <span>$@item.SubTotal</span></li>
                                         }
                                     </ul>
                                     <ul class="sub-total">

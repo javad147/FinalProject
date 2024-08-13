@@ -24,7 +24,7 @@
                     <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">@product.Name</a>
                     <div class="mobile-cart-content row">
                         <div class="col">
-                            <p>in stock</p>
+                            <p>@(product.Quantity <= 0 ? "Out Of Stock" : "in stock")</p>
                         </div>
                         <div class="col">
                             <h2 class="td-color">$@product.Price</h2>
@@ -45,16 +45,24 @@
                     <h2>$@product.Price</h2>
                 </td>
                 <td>
-                    <p>in stock</p>
+                    <p>@(product.Quantity <= 0 ? "Out Of Stock" : "in stock")</p>
                 </td>
                 <td>
                     <a href="#" class="icon me-3 add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
                         <i class="ti-close"></i>
                     </a>
-                    <a href="#"
-                       class="cart">
-                        <i class="ti-shopping-cart add-to-cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId"></i>
-                    </a>
+                    @if (product.Quantity <= 0){
+                         <a href="#" class="cart" >
+                              <i class="ti-shopping-cart" disabled></i>
+                         </a> 
+                    }
+                    else
+                    {
+                        <a href="#" class="cart">
+                            <i class="ti-shopping-cart add-to-cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId"></i>
+                        </a>
+                    }
+                    
                 </td>
             </tr>
         </tbody>

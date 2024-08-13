@@ -23,10 +23,11 @@
                         </div>
 
                         <div class="cart-info cart-wrap">
-
-                            <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
-                                <i class="ti-shopping-cart"></i>
-                            </a>
+                            @if (product.Quantity > 0){
+                                <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
+                                    <i class="ti-shopping-cart"></i>
+                                </a>
+                            }
 
                             @if (User.Identity.IsAuthenticated)
                             {
