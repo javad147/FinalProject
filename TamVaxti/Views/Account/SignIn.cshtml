@@ -44,7 +44,11 @@
                                 <input asp-for="Password" type="password" class="form-control" id="review"
                                        placeholder="Enter your password" required="">
                                 <span class="text-danger" asp-validation-for="Password"></span>
-                            </div> <button type="submit" class="btn btn-solid">Sign In</button>
+                            </div> 
+                            <div class="col-md-12 mb-2 d-flex justify-content-end ">
+                              <a style="color: #1879f7;cursor: pointer;" asp-action="ForgotPassword">Forgot Password</a>
+                            </div>
+                            <button type="submit" class="btn btn-solid">Sign In</button>
                         </form>
                     </div>
                 </div>

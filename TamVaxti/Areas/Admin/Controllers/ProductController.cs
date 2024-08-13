@@ -25,18 +25,20 @@ namespace TamVaxti.Areas.Admin.Controllers
         private readonly ISubcategoryService _subCategoryService;
         private readonly IWebHostEnvironment _env;
         private readonly AppDbContext _context;
+        private readonly IBrandService _brandService;
 
         public ProductController(IProductService productService,
                                  ICategoryService categoryService,
                                  IWebHostEnvironment env,
                                  AppDbContext context,
-                                 ISubcategoryService subCategoryService)
+                                 ISubcategoryService subCategoryService, IBrandService brandService)
         {
             _productService = productService;
             _categoryService = categoryService;
             _env = env;
             _context = context;
             _subCategoryService = subCategoryService;
+            _brandService = brandService;
         }
 
 
@@ -211,6 +213,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
 
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var brands = await _brandService.GetAllAsync();
+            ViewBag.brands = brands.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
             return View(model);
         }
 
@@ -236,6 +240,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var brands = await _brandService.GetAllAsync();
+            ViewBag.brands = brands.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
 
             if (ModelState.IsValid)
             {
@@ -245,7 +251,8 @@ namespace TamVaxti.Areas.Admin.Controllers
                     Name = request.Name,
                     Description = request.Description,
                     CategoryId = category.CategoryId,
-                    SubcategoryId = request.SubcategoryId
+                    SubcategoryId = request.SubcategoryId,
+                    BrandId = request.BrandId
                 };
 
                 if (request.MainImage != null)
@@ -388,6 +395,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
             var Categoryres = await _subCategoryService.GetWithCategoryAsync(product.SubcategoryId);
             ViewBag.CategoryName = Categoryres != null ? Categoryres.Category.Name : "";
+            var brands = await _brandService.GetAllAsync();
+            ViewBag.brands = brands.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
 
             //return Ok(product);
 
@@ -405,6 +414,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
+            var brands = await _brandService.GetAllAsync();
+            ViewBag.brands = brands.Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name }).ToList();
             var Categoryres = await _subCategoryService.GetWithCategoryAsync(request.SubcategoryId);
             ViewBag.CategoryName = Categoryres != null ? Categoryres.Category.Name : "";
             var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);

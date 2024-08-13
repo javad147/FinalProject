@@ -16,8 +16,10 @@ namespace TamVaxti.Models
         public int SubcategoryId { get; set; }
         public int StockStatusId { get; set; }
         public string MainImage { get; set; }
+        public int BrandId { get; set; }
         public Category Category { get; set; }
         public SubCategory SubCategory { get; set; }
+        public Brand Brand { get; set; }
         public ICollection<ProductImage> ProductImages { get; set; }
         public ICollection<OrderProductDetail> OrderProductDetails { get; set; }
         public List<SKU> SKUs { get; set; }
