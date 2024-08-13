@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using TamVaxti.Helpers.Enums;
+using TamVaxti.ViewModels.Enquiry;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
@@ -58,25 +59,68 @@ namespace TamVaxti.Areas.Admin.Controllers
             return Json(new { success = false });
         }
 
+        [HttpGet]
+        public JsonResult GetProductReviewDetails(int ReviewId)
+        {
+            var reviewData = _context.Product_Reviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
+                .Where(e => e.ReviewId == ReviewId)
+                .Select(e => new
+                {
+                    e.ReviewId,
+                    ProductName = e.Product.Name,
+                    CustomerName = e.User.UserName,
+                    ReviewDescription = e.ReviewDescription,
+                    Rating = e.Rating,
+                    PublishStatus = e.Status ? "Published" : "Not published"
+                })
+                .FirstOrDefault();
+
+            if (reviewData != null)
+            {
+                return Json(new { success = true, data = reviewData });
+            }
+            return Json(new { success = false });
+        }
 
         [HttpGet]
-        public async Task<IActionResult> ProductReview()
+        public async Task<IActionResult> ProductReview(string searchString, string statusFilter)
         {
-            var reviews = await _context.Product_Reviews
-                                         .Include(r => r.Product)
-                                         .Include(r => r.User)
-                                         .Select(r => new ProductReviewVM
-                                         {
-                                             ReviewId = r.ReviewId,
-                                             CustomerName = r.User.UserName,
-                                             ProductName = r.Product.Name,
-                                             Rating = r.Rating,
-                                             ReviewDescription = r.ReviewDescription,
-                                             PublishStatus = r.Status ? "Published" : "Unpublished"
-                                         })
-                                         .ToListAsync();
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentStatus"] = statusFilter;
 
-            return View(reviews);
+            var reviews = _context.Product_Reviews
+                                  .Include(r => r.Product)
+                                  .Include(r => r.User)
+                                  .Select(r => new ProductReviewVM
+                                  {
+                                      ReviewId = r.ReviewId,
+                                      CustomerName = r.User.UserName,
+                                      ProductName = r.Product.Name,
+                                      Rating = r.Rating,
+                                      ReviewDescription = r.ReviewDescription,
+                                      PublishStatus = r.Status ? "Published" : "Unpublished"
+                                  });
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var lowerCaseSearchString = searchString.ToLower();
+                reviews = reviews.Where(c => c.ProductName.ToLower().Contains(lowerCaseSearchString)
+                                          || c.CustomerName.ToLower().Contains(lowerCaseSearchString));
+            }
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                bool isPublished = statusFilter == "Published";
+                reviews = reviews.Where(r => r.PublishStatus == (isPublished ? "Published" : "Unpublished"));
+            }
+
+            var reviewList = await reviews
+            .OrderByDescending(x => x.ReviewId)
+            .ToListAsync();
+
+            return View(reviewList);
         }
 
         [HttpGet]
@@ -419,27 +463,31 @@ namespace TamVaxti.Areas.Admin.Controllers
 
                 var totalQuantity = _productService.GetSkuStockSum(request.SKUs[i].Id);
                 int finalQuantity = sku.Quantity - totalQuantity;
-                if(finalQuantity != 0)
+                if (finalQuantity != 0)
                 {
                     request.SKUs[i].SkuStock = new List<SkuStock> { new SkuStock { Quantity = finalQuantity } };
                 }
 
-                if (request.SKUs[i].ImageUrl1File != null) {
+                if (request.SKUs[i].ImageUrl1File != null)
+                {
                     this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl1 = await ImgFileActionAsync(request.SKUs[i].ImageUrl1File, request);
                 }
 
-                if (request.SKUs[i].ImageUrl2File != null) {
+                if (request.SKUs[i].ImageUrl2File != null)
+                {
                     this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl2 = await ImgFileActionAsync(request.SKUs[i].ImageUrl2File, request);
                 }
 
-                if (request.SKUs[i].ImageUrl3File != null) {
+                if (request.SKUs[i].ImageUrl3File != null)
+                {
                     this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl3 = await ImgFileActionAsync(request.SKUs[i].ImageUrl3File, request);
                 }
 
-                if (request.SKUs[i].ImageUrl4File != null) {
+                if (request.SKUs[i].ImageUrl4File != null)
+                {
                     this.DeleteImg(request.SKUs[i].ImageUrl1);
                     request.SKUs[i].ImageUrl4 = await ImgFileActionAsync(request.SKUs[i].ImageUrl4File, request);
                 }
@@ -498,7 +546,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             }
             return AttributeList;
         }
-  
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
