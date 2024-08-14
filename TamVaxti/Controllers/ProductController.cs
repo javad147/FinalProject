@@ -14,12 +14,14 @@ namespace TamVaxti.Controllers
         private readonly IProductService _productService;
         readonly UserManager<AppUser> _userManager;
         private readonly IUserWishList _userWishList;
+        private readonly ICompanyService _companyService;
 
-        public ProductController(IProductService productService, UserManager<AppUser> userManager, IUserWishList userWishList)
+        public ProductController(IProductService productService, UserManager<AppUser> userManager, IUserWishList userWishList, ICompanyService companyService)
         {
             _productService = productService;
             _userManager = userManager;
             _userWishList = userWishList;
+            _companyService = companyService;
         }
         public async Task<IActionResult> Index(long? id)
         {
@@ -81,13 +83,14 @@ namespace TamVaxti.Controllers
                 model.ImageUrls.Add(product.MainImage);
             }
 
-            //ViewBag.CurrencySymbol = _currencySettings.CurrencySymbol;
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             return View(model);
         }
 
         public async Task<IActionResult> ProductDetails(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             // Get wishlist from cookies
             return View("_ProductDetail", product);
         }
@@ -103,6 +106,8 @@ namespace TamVaxti.Controllers
             var result = _productService.GetProductSkuListVM(allproducts);
             var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
             var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
+
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return View(wishlistProducts);
         }
@@ -120,6 +125,7 @@ namespace TamVaxti.Controllers
             var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
             var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
 
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             // Code to add product to user's wish list
             return PartialView("_WistListProducts", wishlistProducts);
         }

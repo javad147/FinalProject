@@ -82,11 +82,11 @@
                                     <ul class="qty">
                                         @foreach (var item in Model.Products)
                                         {
-                                            <li><div style="width: 55%;float: left!important;margin-bottom: 10px;">@item.Product.Name × @item.Quantity</div> <span>$@item.SubTotal</span></li>
+                                            <li><div style="width: 55%;float: left!important;margin-bottom: 10px;">@item.Product.Name × @item.Quantity</div> <span>@ViewBag.CurrencySymbol@item.SubTotal</span></li>
                                         }
                                     </ul>
                                     <ul class="sub-total">
-                                        <li>Subtotal <span class="count">$@Model.Products.Sum(x => x.SubTotal)</span></li>
+                                        <li>Subtotal <span class="count">@ViewBag.CurrencySymbol@Model.Products.Sum(x => x.SubTotal)</span></li>
                                         <li>
                                             Shipping
                                             <div class="shipping">
@@ -103,7 +103,7 @@
                                         <li>Discount Amount <span id="discountAmount" class="count"></span></li>
                                     </ul>
                                     <ul class="total">
-                                        <li>Total <span class="count">$@Model.Products.Sum(x => x.SubTotal)</span></li>
+                                        <li>Total <span class="count">@ViewBag.CurrencySymbol@Model.Products.Sum(x => x.SubTotal)</span></li>
                                     </ul>
                                 </div>
                                 <div class="coupon-box">
@@ -249,7 +249,7 @@
                     var discountType = data.discountType;
                     var discountValue = data.discountValue;
                     var discountAmount = data.discountAmount;
-                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
+                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace(ViewBag.CurrencySymbol, ''));
                     var discountPercentage = '';
 
                     // debugger;
@@ -257,13 +257,13 @@
                         discountPercentage = discountValue + '%';
 
                     var total = subtotal - discountAmount;
-                    document.querySelector('.total .count').innerText = '$' + total.toFixed(2);
+                    document.querySelector('.total .count').innerText = @ViewBag.CurrencySymbol + total.toFixed(2);
                     document.getElementById('couponMessage').classList.remove('text-danger');
                     document.getElementById('couponMessage').classList.add('text-success');
                     document.getElementById('couponMessage').innerText = data.message;
                     document.getElementById('appliedCouponCode').innerText = couponCode;
                     document.getElementById('discountPercentage').innerText = discountPercentage;
-                    document.getElementById('discountAmount').innerText = '$' + discountAmount.toFixed(2);
+                    document.getElementById('discountAmount').innerText = @ViewBag.CurrencySymbol + discountAmount.toFixed(2);
 
                     document.querySelector('.discount-details').style.display = 'block';
                 })
@@ -275,8 +275,8 @@
                     document.getElementById('discountPercentage').innerText = '';
                     document.getElementById('discountAmount').innerText = '';
                     document.querySelector('.discount-details').style.display = 'none';
-                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace('$', ''));
-                    document.querySelector('.total .count').innerText = currencySymbol + subtotal.toFixed(2);
+                    var subtotal = parseFloat(document.querySelector('.sub-total .count').innerText.replace(@ViewBag.CurrencySymbol, ''));
+                    document.querySelector('.total .count').innerText = @ViewBag.CurrencySymbol + subtotal.toFixed(2);
                 });
         });
         $("#btnSubmitOrder").click(function () {

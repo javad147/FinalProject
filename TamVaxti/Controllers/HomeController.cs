@@ -24,14 +24,15 @@ namespace TamVaxti.Controllers
         private readonly IHttpContextAccessor _accessor;
         private readonly ISubcategoryService _subcategoryService;
         private readonly IBrandService _brandService;
+        private readonly ICompanyService _companyService;
         public HomeController(AppDbContext context,
                               IProductService productService,
                               ICategoryService categoryService,
                               IExpertService expertService,
                               ISliderInstaService sliderInstaService,
-                              IBlogService blogService,IHttpContextAccessor accessor, ISubcategoryService subcategoryService,IBrandService brandService)
+                              IBlogService blogService,IHttpContextAccessor accessor, ISubcategoryService subcategoryService, IBrandService brandService, ICompanyService companyService)
         {
-            _context = context; 
+            _context = context;
             _productService = productService;
             _categoryService = categoryService;
             _expertService = expertService;
@@ -40,6 +41,7 @@ namespace TamVaxti.Controllers
             _accessor = accessor;
             _subcategoryService = subcategoryService;
             _brandService = brandService;
+            _companyService = companyService;
         }
         public async Task<IActionResult> Index()
         {
@@ -77,6 +79,7 @@ namespace TamVaxti.Controllers
                 InstaSliders = sliders,
                 Brands = await _brandService.GetAllActiveAsync()
             };
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             return View(model);
         }
 

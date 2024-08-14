@@ -85,7 +85,7 @@
                                             <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                                 <h6>@product.Name</h6>
                                             </a>
-                                            <h4>$@product.Price</h4>
+                                            <h4>@ViewBag.CurrencySymbol@product.Price</h4>
                                         </div>
                                     </div>
                                 }

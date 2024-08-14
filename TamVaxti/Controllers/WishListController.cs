@@ -19,16 +19,18 @@ namespace TamVaxti.Controllers
         private readonly IHttpContextAccessor _accessor;
         readonly UserManager<AppUser> _userManager;
         private readonly IProductService _productService;
+        private readonly ICompanyService _companyService;
 
         public WishListController(AppDbContext context,
                                 IHttpContextAccessor accessor,
-                                IUserWishList userWishList, UserManager<AppUser> userManager, IProductService productService)
+                                IUserWishList userWishList, UserManager<AppUser> userManager, IProductService productService, ICompanyService companyService)
         {
             _context = context;
             _accessor = accessor;
             _userWishList = userWishList;
             _userManager = userManager;
             _productService = productService;
+            _companyService = companyService;
         }
         public async Task<IActionResult> Index()
         {
@@ -41,6 +43,7 @@ namespace TamVaxti.Controllers
             var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
 
             var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return View(wishlistProducts);
         }
@@ -91,6 +94,7 @@ namespace TamVaxti.Controllers
             var result = _productService.GetProductSkuListVM(allproducts);
             var hashproducts = new HashSet<long>(products.Select(x => x.SkuId).ToList());
             var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             // Code to add product to user's wish list
             return View("_WistListProducts", wishlistProducts);

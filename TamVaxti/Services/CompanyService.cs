@@ -39,5 +39,14 @@ namespace TamVaxti.Services
         {
             return await _context.Company.FirstOrDefaultAsync();
         }
+        public async Task<List<CurrencyMaster>> GetCurrencyList()
+        {
+            return await _context.CurrencyMaster.ToListAsync();
+        }
+        public string GetCurrencySymbol()
+        {
+            var company = _context.Company.FirstOrDefault();
+            return company?.CurrencySymbol ?? "$"; 
+        }
     }
 }

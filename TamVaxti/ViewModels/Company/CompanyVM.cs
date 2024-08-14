@@ -35,5 +35,6 @@ namespace TamVaxti.ViewModels.Company
         public string ContactMapUrl { get; set; }
 
         public IFormFile ImageFile { get; set; } // For file upload
+        public string CurrencySymbol { get; set; }
     }
 }

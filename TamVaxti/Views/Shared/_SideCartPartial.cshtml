@@ -26,7 +26,7 @@
                                     <h4>@cartItem.Product.Name</h4>
                                 </a>
                                 <h4>
-                                    <span>@cartItem.Quantity x $ @cartItem.Product.Price</span>
+                                    <span>@cartItem.Quantity x @ViewBag.CurrencySymbol @cartItem.Product.Price</span>
                                 </h4>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
             <ul class="cart_total">
                 <li>
                     <div class="total">
-                        <h5>subtotal : <span>$@Model.Sum(x => x.SubTotal)</span></h5>
+                        <h5>subtotal : <span>@ViewBag.CurrencySymbol@Model.Sum(x => x.SubTotal)</span></h5>
                     </div>
                 </li>
                 <li>
