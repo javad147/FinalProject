@@ -21,14 +21,16 @@ public class OrderController : Controller
     private readonly AppDbContext _context;
     private readonly IProductService _productService;
     private readonly UserManager<AppUser> _userManager;
+    private readonly ICompanyService _companyService;
 
     public OrderController(AppDbContext context, UserManager<AppUser> userManager, IHttpContextAccessor accessor,
-        IProductService productService)
+        IProductService productService, ICompanyService companyService)
     {
         _context = context;
         _userManager = userManager;
         _accessor = accessor;
         _productService = productService;
+        _companyService = companyService;
     }
 
     [Authorize]
@@ -100,6 +102,7 @@ public class OrderController : Controller
             }
             ord.Add(mod);
         }
+        ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
         return View(ord);
     }
@@ -135,6 +138,8 @@ public class OrderController : Controller
             Products = basketProducts,
             UserShippingAddress = userShippingAddress
         };
+        ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+
         return View(checkoutVM);
     }
 

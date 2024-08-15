@@ -57,7 +57,7 @@ public class FooterViewComponent : ViewComponent
             Cart = cart
         };
 
-
+        ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
         return await Task.FromResult(View(response));
     }
 }

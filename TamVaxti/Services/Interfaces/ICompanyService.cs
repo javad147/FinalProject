@@ -10,5 +10,7 @@ namespace TamVaxti.Services.Interfaces
         Task<Company> ExistAsync(int id);
         Task CreateAsync(Company companyCreateVM);
         Task UpdateAsync(Company company);
+        Task<List<CurrencyMaster>> GetCurrencyList();
+        string GetCurrencySymbol();
     }
 }

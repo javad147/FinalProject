@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Authorization;
 using TamVaxti.Helpers.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
@@ -51,12 +52,19 @@ namespace TamVaxti.Areas.Admin.Controllers
                 companyViewModel.XUrl = company.XUrl;
                 companyViewModel.GoogleUrl = company.GoogleUrl;
                 companyViewModel.ContactMapUrl = company.ContactMapUrl;
+                companyViewModel.CurrencySymbol = company.CurrencySymbol;
             }
+
+            var currency = await _companyService.GetCurrencyList();
+            ViewBag.currency = currency.Select(b => new SelectListItem { Value = b.Symbol.ToString(), Text = $"{b.Code} ({b.Symbol})" }).ToList();
             return View(companyViewModel);
         }
         [HttpPost]
         public async Task<IActionResult> Index(int id, CompanyVM companyVm)
         {
+            var currency = await _companyService.GetCurrencyList();
+            ViewBag.currency = currency.Select(b => new SelectListItem { Value = b.Symbol.ToString(), Text = $"{b.Code} ({b.Symbol})" }).ToList();
+
             try
             {
                 if (!ModelState.IsValid)
@@ -115,6 +123,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             company.XUrl = companyVm.XUrl;
             company.GoogleUrl = companyVm.GoogleUrl;
             company.ContactMapUrl = companyVm.ContactMapUrl;
+            company.CurrencySymbol = companyVm.CurrencySymbol;
 
             return company;
         }

@@ -20,11 +20,13 @@ namespace TamVaxti.Areas.Admin.Controllers
         private AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         public IOrderService _orderService;
-        public OrderController(AppDbContext context, UserManager<AppUser> userManager, IOrderService orderService)
+        private readonly ICompanyService _companyService;
+        public OrderController(AppDbContext context, UserManager<AppUser> userManager, IOrderService orderService, ICompanyService companyService)
         {
             _context = context;
             _userManager = userManager;
             _orderService = orderService;
+            _companyService = companyService;
         }
 
         [HttpGet]
@@ -74,6 +76,7 @@ namespace TamVaxti.Areas.Admin.Controllers
 
 
             ViewData["CurrentFilter"] = searchString;
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return View(model);
 
@@ -103,6 +106,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             DeliveryStatusItems.Remove("Returned");
             DeliveryStatusItems.Remove("Cancelled");
             ViewData["DeliveryStatusItems"] = DeliveryStatusItems;
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return View(order);
         }
@@ -116,6 +120,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["DeliveryStatusItems"] = _orderService.GetDeliveryStatusItems();
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return View(order);
         }
@@ -139,6 +144,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             };
 
             ViewData["DeliveryStatusItems"] = _orderService.GetDeliveryStatusItems();
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+
             return View(model);
         }
 
@@ -155,6 +162,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }
                 ModelState.AddModelError("", "Unable to update order.");
             }
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             return View(model);
         }
 

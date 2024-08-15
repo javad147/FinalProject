@@ -14,11 +14,13 @@ namespace TamVaxti.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly ICompanyService _companyService;
 
-        public ProductListController(IProductService productService, ICategoryService categoryService)
+        public ProductListController(IProductService productService, ICategoryService categoryService, ICompanyService companyService)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _companyService = companyService;
         }
 
         public async Task<IActionResult> Index(int? categoryId, string sortOrder, int? pageNumber)
@@ -54,6 +56,8 @@ namespace TamVaxti.Controllers
                 Categories = categories,
                 Products = result
             };
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+
             return View(model);
         }
 
@@ -85,6 +89,7 @@ namespace TamVaxti.Controllers
             }
 
             var result = _productService.GetProductSkuListVMPaginated(products, pageIndex, pageSize, request.sortOrder);
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
 
             return PartialView("_ProductListPartial", result);
         }

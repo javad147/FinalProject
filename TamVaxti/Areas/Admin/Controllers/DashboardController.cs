@@ -14,10 +14,12 @@ namespace TamVaxti.Areas.Admin.Controllers
     {
         private AppDbContext _context;
         public IDashboardService _dashboardService;
-        public DashboardController(AppDbContext context, IDashboardService dashboardService)
+        private readonly ICompanyService _companyService;
+        public DashboardController(AppDbContext context, IDashboardService dashboardService, ICompanyService companyService)
         {
             _context = context;
             _dashboardService = dashboardService;
+            _companyService = companyService;
         }
 
         public async Task<IActionResult> Index()
@@ -51,6 +53,7 @@ namespace TamVaxti.Areas.Admin.Controllers
             { TotalAmount = o.TotalAmount, PaymentMode = o.Payments.FirstOrDefault().PaymentMode });
 
             ViewBag.CashTransactions = CashTransactions.Where(p => p.PaymentMode == "Cash").Sum(o => o.TotalAmount);
+            ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
             //return Ok(ViewBag.LatestOrders);
             return View();
         }

@@ -16,6 +16,7 @@
         public string XUrl { get; set; }
         public string RssUrl { get; set; }
         public string FacebookUrl { get; set; }
-        public string ContactMapUrl { get; set; }  
+        public string ContactMapUrl { get; set; }
+        public string CurrencySymbol { get; set; }
     }
 }

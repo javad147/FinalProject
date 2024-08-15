@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="media-body media-doller">
                                             <span class="m-0">Earnings</span>
-                                            <h3 class="mb-0">$ <span class="counter">@ViewBag.Earnings</span><small> This
+                                            <h3 class="mb-0">@ViewBag.CurrencySymbol <span class="counter">@ViewBag.Earnings</span><small> This
                                                     Month</small>
                                             </h3>
                                         </div>
@@ -170,7 +170,7 @@
                                                     }
                                                 <tr>
                                                     <td>@item.OrderId</td>
-                                                    <td class="digits">$@item.TotalAmount</td>
+                                                    <td class="digits">@ViewBag.CurrencySymbol@item.TotalAmount</td>
                                                     <td class="@PayClass">@item.PaymentMode</td>
                                                     <td class="digits">@item.DeliveryStatus</td>
                                                 </tr>
@@ -204,7 +204,7 @@
                                     <div class="media">
                                         <div class="media-body">
                                             <span>Sales Last Month</span>
-                                            <h2 class="mb-0">$@ViewBag.LastMonthEarnings</h2>
+                                            <h2 class="mb-0">@ViewBag.CurrencySymbol@ViewBag.LastMonthEarnings</h2>
                                             <p>0.25% <span><i class="fa fa-angle-up"></i></span></p>
                                         </div>
 
@@ -283,7 +283,7 @@
                                     <div class="media">
                                         <div class="media-body">
                                             <span>Cash on hand</span>
-                                            <h2 class="mb-0">$@ViewBag.CashTransactions</h2>
+                                            <h2 class="mb-0">@ViewBag.CurrencySymbol@ViewBag.CashTransactions</h2>
                                             <p>0.8% <span><i class="fa fa-angle-up"></i></span></p>
                                         </div>
                                         <div class="bg-warning b-r-8">

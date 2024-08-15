@@ -43,7 +43,7 @@
                     <div class="col-12">
                         <div class="order-box">
                             <h5>Order Number: @order.OrderNumber</h5>
-                            <p>Total Amount: $@order.TotalAmount</p>
+                            <p>Total Amount: @ViewBag.CurrencySymbol@order.TotalAmount</p>
                             <p>Actual Delivery Date: @order.ActualDeliveryDate?.ToString("yyyy-MM-dd")</p>
 
                             <div class="products">
@@ -70,7 +70,7 @@
                                                 }
                                             </div>
                                             <h6>@product.Name</h6>
-                                            <p>Quantity: @product.Quantity | Amount: $@product.Amount</p>
+                                            <p>Quantity: @product.Quantity | Amount: @ViewBag.CurrencySymbol@product.Amount</p>
                                         </div>
                                     </div>
                                 }

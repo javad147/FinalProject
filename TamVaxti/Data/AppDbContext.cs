@@ -42,6 +42,7 @@ namespace TamVaxti.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Enquiry> Enquiries { get; set; }
         public DbSet<Brand> Brand { get; set; }
+        public DbSet<CurrencyMaster> CurrencyMaster { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
