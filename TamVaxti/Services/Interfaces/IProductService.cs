@@ -26,6 +26,7 @@ namespace TamVaxti.Services.Interfaces
         public Task<SKU> GetSkuByIdAsync(long id);
         public Task DeleteSkuAsync(SKU sku);
         public Task<List<ProductReview>> GetProductReviewById(string Id, int ProductId, long SkuId);
+        public Task<List<ProductReview>> GetPublishedProductReviewByOfProduct(int ProductId);
         public Task<bool> AddProductReview(ProductReview model);
         public Task<List<Product>> GetAllWithSkusAsync();
         public Task<int> GetProductIdBySkuIdAsync(long SkuId);

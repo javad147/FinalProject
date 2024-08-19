@@ -1,124 +1,150 @@
 ﻿@using Newtonsoft.Json
 @using TamVaxti.Helpers
 @model PaginatedList<TamVaxti.ViewModels.Products.ProductSkuListVM>
-
- <div class="product-wrapper-grid">
-     <div class="row margin-res">
-        @foreach (var product in Model)
+<style>
+    .color-variant a {
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        border-radius: 100%;
+        margin-right: 5px;
+        transition: all 0.1s ease;
+        vertical-align: middle;
+    }
+</style>
+<div class="product-wrapper-grid">
+    <div class="row margin-res">
+        @if (Model != null && Model.Any())
         {
-            <div class="col-xl-3 col-6 col-grid-box">
-                <div class="product-box">
-                    <div class="img-wrapper">
-                        <div class="front">
-                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
-                                <img src="~/img/product/@product.MainImage"
-                                     class="img-fluid blur-up lazyload bg-img" alt="">
-                            </a>
-                        </div>
-                        <div class="back">
-                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
-                                <img src="~/img/product/@product.MainImage"
-                                     class="img-fluid blur-up lazyload bg-img" alt="">
-                            </a>
-                        </div>
-
-                        <div class="cart-info cart-wrap">
-                            @if (product.Quantity > 0){
-                                <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
-                                    <i class="ti-shopping-cart"></i>
+            @foreach (var product in Model)
+            {
+                <div class="col-xl-3 col-6 col-grid-box">
+                    <div class="product-box">
+                        <div class="img-wrapper">
+                            <div class="front">
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                                    <img src="~/img/product/@product.MainImage"
+                                         class="img-fluid blur-up lazyload bg-img" alt="">
                                 </a>
-                            }
-
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <a href="javascript:void(0)" class="add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId" title="Add to Wishlist">
-                                    <i class="ti-heart" aria-hidden="true"></i>
-                                </a>
-                            }
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#quick-view" title="Quick View">
-                                <i class="ti-search" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="product-detail">
-                        <div>
-                            <div class="ratings">
-                                @for (int i = 1; i <= 5; i++)
-                                        {
-                                            var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
-                                            var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
-                                            <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
-                                        }
                             </div>
-                            <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
-                                <h6>@product.Name</h6>
-                            </a>
-                            <p>@product.Description</p>
-                            <h4>@ViewBag.CurrencySymbol@product.Price</h4>
-                            <ul class="color-variant">
-                                @foreach (var sku in product.RelatedSku)
+                            <div class="back">
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                                    <img src="~/img/product/@product.MainImage"
+                                         class="img-fluid blur-up lazyload bg-img" alt="">
+                                </a>
+                            </div>
+
+                            <div class="cart-info cart-wrap">
+                                @if (product.Quantity > 0)
                                 {
-                                    var activeClass = sku.Color == product.Color ? "selected" : "";
-                                    <a class="colorl-li @activeClass"  asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                        <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+                                    <a href="javascript:void(0)" class="add-to-cart" title="Add to cart" data-product-id="@product.ProductId" data-sku-id="@product.SkuId">
+                                        <i class="ti-shopping-cart"></i>
                                     </a>
                                 }
-                            </ul>
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a href="javascript:void(0)" class="add-to-wishlist" data-product-id="@product.ProductId" data-sku-id="@product.SkuId" title="Add to Wishlist">
+                                        <i class="ti-heart" aria-hidden="true"></i>
+                                    </a>
+                                }
+                                @*  <a href="#" data-bs-toggle="modal" data-bs-target="#quick-view" title="Quick View">
+                        <i class="ti-search" aria-hidden="true"></i>
+                        </a> *@
+                            </div>
+                        </div>
+                        <div class="product-detail">
+                            <div>
+                                <div class="ratings">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        var ratingClass = i <= @product.Rating ? "fa-star" : "fa-star-o";
+                                        var colrClass = i <= @product.Rating ? "#ffa200" : "#ddd";
+                                        <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
+                                    }
+                                </div>
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
+                                    <h6>@product.Name</h6>
+                                </a>
+                                <p>@product.Description</p>
+                                <h4>@ViewBag.CurrencySymbol@product.Price</h4>
+                                <ul class="color-variant">
+                                    @foreach (var sku in product.RelatedSku)
+                                    {
+                                        <li style="background-color:@sku.Color">
+                                            <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId"></a>
+                                        </li>
+                                    }
+                                </ul>
+                                @*   <ul class="color-variant">
+                        @foreach (var sku in product.RelatedSku)
+                        {
+                        var activeClass = sku.Color == product.Color ? "selected" : "";
+                        <a class="colorl-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                        <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+                        </a>
+                        }
+                        </ul> *@
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         }
-     </div>
+        else
+        {
+            <img src="~/assets/images/noproduct.jpg" alt="no product found" />
+        }
+    </div>
 </div>
 
-                                    <div class="product-pagination">
-                                        <div class="theme-paggination-block">
-                                            <div class="row">
-                                                <div class="col-xl-6 col-md-6 col-sm-12">
-                                                    <nav aria-label="Page navigation">
-                                                        <ul class="pagination">
-                                                            @if (Model.HasPreviousPage)
-                                                            {
-                                                                <li class="page-item">
-                                                                    <a class="page-link" onclick="updateModel(@Model.PageIndex - 1)"
-                                                                       aria-label="Previous">
-                                                                        <span aria-hidden="true">
-                                                                            <i class="fa fa-chevron-left"
-                                                                               aria-hidden="true"></i>
-                                                                        </span> <span class="sr-only">Previous</span>
-                                                                    </a>
-                                                                </li>
-                                                            }
-                                                            @for (var i = 1; i <= Model.TotalPages; i++)
-                                                            {
-                                                                var actPage = Model.PageIndex == i ? "active" : "";
-                                                                <li class="page-item @actPage">
-                                                                    <a class="page-link" onclick="updateModel(@i)">@i</a>
-                                                                </li>
-                                                            }
-                                                            @if (Model.HasNextPage)
-                                                            {
-                                                                <li class="page-item">
-                                                                    <a class="page-link" onclick="updateModel(@Model.PageIndex + 1)" aria-label="Next">
-                                                                        <span aria-hidden="true">
-                                                                            <i class="fa fa-chevron-right"
-                                                                           aria-hidden="true"></i>
-                                                                        </span> <span class="sr-only">Next</span>
-                                                                    </a>
-                                                                </li>
-                                                            }
-                                                        </ul>
-                                                    </nav>
-                                                </div>
-                                                <div class="col-xl-6 col-md-6 col-sm-12">
-                                                    <div class="product-search-count-bottom">
-                                                        <h5>Page @Model.PageIndex of @Model.TotalPages</h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+<div class="product-pagination">
+    <div class="theme-paggination-block">
+        <div class="row">
+            <div class="col-xl-6 col-md-6 col-sm-12">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" onclick="updateModel(@Model.PageIndex - 1)"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">
+                                        <i class="fa fa-chevron-left"
+                                           aria-hidden="true"></i>
+                                    </span> <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                        }
+                        @for (var i = 1; i <= Model.TotalPages; i++)
+                        {
+                            var actPage = Model.PageIndex == i ? "active" : "";
+                            <li class="page-item @actPage">
+                                <a class="page-link" onclick="updateModel(@i)">@i</a>
+                            </li>
+                        }
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" onclick="updateModel(@Model.PageIndex + 1)" aria-label="Next">
+                                    <span aria-hidden="true">
+                                        <i class="fa fa-chevron-right"
+                                           aria-hidden="true"></i>
+                                    </span> <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-xl-6 col-md-6 col-sm-12">
+                <div class="product-search-count-bottom">
+                    <h5>Page @Model.PageIndex of @Model.TotalPages</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .colorl-li.selected {
@@ -133,7 +159,8 @@
         transition: all 0.1s ease;
         vertical-align: middle;
     }
-    .color-circle{
+
+    .color-circle {
         border: solid 2px transparent;
     }
 </style>

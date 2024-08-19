@@ -8,6 +8,7 @@
         public int Rating { get; set; }
         public string ReviewDescription { get; set; }
         public string PublishStatus { get; set; }
+        public DateTime ReviewDate { get; set; }
         public string ShortProductName
         {
             get

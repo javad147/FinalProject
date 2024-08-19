@@ -182,19 +182,19 @@
     <!-- price range js -->
     <script src="~/assets/js/price-range.js"></script>
 
-    <script>
+ @*    <script>
         function updateModel(pageNumber = 1) {
             var priceRange = $(".js-range-slider").val();
             var selectedCategoryIds = Array.from(document.querySelectorAll('.category-filter-checkbox:checked'), checkbox => parseInt(checkbox.value));
             var sortOrder = $('.sortOrder').val();
             var pageSize = $('.pageSize').val();
-
+            var request = { selectedCategoryIds: selectedCategoryIds, priceRange: priceRange, sortOrder: sortOrder, pageSize: pageSize, pageNumber: pageNumber }
             fetch('@Url.Action("FilterProducts", "ProductList")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ selectedCategoryIds: selectedCategoryIds, priceRange: priceRange, sortOrder: sortOrder, pageSize: pageSize, pageNumber: pageNumber })
+                body: JSON.stringify(request)
             })
                 .then(response => response.text())
                 .then(html => {
@@ -204,6 +204,57 @@
         }
 
         $(".js-range-slider").on('change', updateModel);
+    </script> *@
+
+    <script>
+            // Function to update the product list based on the current filters and pagination
+            function updateModel(pageNumber = 1) {
+                // Get the selected price range from the slider
+                var priceRange = $(".js-range-slider").val();
+
+                // Get the selected category IDs from checked checkboxes
+                var selectedCategoryIds = Array.from(document.querySelectorAll('.category-filter-checkbox:checked'), checkbox => parseInt(checkbox.value));
+
+                // Get the selected sort order and page size
+                var sortOrder = $('.sortOrder').val();
+                var pageSize = $('.pageSize').val();
+
+                // Make an AJAX POST request to the server
+                $.ajax({
+                    url: '@Url.Action("FilterProducts", "ProductList")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        selectedCategoryIds: selectedCategoryIds,
+                        priceRange: priceRange,
+                        sortOrder: sortOrder,
+                        pageSize: pageSize,
+                        pageNumber: pageNumber
+                    }),
+                    success: function (response) {
+                        // Update the HTML content of the product list container with the server response
+                        $('#product-list').html(response);
+
+                        // Optionally initialize wishlist or other components
+                        initializeWishlist();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            // Bind the updateModel function to the change event of the price range slider
+            $(".js-range-slider").on('change', function () {
+                updateModel();
+            });
+
+            // Optionally, you can bind updateModel to other events, like pagination controls
+            $('.pageSize, .sortOrder').on('change', function () {
+                updateModel();
+            });
     </script>
+
 
 }

@@ -25,16 +25,16 @@ namespace TamVaxti.Controllers
         }
         public async Task<IActionResult> Index(long? id)
         {
-            if(id is null)
+            if (id is null)
             {
                 return BadRequest();
             }
             //Product product = await _productService.GetProductByIdAsync((int)id);
             Product product = await _productService.GetProductBySkuIdAsync((long)id);
-
+            List<ProductReview> pr = await _productService.GetPublishedProductReviewByOfProduct(product.Id);
             if (product is null)
             {
-                return NotFound();  
+                return NotFound();
             }
             var model = product.SKUs.Select(sku => new ProductSkuListVM
             {
@@ -68,6 +68,13 @@ namespace TamVaxti.Controllers
                                     Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                         .AttributeOption.Value
                                 }).ToList(),
+                ProductReview = pr.Select(s => new ProductReviewVM
+                {
+                    ReviewDescription = s.ReviewDescription,
+                    Rating = s.Rating,
+                    CustomerName = s.User.UserName,
+                    ReviewDate = s.ReviewDate
+                }).ToList(),
                 RelatedSku = product.SKUs.Select(s => new RelatedSkuVM
                 {
                     SkuId = s.Id,
@@ -76,6 +83,7 @@ namespace TamVaxti.Controllers
                     /*Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                 .AttributeOption.Value*/
                 }).DistinctBy(r => r.Color).OrderBy(s => sku.Id).ToList()
+
             }).FirstOrDefault();
 
             if (!model.ImageUrls.Any())

@@ -130,9 +130,12 @@
                                         <a asp-controller="Home" asp-action="Index">Home</a>
                                     </li>
                                     <li>
-                                        <a href="#">Shop</a>
+                                        <a asp-controller="ProductList" asp-action="Index">Shop</a>
 
                                         <ul>
+                                            <li>
+                                                <a asp-controller="ProductList" asp-action="Index">All Categories</a>
+                                            </li>
                                             @foreach (var category in Model.Categories.Where(x => x.ShowInMenu))
                                             {
                                                 <li>
@@ -159,14 +162,14 @@
                                     <li>
                                         <a asp-controller="Blog" asp-action="Index">Blog</a>
                                     </li>
-                                    
+
                                     <li>
                                         <a asp-controller="AboutUs" asp-action="Index">About Us</a>
                                     </li>
                                     <li>
                                         <a asp-controller="ContactUs" asp-action="Index">Contact Us</a>
                                     </li>
-                                   
+
                                 </ul>
                             </nav>
                         </div>

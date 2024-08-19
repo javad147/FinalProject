@@ -65,7 +65,7 @@
                             {
                                 var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
                                 <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                    <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
+                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
                                 </a>
                             }
                         </ul>
@@ -74,22 +74,23 @@
                             {
                                 var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
                                 <a class="color-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                    <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+                                <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
                                 </a>
                             }
                         </ul>
                         <div class="product-buttons">
-                            @if (Model.Quantity <= 0){
+                            @if (Model.Quantity <= 0)
+                            {
                                 <button class="btn btn-solid hover-solid" disabled>
                                     <i class="ti-shopping-cart"></i> add to cart
-                                </button> 
+                                </button>
                             }
                             else
                             {
                                 <a href="javascript:void(0)" id="cartEffect" data-product-id="@Model.ProductId" data-sku-id="@Model.SkuId"
                                    class="btn btn-solid hover-solid btn-animation add-to-cart">
                                     <i class="ti-shopping-cart"></i> add to cart
-                                </a> 
+                                </a>
                             }
                             @if (User.Identity.IsAuthenticated)
                             {
@@ -120,35 +121,79 @@
 <!-- product-tab starts -->
 <section class="tab-product m-0">
     <div class="container">
-        <div class="row">
-            <div class="col-sm-12 col-lg-12">
-                <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
-                           href="#top-home" role="tab" aria-selected="true">
-                            <i class="icofont icofont-ui-home"></i>Details
-                        </a>
-                        <div class="material-border"></div>
-                    </li>
+
+        <div class="col-sm-12 col-lg-12">
+            <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
+                       href="#top-home" role="tab" aria-selected="true">
+                        <i class="icofont icofont-ui-home"></i>Details
+                    </a>
+                    <div class="material-border"></div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="review-top-tab" data-bs-toggle="tab"
+                       href="#top-review" role="tab" aria-selected="false">
+                        <i class="icofont icofont-contacts"></i>Write Review
+                    </a>
+                    <div class="material-border"></div>
+                </li>
+
+            </ul>
+            <div class="tab-content nav-material" id="top-tabContent">
+                <div class="tab-pane fade show active" id="top-home" role="tabpanel"
+                     aria-labelledby="top-home-tab">
+                    <div class="product-tab-discription">
+                        @Html.Raw(Model.Description)
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="top-review" role="tabpanel" aria-labelledby="review-top-tab">
+                    <div class="row mb-3">
+                        <ul class="comment-section">
+                            @if (Model.ProductReview != null && Model.ProductReview.Any())
+                            {
+                                foreach (var pr in Model.ProductReview)
+                                {
+                                    var nameParts = pr.CustomerName.Split(' ');
+                                    var initials = nameParts.Length > 1
+                                    ? $"{nameParts[0][0]}{nameParts[1][0]}"
+                                    : $"{nameParts[0][0]}";
+
+                                    <li class="media mb-3" style="display: flex; align-items: center;">
+                                        <div class="initial-avatar" data-name="@initials" style=" width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ffffff; font-weight: bold; margin-right: 10px;">
+                                            @initials
+                                        </div>
+                                        <div class="media-body">
+                                            <h6>@pr.CustomerName <span>( @pr.ReviewDate.ToString("dd MMM yyyy") )</span></h6>
+                                            <div class="rating">
+                                                @for (var i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= pr.Rating)
+                                                    {
+                                                        <span class="fa fa-star checked"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="fa fa-star"></span>
+                                                    }
+                                                }
+                                            </div>
+                                            <p>@pr.ReviewDescription</p>
+                                        </div>
+                                    </li>
+
+                                }
+                            }
+                            else
+                            {
+                                <li>No Reviews yet.</li>
+                            }
+
+                        </ul>
+                    </div>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" id="review-top-tab" data-bs-toggle="tab"
-                           href="#top-review" role="tab" aria-selected="false">
-                                <i class="icofont icofont-contacts"></i>Write Review
-                            </a>
-                            <div class="material-border"></div>
-                        </li>
-                    }
-                </ul>
-                <div class="tab-content nav-material" id="top-tabContent">
-                    <div class="tab-pane fade show active" id="top-home" role="tabpanel"
-                         aria-labelledby="top-home-tab">
-                        <div class="product-tab-discription">
-                            @Html.Raw(Model.Description)
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="top-review" role="tabpanel" aria-labelledby="review-top-tab">
                         <form class="theme-form" action="@Url.Action("AddProductReview", "Product")" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" value="@Model.ProductId" name="ProductId" />
@@ -179,56 +224,84 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 <!-- product-tab ends -->
 
 <script>
-        document.getElementById('add-review-btn').addEventListener('click', function (event) {
-            var ratingValue = document.querySelector('.rating-value').value;
-            if (!ratingValue) {
-                event.preventDefault();
-                alert('Please select a rating.');
-            }
-        });
-        document.addEventListener('DOMContentLoaded', function () {
-            var stars = document.querySelectorAll('.star-rating .fa');
-            stars.forEach(function (star) {
-                star.addEventListener('click', function () {
-                    var rating = this.getAttribute('data-rating');
-                    document.querySelector('.rating-value').value = rating;
-                    stars.forEach(function (s) {
-                        if (s.getAttribute('data-rating') <= rating) {
-                            s.classList.remove('fa-star-o');
-                            s.classList.add('fa-star');
-                        } else {
-                            s.classList.remove('fa-star');
-                            s.classList.add('fa-star-o');
-                        }
-                    });
+    document.getElementById('add-review-btn').addEventListener('click', function (event) {
+        var ratingValue = document.querySelector('.rating-value').value;
+        if (!ratingValue) {
+            event.preventDefault();
+            alert('Please select a rating.');
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var stars = document.querySelectorAll('.star-rating .fa');
+        stars.forEach(function (star) {
+            star.addEventListener('click', function () {
+                var rating = this.getAttribute('data-rating');
+                document.querySelector('.rating-value').value = rating;
+                stars.forEach(function (s) {
+                    if (s.getAttribute('data-rating') <= rating) {
+                        s.classList.remove('fa-star-o');
+                        s.classList.add('fa-star');
+                    } else {
+                        s.classList.remove('fa-star');
+                        s.classList.add('fa-star-o');
+                    }
                 });
             });
         });
-    </script>
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var elements = document.querySelectorAll('.initial-avatar');
+        elements.forEach(function (element) {
+            var name = element.getAttribute('data-name');
+            var colors = ['#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#2980B9'];
+            var color = colors[Math.floor(Math.random() * colors.length)];
+
+            element.style.backgroundColor = color;
+            element.style.width = "64px";
+            element.style.height = "64px";
+            element.style.borderRadius = "50%";
+            element.style.display = "flex";
+            element.style.alignItems = "center";
+            element.style.justifyContent = "center";
+            element.style.fontSize = "24px";
+            element.style.color = "#ffffff";
+            element.style.fontWeight = "bold";
+            element.style.marginRight = "10px";
+
+            element.textContent = name;
+        });
+    });</script>
 <style>
     .star-rating .fa {
         font-size: 24px;
         cursor: pointer;
     }
+
     .star-rating .fa-star {
         color: #ffa200;
     }
+
     .star-rating .fa-star-o {
         color: #ddd;
     }
+
     .size-li.selected {
         background-color: #dbdada;
         color: black;
     }
+
     .size-li {
         border: solid 2px #dbdada;
         padding: 5px 10px;
@@ -241,11 +314,13 @@
         transition: all 0.1s ease;
         vertical-align: middle;
     }
-    .quantity-detail{
+
+    .quantity-detail {
         font-size: 13px;
         background: wheat;
         padding: 1px 5px;
     }
+
     .color-li.selected {
         display: inline-block;
         border: solid 2px black;
@@ -258,7 +333,12 @@
         transition: all 0.1s ease;
         vertical-align: middle;
     }
-    .color-circle{
+
+    .color-circle {
         border: solid 2px transparent;
+    }
+
+    .checked {
+        color: orange;
     }
 </style>

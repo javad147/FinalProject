@@ -169,6 +169,12 @@ namespace TamVaxti.Services
             return res;
         }
 
+        public async Task<List<ProductReview>> GetPublishedProductReviewByOfProduct(int ProductId)
+        {
+            var res = await _context.Product_Reviews.Include(r => r.User).Where(r => r.ProductId == ProductId && r.Status == true).ToListAsync();
+            return res;
+        }
+
         public async Task<bool> AddProductReview(ProductReview model)
         {
             _context.Product_Reviews.Add(model);
@@ -224,7 +230,7 @@ namespace TamVaxti.Services
                     ProductId = product.Id,
                     Name = product.Name + " (" + sku.SkuCode + ")",
                     Description = product.Description,
-                    MainImage = !string.IsNullOrEmpty(sku.ImageUrl1) ? sku.ImageUrl1 : !string.IsNullOrEmpty(sku.ImageUrl2) ? sku.ImageUrl2 
+                    MainImage = !string.IsNullOrEmpty(sku.ImageUrl1) ? sku.ImageUrl1 : !string.IsNullOrEmpty(sku.ImageUrl2) ? sku.ImageUrl2
                                 : !string.IsNullOrEmpty(sku.ImageUrl3) ? sku.ImageUrl3 : !string.IsNullOrEmpty(sku.ImageUrl4) ? sku.ImageUrl4 : product.MainImage,
                     CategoryId = product.CategoryId,
                     SkuId = sku.Id,

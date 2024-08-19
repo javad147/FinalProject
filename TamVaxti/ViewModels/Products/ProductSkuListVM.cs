@@ -1,4 +1,6 @@
-﻿namespace TamVaxti.ViewModels.Products
+﻿using TamVaxti.Models;
+
+namespace TamVaxti.ViewModels.Products
 {
     public class ProductSkuListVM
     {
@@ -18,5 +20,6 @@
         public string Size { get; set; }
         public List<RelatedSkuVM> RelatedSku { get; set; }
         public List<RelatedSizeVM> RelatedSizes { get; set; }
+        public List<ProductReviewVM> ProductReview { get; set; }
     }
 }
