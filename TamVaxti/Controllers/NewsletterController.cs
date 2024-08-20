@@ -17,12 +17,13 @@ namespace TamVaxti.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Subscribe()
+        public async Task<IActionResult> Subscribe(string? email)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Ok();
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var email = user.Email;
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                email = user.Email;
+            }
 
             if (string.IsNullOrWhiteSpace(email))
             {

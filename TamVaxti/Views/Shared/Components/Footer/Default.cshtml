@@ -1,7 +1,7 @@
 ﻿@model FooterVM
 <!-- footer -->
 <footer class="footer-light">
-    @if (User.Identity.IsAuthenticated && !ViewBag.IsSubscribed)
+    @if (!ViewBag.IsSubscribed)
     {
         <div class="light-layout">
             <div class="container">
@@ -17,6 +17,12 @@
                         </div>
                         <div class="col-lg-6">
                             <form action="@Url.Action("Subscribe", "Newsletter")" method="post" class="form-inline subscribe-form auth-form needs-validation" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form">
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                    <div class="form-group mx-sm-3">
+                                        <input type="text" class="form-control" name="email" id="mce-email" placeholder="Enter your email" required="required">
+                                    </div>
+                                }
                                 <button type="submit" class="btn btn-solid" id="mc-submit">Subscribe</button>
                             </form>
 
