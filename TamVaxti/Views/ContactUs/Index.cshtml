@@ -87,22 +87,26 @@
 
                 <form action="@Url.Action("SendMessage", "ContactUs")" method="post" class="theme-form">
                     <div class="form-row row">
-                        <div class="col-md-6">
-                            <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" maxlength="50" name="FirstName" id="firstName" placeholder="Enter Your name" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" maxlength="50" name="LastName" id="lastName" placeholder="Enter Your last name" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phoneNumber">Phone Number</label>
-                            <input type="text" class="form-control" name="Phone" maxlength="15" id="Phone" placeholder="Enter your number" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" name="EmailId" maxlength="50" id="EmailId" placeholder="Email" required>
-                        </div>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <div class="col-md-6">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" maxlength="50" name="FirstName" id="firstName" placeholder="Enter Your name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" maxlength="50" name="LastName" id="lastName" placeholder="Enter Your last name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" name="Phone" maxlength="15" id="Phone" placeholder="Enter your number" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="EmailId" maxlength="50" id="EmailId" placeholder="Email" required>
+                            </div>
+                        }
+
                         <div class="col-md-12">
                             <label for="message">Write Your Message</label>
                             <textarea class="form-control" name="Message" id="Message" maxlength="499" placeholder="Write Your Message" rows="6" required></textarea>

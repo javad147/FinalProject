@@ -183,17 +183,33 @@ namespace TamVaxti.Services
 
         public async Task<List<Product>> GetAllWithSkusAsync()
         {
-            return await _context.Products.Where(m => !m.SoftDeleted)
-                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                                    .ThenInclude(s => s.AttributeOptionSKUs)
-                                    .ThenInclude(s => s.AttributeOption)
-                                    .ThenInclude(ao => ao.Attribute)
-                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                                    .ThenInclude(s => s.SkuStock)
-                                    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                                    .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
-                                    .OrderByDescending(o => o.Id)
-                                    .ToListAsync();
+            return await _context.Products
+                .Where(p => !p.SoftDeleted)
+                .Include(p => p.SKUs)
+                .ThenInclude(s => s.AttributeOptionSKUs)
+                .ThenInclude(aos => aos.AttributeOption)
+                .ThenInclude(ao => ao.Attribute)
+                .Include(p => p.SKUs)
+                .ThenInclude(s => s.SkuStock)
+                .Include(p => p.SKUs)
+                .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
+                .OrderByDescending(p => p.Id)
+                .AsNoTracking() // Optional: Add this if you don't need tracking
+                .ToListAsync();
+
+            //return await _context.Products.Where(m => !m.SoftDeleted)
+            //                        .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //                        .ThenInclude(s => s.AttributeOptionSKUs)
+            //                        .ThenInclude(s => s.AttributeOption)
+            //                        .ThenInclude(ao => ao.Attribute)
+            //                        .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //                        .ThenInclude(s => s.SkuStock)
+            //                        .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //                        .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
+            //                        .OrderByDescending(o => o.Id)
+            //                        .ToListAsync();
+
+
         }
 
         public async Task<int> GetProductIdBySkuIdAsync(long SkuId)

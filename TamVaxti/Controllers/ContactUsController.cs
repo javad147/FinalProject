@@ -2,6 +2,8 @@
 using TamVaxti.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using TamVaxti.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace TamVaxti.Controllers
 {
@@ -11,12 +13,13 @@ namespace TamVaxti.Controllers
 
         private readonly IContactUsService _contactUsService;
         private readonly ICompanyService _companyService;
+        private readonly UserManager<AppUser> _userManager;
 
-
-        public ContactUsController(IContactUsService contactUsService, ICompanyService companyService)
+        public ContactUsController(IContactUsService contactUsService, ICompanyService companyService, UserManager<AppUser> userManager)
         {
             _contactUsService = contactUsService;
             _companyService = companyService;
+            _userManager = userManager;
         }
 
 
@@ -28,9 +31,15 @@ namespace TamVaxti.Controllers
 
 
         [HttpPost]
-        public IActionResult SendMessage(Enquiry enquiry)
+        public async Task<IActionResult> SendMessage(Enquiry enquiry)
         {
-           
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                enquiry.FirstName =user.FullName;
+                enquiry.EmailId = user.Email;
+                enquiry.Phone = user.PhoneNumber;
+            }
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "All fields are required.";
