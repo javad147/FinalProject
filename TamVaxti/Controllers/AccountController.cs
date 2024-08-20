@@ -65,7 +65,7 @@ namespace TamVaxti.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return View("Index", request);
+                return View(request);
             }
             AppUser user = new()
             {
@@ -125,7 +125,7 @@ namespace TamVaxti.Controllers
             await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody);
             TempData["SuccessMessage"] = "Registration successful. Please check your email to confirm your account.";
 
-            return RedirectToAction("Index","Home");   
+            return View();
         }
 
 
