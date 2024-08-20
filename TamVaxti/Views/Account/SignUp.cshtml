@@ -1,53 +1,135 @@
 ﻿@model RegisterVM
-
-
-
-<div class="container mt-5 mb-5 d-flex flex-column align-items-center">
-    <h1 class="text-center">Sign Up</h1>
-    <div class="text-danger" asp-validation-summary="ModelOnly">
-    </div>
-    <div class="register-area mt-3" style="padding:20px;background-color:lightgray;border-radius:30px;width:50%;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
-        <form method="post" asp-action="SignUp">
-
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Username</label>
-                <input asp-for="UserName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <span class="text-danger" asp-validation-for="UserName"></span>
+<style>
+    .register-page .theme-card .theme-form input {
+        margin-bottom: 12px !important;
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>create account</h2>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Fullname</label>
-                <input asp-for="FullName" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <span class="text-danger" asp-validation-for="FullName"></span>
-            </div>            
-            
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input asp-for="Email" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <span class="text-danger" asp-validation-for="Email"></span>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">create account</li>
+                    </ol>
+                </nav>
             </div>
-
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input asp-for="Password" type="password" class="form-control" id="exampleInputPassword1">
-                <span class="text-danger" asp-validation-for="Password"></span>
-            </div>            
-            
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
-                <input asp-for="ConfirmPassword" type="password" class="form-control" id="exampleInputPassword1">
-                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
-            </div>
-            <div class="sign-up-btn d-flex justify-content-center">
-                <button type="submit" class="btn btn-warning w-25">Sign Up</button>
-            </div>
-            
-            <p class="d-flex justify-content-center mt-4">Already have an account? <a asp-controller="Account" asp-action="SignIn" class="px-2"> Sign In</a></p>
-
-        </form>
+        </div>
     </div>
 </div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="register-page section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>create account</h3>
+                <div class="theme-card">
+                    <form method="post" asp-action="SignUp" class="theme-form">
+                        <div class="form-row row">
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="UserName">User Name</label>
+                                <input asp-for="UserName" type="text" class="form-control" placeholder="User Name">
+                                <span class="text-danger" asp-validation-for="UserName"></span>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="FullName">Full Name</label>
+                                <input asp-for="FullName" type="text" class="form-control" placeholder="Full Name">
+                                <span class="text-danger" asp-validation-for="FullName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row row">
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="Email">Email</label>
+                                <input asp-for="Email" type="text" class="form-control" placeholder="Email">
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="PhoneNumber">Phone Number</label>
+                                <input asp-for="PhoneNumber" type="text" class="form-control" placeholder="Phone Number">
+                                <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row row">
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="Password">Password</label>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Password">
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="astrik" for="ConfirmPassword">Confirm Password</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password">
+                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                            </div>
+             
+                        </div>
 
+                        <div class="form-row row">
+                            <div class="col-md-6 mb-3 mt-3">
+                                <label asp-for="Flat"><strong>Flat/Plot</strong></label>
+                                <input asp-for="Flat" class="form-control" />
+                                <span asp-validation-for="Flat" class="text-danger"></span>
+                            </div>
 
+                            <div class="col-md-6 mb-3 mt-3">
+                                <label asp-for="Address" class="astrik"><strong>Address</strong></label>
+                                <input asp-for="Address" class="form-control" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
 
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ZipCode" class="astrik"><strong>Zip Code</strong></label>
+                                <input asp-for="ZipCode" class="form-control" />
+                                <span asp-validation-for="ZipCode" class="text-danger"></span>
+                            </div>
 
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Country" class="astrik"><strong>Country</strong></label>
+                                <input asp-for="Country" class="form-control" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="astrik"><strong>City</strong></label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Region" class="astrik"><strong>Region/State</strong></label>
+                                <input asp-for="Region" class="form-control" />
+                                <span asp-validation-for="Region" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mt-4 text-right">
+                                <p class="d-flex justify-content-end">Already have an account? <a asp-controller="Account" asp-action="SignIn" class="px-2"> Sign In</a></p>
+                                <button type="submit" class="btn btn-solid w-auto">Create Account</button>
+                              @*   <button id="updateButton" type="submit" class="btn btn-solid">
+                                    <span id="buttonText" class="mr-2">Save Settings</span>
+                                    <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </button> *@
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</script>

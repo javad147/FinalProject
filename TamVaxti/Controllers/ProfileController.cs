@@ -60,14 +60,26 @@ namespace TamVaxti.Controllers
         public async Task<IActionResult> UpdateProfile(UserProfileVM model)
         {
 
+            AppUser user = new();
+            user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email, user.Id);
+            var existingUserByPhoneNumber = await _userManager.FindByPhoneNumberAsync(model.PhoneNumber, user.Id);
+
+            if (existingUserByEmail != null)
+            {
+                ModelState.AddModelError(nameof(model.Email), "Email Already exists.");
+            }
+
+            if (existingUserByPhoneNumber != null)
+            {
+                ModelState.AddModelError(nameof(model.PhoneNumber), "Phone Number already exists.");
+            }
             if (!ModelState.IsValid)
             {
                 return View("Index", model);
             }
 
-            AppUser user = new();
-
-            user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             // Update user details
             user.FullName = model.FullName;
