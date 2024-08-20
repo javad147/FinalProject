@@ -158,7 +158,7 @@
     }
 
     .search-form {
-        max-width: 800px;
+        max-width: 900px;
         width: 100%;
     }
 
@@ -209,20 +209,23 @@
                     <div class="ml-3 mt-3" style="margin-left: 15px;">
                         <label class="mr-2">Status:</label>
                         <input type="radio" id="published" name="statusFilter" value="Published" @(ViewData["CurrentStatus"] == "Published" ? "checked" : "")>
-                        <label for="read" class="mr-2">Published</label>
+                        <label for="published" class="mr-2">Published</label>
                         <input type="radio" id="unpublished" name="statusFilter" value="Unpublished" @(ViewData["CurrentStatus"] == "Unpublished" ? "checked" : "")>
-                        <label for="Unpublished" class="mr-2">Unpublished</label>
+                        <label for="unpublished" class="mr-2">Unpublished</label>
                     </div>
 
                     <!-- Search Button with Margin -->
                     <div class="input-group-append" style="margin-left: 15px;">
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary" style="height: 100%;">Search</button>
                         @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
                         {
                             <button type="button" class="btn btn-secondary" onclick="clearSearch()">
                                 <i class="fa fa-times"></i>
                             </button>
                         }
+                        <button type="button" class="btn btn-secondary" style="margin-left:10px; height: 100%;" onclick="clearSearch()">
+                            Reload
+                        </button>
                     </div>
                 </div>
             </form>
@@ -232,7 +235,7 @@
 @if (!Model.Any())
 {
     <div class="no-enquiries">
-        <p>No enquiries available.</p>
+        <p>No Product Reviews available.</p>
     </div>
 }
 else
@@ -290,10 +293,10 @@ else
                                                 }
                                             </td>
                                             <td>
-                                                <a onclick="openDetailsModal(@review.ReviewId)">
+                                                <a onclick="openDetailsModal(@review.ReviewId)" style="cursor: pointer;">
                                                     <i class="fa fa-eye fa-2x" title="Details"></i>
                                                 </a>
-                                                <a onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')" class="ms-2">
+                                                <a onclick="openEditModal('@review.ReviewId', '@review.PublishStatus')" style="cursor: pointer;" class="ms-2">
                                                     <i class="fa fa-edit fa-2x" title="Edit"></i>
                                                 </a>
                                             </td>
@@ -315,11 +318,9 @@ else
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="editModalLabel">Edit Review Status</h5>
-                <button type="button" title="Close" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
             <div class="modal-body">
                 <form id="editForm">
