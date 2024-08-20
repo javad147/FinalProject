@@ -7,15 +7,18 @@ using TamVaxti.ViewModels.Company;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 
 namespace TamVaxti.Services
 {
     public class CompanyService : ICompanyService
     {
         private readonly AppDbContext _context;
-        public CompanyService(AppDbContext context)
+        private readonly IHttpContextAccessor _accessor;
+        public CompanyService(AppDbContext context, IHttpContextAccessor accessor)
         {
             _context = context;
+            _accessor = accessor;
         }
 
         public async Task CreateAsync(Company company)
@@ -45,8 +48,17 @@ namespace TamVaxti.Services
         }
         public string GetCurrencySymbol()
         {
-            var company = _context.Company.FirstOrDefault();
-            return company?.CurrencySymbol ?? "$"; 
+            dynamic symbol;
+            if (_accessor.HttpContext.Request.Cookies["currency"] is not null)
+            {
+                symbol = _accessor.HttpContext.Request.Cookies["currency"];
+            }
+            else
+            {
+                var company = _context.Company.FirstOrDefault();
+                symbol = company?.CurrencySymbol;
+            }
+            return symbol ?? "$"; 
         }
     }
 }

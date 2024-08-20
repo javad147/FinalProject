@@ -1,21 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TamVaxti.Services.Interfaces;
 using TamVaxti.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace TamVaxti.Controllers
 {
     public class NewsletterController : Controller
     {
         private readonly INewsletterService _newsletterService;
+        readonly UserManager<AppUser> _userManager;
 
-        public NewsletterController(INewsletterService newsletterService)
+        public NewsletterController(INewsletterService newsletterService, UserManager<AppUser> userManager)
         {
             _newsletterService = newsletterService;
+            _userManager = userManager;
         }
 
         [HttpPost]
-        public IActionResult Subscribe(string email)
+        public async Task<IActionResult> Subscribe(string? email)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                email = user.Email;
+            }
+
             if (string.IsNullOrWhiteSpace(email))
             {
                 TempData["ErrorMessage"] = "Email is required.";

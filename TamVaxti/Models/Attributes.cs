@@ -11,6 +11,7 @@ namespace TamVaxti.Models
         public string Type { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public bool SoftDeleted { get; set; }
         public ICollection<AttributeOption> AttributeOptions { get; set; }
     }
 }

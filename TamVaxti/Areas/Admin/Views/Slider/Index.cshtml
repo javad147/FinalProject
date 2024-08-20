@@ -1,4 +1,6 @@
-﻿@model List<SliderVM>
+﻿@using TamVaxti.Helpers.Extensions
+
+@model List<SliderVM>
 
 <head>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -78,9 +80,9 @@
                                     {
                                         <tr>
                                             <td>@index.ToString("D2")</td>
-                                            <td>@item.SliderTitle</td>
+                                            <td>@Html.Raw(HtmlHelperExtensions.StripHtml(item.SliderTitle))</td>
                                             <td>@item.SliderName</td>
-                                            <td>@item.SliderDescription</td>
+                                            <td>@Html.Raw(HtmlHelperExtensions.StripHtml(item.SliderDescription))</td>
                                             <td>
                                                 @if (!string.IsNullOrEmpty(item.Image))
                                                 {

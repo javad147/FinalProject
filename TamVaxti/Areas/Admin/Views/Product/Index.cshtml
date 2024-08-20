@@ -1,8 +1,31 @@
-﻿@model Paginate<ProductVM>
+﻿@using TamVaxti.Helpers.Extensions
+
+@model Paginate<ProductVM>
 @{
     ViewBag.PageName = "Products";
 }
 
+<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var messageType = '@TempData["messageType"]';
+            var message = '@TempData["message"]';
+            if (messageType === "success") {
+                toastr.success(message);
+            } else if (messageType === "error") {
+                toastr.error(message);
+            }
+        });
+    </script>
+}
 
 <!-- Container-fluid starts-->
 <div class="container-fluid">
@@ -41,7 +64,7 @@
                         <div class="input-group">
                             <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
                             <div class="input-group-append mr-2">
-                                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                                <button type="submit" class="btn btn-primary ml-2" style="height: 100%;">Search</button>
                                 @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
                                 {
                                     <button type="button" class="btn btn-secondary" onclick="clearProductSearch()">
@@ -86,7 +109,8 @@
 
                                         <td data-field="name">@item.Name</td>
 
-                                        <td data-field="name">@item.Description</td>
+                                        <td data-field="name">@Html.Raw(HtmlHelperExtensions.StripHtml(item.Description))</td>
+                                        @* <td data-field="name">@item.Description</td> *@
 
                                         <td data-field="name">@item.Category</td>
 

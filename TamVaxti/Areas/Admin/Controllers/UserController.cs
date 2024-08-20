@@ -318,10 +318,18 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Customer()
+        public async Task<IActionResult> Customer(string searchString)
         {
             List<UserRoleVM> userRoles = new();
             var users = await _userManager.Users.ToListAsync();
+
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u => u.FullName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
             foreach (var user in users)
             {
@@ -342,6 +350,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                     ProfileImageUrl = user.ProfileImageUrl
                 });
             }
+            ViewData["CurrentFilter"] = searchString;
             return View(userRoles);
         }
 

@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using TamVaxti.Helpers;
 using TamVaxti.Services.Interfaces;
 using System.Net.Mail;
-
+using TamVaxti.Helpers.Extensions;
+using TamVaxti.Data;
 namespace TamVaxti.Controllers
 {
     public class AccountController : Controller
@@ -15,16 +16,19 @@ namespace TamVaxti.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ICompanyService _companyService;
+        private readonly AppDbContext _context;
 
-        public AccountController(UserManager<AppUser> userManager, 
+        public AccountController(UserManager<AppUser> userManager,
                                  SignInManager<AppUser> signInManager,
                                  RoleManager<IdentityRole> roleManager,
-                                 ICompanyService companyService)
+                                 ICompanyService companyService,
+                                 AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _companyService = companyService;
+            _context = context;
         }
 
         [HttpGet]
@@ -38,27 +42,88 @@ namespace TamVaxti.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp(RegisterVM request)
         {
-            if(!ModelState.IsValid) return View(request);
 
+            
+
+            var existingUserByUsername = await _userManager.FindByNameAsync(request.UserName);
+            var existingUserByEmail = await _userManager.FindByEmailAsync(request.Email);
+            var existingUserByPhoneNumber = await _userManager.FindByPhoneNumberAsync(request.PhoneNumber);
+
+            if (existingUserByUsername != null)
+            {
+                ModelState.AddModelError(nameof(request.UserName), "User Name already exists.");
+            }
+
+            if (existingUserByEmail != null)
+            {
+                ModelState.AddModelError(nameof(request.Email), "Email Already exists.");
+            }
+
+            if (existingUserByPhoneNumber != null)
+            {
+                ModelState.AddModelError(nameof(request.PhoneNumber), "Phone Number already exists.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View("Index", request);
+            }
             AppUser user = new()
             {
                 Email = request.Email,
                 UserName = request.UserName,
                 FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber
             };
 
-            var result = await _userManager.CreateAsync(user,request.Password);
+            var result = await _userManager.CreateAsync(user, request.Password);
 
             if (!result.Succeeded)
             {
-                foreach (var item in result.Errors) 
+                foreach (var item in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, item.Description);
+                    if(item.Description.Contains("Password"))
+                    {
+                        ModelState.AddModelError(nameof(request.Password), item.Description);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, item.Description);
+                    }
+                  
                 }
                 return View(request);
             }
 
             await _userManager.AddToRoleAsync(user, nameof(Roles.Member));
+            // Add shipping address.
+            UserShippingAddress shippingAddress = new()
+            {
+                UserId = user.Id,
+                Flat = request.Flat ?? "",
+                Address = request.Address,
+                ZipCode = request.ZipCode,
+                Country = request.Country,
+                City = request.City,
+                Region = request.Region
+            };
+            _context.UserShippingAddress.Add(shippingAddress);
+            await _context.SaveChangesAsync();
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+            var company = await _companyService.GetFirstOrDefaultCompany();
+
+            var verifyemail = new
+            {
+                Name = request.UserName,
+                Link = confirmationLink,
+                Company = company
+            };
+            string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/emailverify.html", verifyemail);
+
+            await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody);
+            TempData["SuccessMessage"] = "Registration successful. Please check your email to confirm your account.";
 
             return RedirectToAction("Index","Home");   
         }
@@ -81,32 +146,38 @@ namespace TamVaxti.Controllers
             if (existUser is null)
             {
                 existUser = await _userManager.FindByNameAsync(request.EmailOrUsername);
-               // return RedirectToAction("Index", "Home");
+                // return RedirectToAction("Index", "Home");
             }
 
-            if(existUser is null)
+            if (existUser is null)
             {
                 ModelState.AddModelError(string.Empty, "Login failed");
                 return View();
             }
 
+            if (!await _userManager.IsEmailConfirmedAsync(existUser))
+            {
+                ModelState.AddModelError(string.Empty, "You need to confirm your email to log in.");
+                return View();
+            }
+
             var result = await _signInManager.PasswordSignInAsync(existUser, request.Password, false,false); 
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, "Login failed");
                 return View();
             }
 
             return RedirectToAction("Index", "Home");
-        } 
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -115,10 +186,10 @@ namespace TamVaxti.Controllers
         {
             foreach (var role in Enum.GetValues(typeof(Roles)))
             {
-                if(!await _roleManager.RoleExistsAsync(nameof(role)))
+                if (!await _roleManager.RoleExistsAsync(nameof(role)))
                 {
                     await _roleManager.CreateAsync(new IdentityRole { Name = role.ToString() });
-                } 
+                }
             }
             return Ok();
         }
@@ -232,6 +303,50 @@ namespace TamVaxti.Controllers
             }
             return View(model);
 
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                TempData["ErrorMessage"] = "Invalid token or user ID.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Invalid user ID.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                TempData["ErrorMessage"] = "Your email is already confirmed. You can now log in.";
+                return RedirectToAction("SignIn", "Account");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                var company = await _companyService.GetFirstOrDefaultCompany();
+
+                var verifyemail = new
+                {
+                    Name = user.UserName,
+                    Link = "",
+                    Company = company
+                };
+                string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/welcome.html", verifyemail);
+
+                await EmailHelper.SendEmailAsync(user.Email, user.UserName, "Email Confirmed", emailBody);
+
+                TempData["SuccessMessage"] = "Email confirmed successfully. You can now log in.";
+                return RedirectToAction("SignIn", "Account");
+            }
+
+            TempData["ErrorMessage"] = "Error confirming your email. Please contact support.";
+            return RedirectToAction("Index", "Home");
         }
 
     }

@@ -176,7 +176,7 @@
                         <div>
                             <div class="icon-nav">
                                 <ul>
-                                    @* <li class="onhover-div mobile-search">
+                                    @*<li class="onhover-div mobile-search">
                                     <div>
                                     <img src="/assets/images/icon/layout4/search.png"
                                     onclick="openSearch()" class="img-fluid blur-up lazyload" alt=""> <i class="ti-search" onclick="openSearch()"></i>
@@ -209,6 +209,21 @@
                                     </div>
                                     </li>
                                     *@
+                                    <li class="onhover-div mobile-setting">
+                                         <div>
+                                             <img src="/assets/images/icon/layout4/setting.png"
+                                                  class="img-fluid blur-up lazyload" alt=""> <i class="ti-settings"></i>
+                                         </div>
+                                         <div class="show-div setting">
+                                              <h6>currency</h6>
+                                              <ul class="list-inline">
+                                                  @foreach (var currency in ViewBag.CurrencyList)
+                                                  {
+                                                  <li><a href="javascript:void(0)" class="show-currency" data-currency-id="@currency.Symbol">@currency.Name</a> </li>
+                                                  }
+                                              </ul>
+                                            </div>
+                                    </li>
                                     <li class="onhover-div mobile-cart">
                                         <div href="javascript:void(0)" onclick="openCart()">
                                             <img src="/assets/images/icon/layout4/cart.png"

@@ -209,7 +209,30 @@ function refreshWishListView() {
         });
 }
 
-$(function() {
+function initializeCurrency() {
+    debugger
+    // Load currency from cookies
+    var currency = Cookies.getJSON("currency") || {};
+
+    // Handle currency click
+    $(document).on("click",
+        ".show-currency",
+        function () {
+            currency = Cookies.getJSON("currency") || {};
+            if (currency) {
+                delete currency;
+            }
+            currency = $(this).data("currency-id");
+            console.log(currency);
+            // Update the cookie
+            Cookies.set("currency", currency, { expires: 7 });
+            window.location.reload(true);
+        });
+
+}
+
+$(function () {
+    initializeCurrency();
     initializeWishlist();
     initializeCart();
 });
