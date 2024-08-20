@@ -39,6 +39,10 @@
                 <form asp-action="Edit" method="post">
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CouponCode)
+                    @Html.HiddenFor(model => model.StartDate)
+                    @Html.HiddenFor(model => model.EndDate)
+                    @Html.HiddenFor(model => model.DiscountType)
+                    @Html.HiddenFor(model => model.DiscountValue)
 
                     <ul class="nav nav-tabs tab-coupon" id="myTab" role="tablist">
                         <li class="nav-item"><a class="nav-link active show" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a></li>
@@ -63,41 +67,26 @@
                                         <div class="col-md-4">
                                             <span class="text-success h5"> @Model.CouponCode </span>
                                         </div>
-                                       
-
-
                                     </div>
+
                                     <div class="form-group row">
                                         <label asp-for="StartDate" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            <input asp-for="StartDate" class="form-control" />
-
+                                            <span class="form-control-plaintext">@Model.StartDate.ToString("dd-MM-yyyy")</span>
                                             <span asp-validation-for="StartDate" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label asp-for="EndDate" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            <input asp-for="EndDate" class="form-control" />
+                                            <span class="form-control-plaintext">@Model.EndDate.ToString("dd-MM-yyyy")</span>
                                             <span asp-validation-for="EndDate" class="text-danger"></span>
                                         </div>
                                     </div>
-                                    @*<div class="form-group row">
-                                        <label asp-for="Quantity" class="col-xl-3 col-md-4 control-label"></label>
-                                        <div class="col-md-7">
-                                            <input asp-for="Quantity" class="form-control" />
-                                            <span asp-validation-for="Quantity" class="text-danger"></span>
-                                        </div>
-                                    </div>*@
                                     <div class="form-group row">
                                         <label asp-for="DiscountType" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            @*<input asp-for="DiscountType" class="form-control"/>*@
-                                            <select asp-for="DiscountType" class="custom-select w-100 form-control">
-                                                <option value="">"--Select--"</option>
-                                                <option value="Percent">Percent</option>
-                                                <option value="Value">Value</option>
-                                            </select> 
+                                            <span class="form-control-plaintext">@Model.DiscountType</span>
                                             <span asp-validation-for="DiscountType" class="text-danger"></span>
                                         </div>
                                     </div>
@@ -105,10 +94,11 @@
                                     <div class="form-group row">
                                         <label asp-for="DiscountValue" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
-                                            <input asp-for="DiscountValue" class="form-control" />
+                                            <span class="form-control-plaintext">@Model.DiscountValue</span>
                                             <span asp-validation-for="DiscountValue" class="text-danger"></span>
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
                                         <label asp-for="IsEnabled" class="col-xl-3 col-md-4 control-label"></label>
                                         <div class="col-md-7">
