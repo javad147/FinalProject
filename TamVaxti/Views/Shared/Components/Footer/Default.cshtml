@@ -1,31 +1,31 @@
 ﻿@model FooterVM
 <!-- footer -->
 <footer class="footer-light">
-    <div class="light-layout">
-        <div class="container">
-            <section class="small-section border-section border-top-0">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="subscribe">
-                            <div>
-                                <h4>KNOW IT ALL FIRST!</h4>
-                                <p>Never Miss Anything From @Model.Company.Name By Signing Up To Our Newsletter.</p>
+    @if (User.Identity.IsAuthenticated && !ViewBag.IsSubscribed)
+    {
+        <div class="light-layout">
+            <div class="container">
+                <section class="small-section border-section border-top-0">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="subscribe">
+                                <div>
+                                    <h4>KNOW IT ALL FIRST!</h4>
+                                    <p>Never Miss Anything From @Model.Company.Name By Signing Up To Our Newsletter.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <form action="@Url.Action("Subscribe", "Newsletter")" method="post" class="form-inline subscribe-form auth-form needs-validation" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form">
-                            <div class="form-group mx-sm-3">
-                                <input type="email" class="form-control" name="EMAIL" id="mce-EMAIL" placeholder="Enter your email" required>
-                            </div>
-                            <button type="submit" class="btn btn-solid" id="mc-submit">Subscribe</button>
-                        </form>
+                        <div class="col-lg-6">
+                            <form action="@Url.Action("Subscribe", "Newsletter")" method="post" class="form-inline subscribe-form auth-form needs-validation" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form">
+                                <button type="submit" class="btn btn-solid" id="mc-submit">Subscribe</button>
+                            </form>
 
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
-    </div>
+    }
     <section class="section-b-space light-layout">
         <div class="container">
             <div class="row footer-theme partition-f">
