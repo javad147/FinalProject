@@ -320,6 +320,12 @@ namespace TamVaxti.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                TempData["ErrorMessage"] = "Your email is already confirmed. You can now log in.";
+                return RedirectToAction("SignIn", "Account");
+            }
+
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
@@ -328,6 +334,7 @@ namespace TamVaxti.Controllers
                 var verifyemail = new
                 {
                     Name = user.UserName,
+                    Link = "",
                     Company = company
                 };
                 string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/welcome.html", verifyemail);
