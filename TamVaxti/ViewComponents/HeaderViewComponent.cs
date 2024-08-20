@@ -55,7 +55,7 @@ namespace TamVaxti.ViewComponents
                 Categories = await _categoryService.GetAllAsync(),
                 Company = companyModel
             };
-
+            ViewBag.CurrencyList = await _companyService.GetCurrencyList();
 
             return await Task.FromResult(View(response));
         }

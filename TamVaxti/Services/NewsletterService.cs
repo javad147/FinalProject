@@ -21,7 +21,7 @@ namespace TamVaxti.Services
 
         public void SubscribeEmail(string email)
         {
-            var newSubscription = new NewsletterSubscriptions{ Email = email };
+            var newSubscription = new NewsletterSubscriptions{ Email = email, IsActive = true };
             _context.NewsletterSubscriptions.Add(newSubscription);
             _context.SaveChanges();
         }
