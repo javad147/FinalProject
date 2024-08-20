@@ -129,18 +129,27 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            AttributeOption Att = await _context.AttributeOptions.Where(Att => Att.AttributeId == id).FirstOrDefaultAsync();
-            if (Att != null)
-            {
-                TempData["messageType"] = "error";
-                TempData["message"] = "Attribute Option for this Attribute exist please delete the Attribute Option of Attribute from Attribute Options menu.";
-                return RedirectToAction(nameof(Index));
-            }
+            attribute.SoftDeleted = true;
 
-            await _attributeService.DeleteAsync(attribute);
+            _context.Attributes.Update(attribute);
+            await _context.SaveChangesAsync();
+
             TempData["messageType"] = "error";
             TempData["message"] = "Attribute Deleted Successfully.";
             return RedirectToAction(nameof(Index));
+
+            //AttributeOption Att = await _context.AttributeOptions.Where(Att => Att.AttributeId == id).FirstOrDefaultAsync();
+            //if (Att != null)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = "Attribute Option for this Attribute exist please delete the Attribute Option of Attribute from Attribute Options menu.";
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+            //await _attributeService.DeleteAsync(attribute);
+            //TempData["messageType"] = "error";
+            //TempData["message"] = "Attribute Deleted Successfully.";
+            //return RedirectToAction(nameof(Index));
         }
 
     }

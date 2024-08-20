@@ -13,6 +13,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using TamVaxti.Helpers.Enums;
 using TamVaxti.ViewModels.Enquiry;
+using TamVaxti.ViewModels.SubCategory;
 
 namespace TamVaxti.Areas.Admin.Controllers
 {
@@ -558,15 +559,21 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             if (product is null) return NotFound();
 
-            foreach (var item in product.ProductImages)
-            {
-                string path = Path.Combine(_env.WebRootPath, "img", item.ImageUrl);
-                path.DeleteFileFromLocal();
-            }
+            //foreach (var item in product.ProductImages)
+            //{
+            //    string path = Path.Combine(_env.WebRootPath, "img", item.ImageUrl);
+            //    path.DeleteFileFromLocal();
+            //}
 
-            await _productService.DeleteAsync(product);
+            product.SoftDeleted = true;
 
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+
+            TempData["messageType"] = "error";
+            TempData["message"] = "Product Deleted Successfully.";
             return RedirectToAction(nameof(Index));
+            //await _productService.DeleteAsync(product);
         }
 
 

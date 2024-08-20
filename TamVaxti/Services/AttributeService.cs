@@ -24,7 +24,9 @@ namespace TamVaxti.Services
 
         public async Task<List<Attributes>> GetAllAsync(string searchString)
         {
-            IQueryable<Attributes> query = _context.Attributes;
+            IQueryable<Attributes> query = _context.Attributes
+                                       .Where(a => !a.SoftDeleted)
+                                       .OrderByDescending(a => a.Id);
 
             if (!string.IsNullOrEmpty(searchString))
             {
