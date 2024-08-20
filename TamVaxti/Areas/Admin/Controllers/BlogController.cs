@@ -109,20 +109,33 @@ namespace TamVaxti.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+         
+            var blog = await _context.Blogs.FindAsync(id);
 
-            int blogCount = await _blogService.GetCommentCountAsync(id);
-            if(blogCount>0)
+            if (blog != null)
             {
-                TempData["messageType"] = "error";
-                TempData["message"] = $"Comments for this blog exist please delete the comment of blog having id - {id} from comment menu.";
-            }
-            else
-            {
-                await _blogService.DeleteAsync((int)id);
+               
+                blog.SoftDeleted = true;
+                _context.Blogs.Update(blog);
+                await _context.SaveChangesAsync();
+
                 TempData["messageType"] = "success";
-                TempData["message"] = $"Blog deleted successfully";
+                TempData["message"] = $"Blog deleted successfully.";
             }
-           
+
+            //int blogCount = await _blogService.GetCommentCountAsync(id);
+            //if(blogCount>0)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = $"Comments for this blog exist please delete the comment of blog having id - {id} from comment menu.";
+            //}
+            //else
+            //{
+            //await _blogService.DeleteAsync((int)id);
+            //    TempData["messageType"] = "success";
+            //    TempData["message"] = $"Blog deleted successfully";
+            //}
+
             return RedirectToAction(nameof(Index));
         }
 
