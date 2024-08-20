@@ -257,7 +257,7 @@ else
                                     <th>Phone</th>
                                     <th>Email</th>
                                     <th>Message</th>
-                                    <th>Status</th>
+                                    @*<th>Status</th>*@
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -272,7 +272,7 @@ else
                                             <td>@enquiry.Phone</td>
                                             <td>@enquiry.EmailId</td>
                                             <td>@enquiry.ShortMessage</td>
-                                            <td class="td-status">
+                                            @*<td class="td-status">
                                                 @if (enquiry.IsReadStatus == "Read")
                                                 {
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle icon check-circle">
@@ -288,14 +288,14 @@ else
                                                         <line x1="9" y1="9" x2="15" y2="15"></line>
                                                     </svg>
                                                 }
-                                            </td>
+                                            </td>*@
                                             <td>
                                                 <a onclick="openDetailModal('@enquiry.Id')">
                                                     <i class="fa fa-eye fa-2x" title="View"></i>
                                                 </a>
-                                                <a onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')" class="ms-2">
+                                                @*<a onclick="openEditModal('@enquiry.Id', '@enquiry.IsReadStatus')" class="ms-2">
                                                     <i class="fa fa-edit fa-2x"></i>
-                                                </a>
+                                                </a>*@
                                             </td>
                                         </tr>
                                         index++;

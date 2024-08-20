@@ -15,16 +15,19 @@ public class FooterViewComponent : ViewComponent
     private readonly UserManager<AppUser> _userManager;
     private readonly ICompanyService _companyService;
     private readonly IProductService _productService;
+    private readonly INewsletterService _newsletterService;
     public FooterViewComponent(ISettingService settingService,
                                IHttpContextAccessor accessor,
                                UserManager<AppUser> userManager,
-                               ICompanyService companyService, IProductService productService)
+                               ICompanyService companyService, IProductService productService, 
+                               INewsletterService newsletterService)
     {
         _settingService = settingService;
         _accessor = accessor;
         _userManager = userManager;
         _companyService = companyService;
         _productService = productService;
+        _newsletterService = newsletterService;
     }
     public async Task<IViewComponentResult> InvokeAsync()
     {
@@ -57,7 +60,10 @@ public class FooterViewComponent : ViewComponent
             Cart = cart
         };
 
+        bool isSubscribed = _newsletterService.IsEmailSubscribed(user.Email);
+
         ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+        ViewBag.IsSubscribed = isSubscribed;
         return await Task.FromResult(View(response));
     }
 }

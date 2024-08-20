@@ -109,7 +109,23 @@ namespace TamVaxti.Controllers
             _context.UserShippingAddress.Add(shippingAddress);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+            var company = await _companyService.GetFirstOrDefaultCompany();
+
+            var verifyemail = new
+            {
+                Name = request.UserName,
+                Link = confirmationLink,
+                Company = company
+            };
+            string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/emailverify.html", verifyemail);
+
+            await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody);
+            TempData["SuccessMessage"] = "Registration successful. Please check your email to confirm your account.";
+
+            return RedirectToAction("Index","Home");   
         }
 
 
@@ -139,7 +155,13 @@ namespace TamVaxti.Controllers
                 return View();
             }
 
-            var result = await _signInManager.PasswordSignInAsync(existUser, request.Password, false, false);
+            if (!await _userManager.IsEmailConfirmedAsync(existUser))
+            {
+                ModelState.AddModelError(string.Empty, "You need to confirm your email to log in.");
+                return View();
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(existUser, request.Password, false,false); 
 
             if (!result.Succeeded)
             {
@@ -281,6 +303,50 @@ namespace TamVaxti.Controllers
             }
             return View(model);
 
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                TempData["ErrorMessage"] = "Invalid token or user ID.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Invalid user ID.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                TempData["ErrorMessage"] = "Your email is already confirmed. You can now log in.";
+                return RedirectToAction("SignIn", "Account");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                var company = await _companyService.GetFirstOrDefaultCompany();
+
+                var verifyemail = new
+                {
+                    Name = user.UserName,
+                    Link = "",
+                    Company = company
+                };
+                string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/welcome.html", verifyemail);
+
+                await EmailHelper.SendEmailAsync(user.Email, user.UserName, "Email Confirmed", emailBody);
+
+                TempData["SuccessMessage"] = "Email confirmed successfully. You can now log in.";
+                return RedirectToAction("SignIn", "Account");
+            }
+
+            TempData["ErrorMessage"] = "Error confirming your email. Please contact support.";
+            return RedirectToAction("Index", "Home");
         }
 
     }
