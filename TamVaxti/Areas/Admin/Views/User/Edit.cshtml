@@ -172,6 +172,17 @@
                                     <a asp-action="Index" class="btn" style="background-color: #333333; color: #ffffff; margin-left: 10px;">Cancel</a>
                                 </div>
                             </div>
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
                         </form>
                     </div>
                     <!-- Permission Tab -->

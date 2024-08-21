@@ -28,7 +28,7 @@
             <div class="col-lg-6">
                 <div class="page-header-left">
                     <h3>
-                        <strong>User details</strong>
+                        User details
                     </h3>
                 </div>
             </div>
@@ -46,20 +46,31 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
-        </div>
-        <div class="d-flex justify-content-end col-md-6">
-            <a asp-action="Create" class="btn text-white mb-3 mx-3" style="background-color : #ff4c3b">Add User</a>
-        </div>
-    </div>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body card-block">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <form class="form-inline search-form" method="get" asp-action="Index">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-primary ml-2" style="height: 100%;">Search</button>
+                                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                                {
+                                    <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                    <div class="d-flex justify-content-end">
+                        <a asp-action="Create" class="btn text-white mb-3 mx-3" style="background-color : #ff4c3b">Add User</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive table-desi">
                         <table class="table table-responsive">
                             <thead>
                                 <tr>
@@ -80,7 +91,7 @@
                                         <tr>
                                             <td>@index.ToString("D2")</td>
                                             <td>
-                                                    <img src="@Url.Content($"~/img/Users/{item.ProfileImageUrl}")" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.onerror=null; this.src='/img/users/user3.jpg';" />
+                                                <img src="@Url.Content($"~/img/Users/{item.ProfileImageUrl}")" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.onerror=null; this.src='/img/users/user3.jpg';" />
                                             </td>
                                             <td>@item.FullName</td>
                                             <td>@item.UserName</td>
@@ -109,3 +120,8 @@
         </div>
     </div>
 </div>
+<script>
+    function clearSearch() {
+        window.location.href = '@Url.Action("Index")';
+    }
+</script>
