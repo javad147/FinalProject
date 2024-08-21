@@ -25,10 +25,17 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             List<UserRoleVM> userRoles = new();
             var users = await _userManager.Users.ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u => u.FullName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
             foreach (var user in users)
             {
@@ -49,6 +56,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                     ProfileImageUrl = user.ProfileImageUrl
                 });
             }
+            ViewData["CurrentFilter"] = searchString;
             return View(userRoles);
         }
 
@@ -78,6 +86,26 @@ namespace TamVaxti.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingUserByUserName = await _userManager.FindByNameAsync(model.UserName);
+                if (existingUserByUserName != null)
+                {
+                    ModelState.AddModelError(nameof(model.UserName), "Username already exists.");
+                }
+
+                var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUserByEmail != null)
+                {
+                    ModelState.AddModelError(nameof(model.Email), "Email already exists.");
+                }
+
+                // If there are validation errors, return the view with the errors
+                if (!ModelState.IsValid)
+                {
+                    model.Roles = await GetRolesAsync();
+                    return View(model);
+                }
+
+                // If no validation errors, proceed to create the user
                 AppUser user = new AppUser
                 {
                     UserName = model.UserName,
@@ -111,10 +139,10 @@ namespace TamVaxti.Areas.Admin.Controllers
                     }
                 }
             }
+
             model.Roles = await GetRolesAsync();
             return View(model);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
@@ -167,16 +195,90 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            user.FullName = model.FullName;
-            user.UserName = model.UserName;
-            user.Email = model.Email;
-
-            if (!string.IsNullOrEmpty(model.Password))
+            // Check if the UserName or Email is already taken by another user
+            var existingUserByUserName = await _userManager.FindByNameAsync(model.UserName);
+            if (existingUserByUserName != null && existingUserByUserName.Id != user.Id)
             {
-                var removePasswordResult = await _userManager.RemovePasswordAsync(user);
-                if (!removePasswordResult.Succeeded)
+                ModelState.AddModelError(nameof(model.UserName), "Username is already exist.");
+            }
+
+            var existingUserByEmail = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUserByEmail != null && existingUserByEmail.Id != user.Id)
+            {
+                ModelState.AddModelError(nameof(model.Email), "Email is already exist.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                user.FullName = model.FullName;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+
+                if (!string.IsNullOrEmpty(model.Password))
                 {
-                    foreach (var error in removePasswordResult.Errors)
+                    var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+                    if (!removePasswordResult.Succeeded)
+                    {
+                        foreach (var error in removePasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        var roles = await _roleManager.Roles.ToListAsync();
+                        model.Roles = roles.Select(r => new SelectListItem
+                        {
+                            Value = r.Name,
+                            Text = r.Name
+                        }).ToList();
+                        return View(model);
+                    }
+
+                    var addPasswordResult = await _userManager.AddPasswordAsync(user, model.Password);
+                    if (!addPasswordResult.Succeeded)
+                    {
+                        foreach (var error in addPasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        var roles = await _roleManager.Roles.ToListAsync();
+                        model.Roles = roles.Select(r => new SelectListItem
+                        {
+                            Value = r.Name,
+                            Text = r.Name
+                        }).ToList();
+                        return View(model);
+                    }
+                }
+
+                if (model.ProfileImageUrl != null && model.ProfileImageUrl.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                    {
+                        var existingFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/users", Path.GetFileName(user.ProfileImageUrl));
+                        if (System.IO.File.Exists(existingFilePath))
+                        {
+                            System.IO.File.Delete(existingFilePath);
+                        }
+                    }
+
+                    var fileName = Path.GetFileNameWithoutExtension(model.ProfileImageUrl.FileName);
+                    var extension = Path.GetExtension(model.ProfileImageUrl.FileName);
+                    var newFileName = $"{Guid.NewGuid()}{extension}";
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/users", newFileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await model.ProfileImageUrl.CopyToAsync(stream);
+                    }
+
+                    user.ProfileImageUrl = newFileName;
+                }
+
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var error in updateResult.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
@@ -190,90 +292,42 @@ namespace TamVaxti.Areas.Admin.Controllers
                     return View(model);
                 }
 
-                var addPasswordResult = await _userManager.AddPasswordAsync(user, model.Password);
-                if (!addPasswordResult.Succeeded)
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+                if (!string.IsNullOrEmpty(model.SelectedRole))
                 {
-                    foreach (var error in addPasswordResult.Errors)
+                    var roleExists = await _roleManager.RoleExistsAsync(model.SelectedRole);
+                    if (!roleExists)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        ModelState.AddModelError(string.Empty, "Selected role does not exist.");
+                        var roles = await _roleManager.Roles.ToListAsync();
+                        model.Roles = roles.Select(r => new SelectListItem
+                        {
+                            Value = r.Name,
+                            Text = r.Name
+                        }).ToList();
+                        return View(model);
                     }
 
-                    var roles = await _roleManager.Roles.ToListAsync();
-                    model.Roles = roles.Select(r => new SelectListItem
-                    {
-                        Value = r.Name,
-                        Text = r.Name
-                    }).ToList();
-                    return View(model);
+                    await _userManager.AddToRoleAsync(user, model.SelectedRole);
                 }
+
+                TempData["messageType"] = "success";
+                TempData["message"] = "User Updated Successfully.";
+                return RedirectToAction(nameof(Index));
             }
 
-            if (model.ProfileImageUrl != null && model.ProfileImageUrl.Length > 0)
+            var rolesForModel = await _roleManager.Roles.ToListAsync();
+            model.Roles = rolesForModel.Select(r => new SelectListItem
             {
-                if (!string.IsNullOrEmpty(user.ProfileImageUrl))
-                {
-                    var existingFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/users", Path.GetFileName(user.ProfileImageUrl));
-                    if (System.IO.File.Exists(existingFilePath))
-                    {
-                        System.IO.File.Delete(existingFilePath);
-                    }
-                }
+                Value = r.Name,
+                Text = r.Name
+            }).ToList();
 
-                var fileName = Path.GetFileNameWithoutExtension(model.ProfileImageUrl.FileName);
-                var extension = Path.GetExtension(model.ProfileImageUrl.FileName);
-                var newFileName = $"{Guid.NewGuid()}{extension}";
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/users", newFileName);
-
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await model.ProfileImageUrl.CopyToAsync(stream);
-                }
-
-                user.ProfileImageUrl = newFileName;
-            }
-
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded)
-            {
-                foreach (var error in updateResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-
-                var roles = await _roleManager.Roles.ToListAsync();
-                model.Roles = roles.Select(r => new SelectListItem
-                {
-                    Value = r.Name,
-                    Text = r.Name
-                }).ToList();
-                return View(model);
-            }
-
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
-
-            if (!string.IsNullOrEmpty(model.SelectedRole))
-            {
-                var roleExists = await _roleManager.RoleExistsAsync(model.SelectedRole);
-                if (!roleExists)
-                {
-                    ModelState.AddModelError(string.Empty, "Selected role does not exist.");
-                    var roles = await _roleManager.Roles.ToListAsync();
-                    model.Roles = roles.Select(r => new SelectListItem
-                    {
-                        Value = r.Name,
-                        Text = r.Name
-                    }).ToList();
-                    return View(model);
-                }
-
-                await _userManager.AddToRoleAsync(user, model.SelectedRole);
-            }
-
-            TempData["messageType"] = "success";
-            TempData["message"] = "User Updated Successfully.";
-            return RedirectToAction(nameof(Index));
+            return View(model);
         }
+
 
 
 
