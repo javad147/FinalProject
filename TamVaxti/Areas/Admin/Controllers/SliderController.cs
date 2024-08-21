@@ -24,10 +24,20 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            List<SliderVM> sliders = await _context.Sliders
-                .Where(s => !s.SoftDeleted)
+            var query = _context.Sliders
+                .Where(s => !s.SoftDeleted);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                string lowerSearchString = searchString.ToLower();
+
+                query = query.Where(s => s.SliderTitle.ToLower().Contains(lowerSearchString) ||
+                                          s.SliderDescription.ToLower().Contains(lowerSearchString));
+            }
+
+            List<SliderVM> sliders = await query
                 .Select(s => new SliderVM
                 {
                     Id = s.Id,
@@ -37,6 +47,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                     Image = s.Image
                 }).ToListAsync();
 
+            ViewData["CurrentFilter"] = searchString;
             return View(sliders);
         }
 
@@ -86,9 +97,9 @@ namespace TamVaxti.Areas.Admin.Controllers
             var newSlider = new Slider
             {
                 SliderTitle = model.SliderTitle,
-                SliderName = model.SliderName,
+                //SliderName = model.SliderName,
                 SliderDescription = model.SliderDescription,
-                SliderNumber = model.SliderNumber,
+                //SliderNumber = model.SliderNumber,
                 Image = uniqueFileName,
                 SoftDeleted = false
             };
@@ -114,8 +125,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             {
                 Id = slider.Id,
                 SliderTitle = slider.SliderTitle,
-                SliderName = slider.SliderName,
-                SliderNumber = slider.SliderNumber,
+                //SliderName = slider.SliderName,
+                //SliderNumber = slider.SliderNumber,
                 SliderDescription = slider.SliderDescription,
                 ExistingImage = slider.Image
             };
@@ -136,9 +147,9 @@ namespace TamVaxti.Areas.Admin.Controllers
                 }
 
                 slider.SliderTitle = model.SliderTitle;
-                slider.SliderName = model.SliderName;
+                //slider.SliderName = model.SliderName;
                 slider.SliderDescription = model.SliderDescription;
-                slider.SliderNumber = model.SliderNumber;
+                //slider.SliderNumber = model.SliderNumber;
 
                 if (model.Image != null)
                 {
@@ -194,7 +205,10 @@ namespace TamVaxti.Areas.Admin.Controllers
             var slider = await _context.Sliders.FindAsync(id);
             if (slider != null)
             {
-                _context.Sliders.Remove(slider);
+                //_context.Sliders.Remove(slider);
+                slider.SoftDeleted = true;
+
+                _context.Sliders.Update(slider);
                 await _context.SaveChangesAsync();
             }
 
