@@ -160,32 +160,51 @@ public async Task<IActionResult> Create(SubCategoryCreateVM subcategory)
 
             if (subcategory is null) return NotFound();
 
-            Product pro = await _context.Products.Where(pro => pro.SubcategoryId == id).FirstOrDefaultAsync();
 
-            if (pro != null)
-            {
-                TempData["messageType"] = "error";
-                TempData["message"] = "Product  for this SubCategory exist please delete the Product of SubCategory from Product menu.";
-                return RedirectToAction(nameof(Index));
-            }
+            subcategory.SoftDeleted = true;
 
+            _context.SubCategories.Update(subcategory);
+            await _context.SaveChangesAsync();
 
-            if (!string.IsNullOrEmpty(subcategory.SubcategoryImage))
-            {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "subcategories");
-                var imagePath = Path.Combine(uploadsFolder, subcategory.SubcategoryImage);
-
-                
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
-            }
-
-            await _subcategoryService.DeleteAsync(subcategory);
-            TempData["messageType"] = "error";
-            TempData["message"] = "SubCategory Deleted Successfully.";
+            TempData["messageType"] = "success";
+            TempData["message"] = "subcategory Deleted Successfully.";
             return RedirectToAction(nameof(Index));
+
+
+
+            //if (id is null) return BadRequest();
+
+            //SubCategory subcategory = await _subcategoryService.GetByIdAsync((int)id);
+
+            //if (subcategory is null) return NotFound();
+
+            //Product pro = await _context.Products.Where(pro => pro.SubcategoryId == id).FirstOrDefaultAsync();
+
+            //if (pro != null)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = "Product  for this SubCategory exist please delete the Product of SubCategory from Product menu.";
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+
+            //if (!string.IsNullOrEmpty(subcategory.SubcategoryImage))
+            //{
+            //    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "subcategories");
+            //    var imagePath = Path.Combine(uploadsFolder, subcategory.SubcategoryImage);
+
+
+            //    if (System.IO.File.Exists(imagePath))
+            //    {
+            //        System.IO.File.Delete(imagePath);
+            //    }
+            //}
+
+            //await _subcategoryService.DeleteAsync(subcategory);
+            //TempData["messageType"] = "error";
+            //TempData["message"] = "SubCategory Deleted Successfully.";
+            //return RedirectToAction(nameof(Index));
+
         }
 
         [HttpGet]
