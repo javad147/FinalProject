@@ -100,7 +100,7 @@ namespace TamVaxti.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var attributeOptions = await _context.AttributeOptions
                 .Include(a => a.Attribute) // Assuming Attribute contains the category information
@@ -111,7 +111,13 @@ namespace TamVaxti.Areas.Admin.Controllers
                     CategoryName = a.Attribute != null ? a.Attribute.Type : null, // Use ternary operator instead of null-propagating operator
                 }).ToListAsync();
 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                attributeOptions = attributeOptions.Where(u => u.Value.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
+            ViewData["CurrentFilter"] = searchString;
             return View(attributeOptions);
         }
 

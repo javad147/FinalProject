@@ -62,7 +62,10 @@ namespace TamVaxti.Areas.Admin.Controllers
 
         private async Task<IEnumerable<SelectListItem>> GetRolesAsync()
         {
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = await _roleManager.Roles
+                .Where(r => r.Name != "Member")
+                .ToListAsync();
+
             return roles.Select(r => new SelectListItem
             {
                 Value = r.Name,
@@ -98,14 +101,12 @@ namespace TamVaxti.Areas.Admin.Controllers
                     ModelState.AddModelError(nameof(model.Email), "Email already exists.");
                 }
 
-                // If there are validation errors, return the view with the errors
                 if (!ModelState.IsValid)
                 {
                     model.Roles = await GetRolesAsync();
                     return View(model);
                 }
 
-                // If no validation errors, proceed to create the user
                 AppUser user = new AppUser
                 {
                     UserName = model.UserName,
@@ -153,7 +154,10 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = await _roleManager.Roles
+                .Where(r => r.Name != "Member")
+                .ToListAsync();
+
             var userRoles = await _userManager.GetRolesAsync(user);
 
             var viewModel = new UserEditVM
@@ -195,7 +199,6 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            // Check if the UserName or Email is already taken by another user
             var existingUserByUserName = await _userManager.FindByNameAsync(model.UserName);
             if (existingUserByUserName != null && existingUserByUserName.Id != user.Id)
             {
