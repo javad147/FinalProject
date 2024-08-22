@@ -18,5 +18,7 @@ namespace TamVaxti.Models
         public string ImageUrl { get; set; }
 
         public ICollection<AttributeOptionSKU> AttributeOptionSKUs { get; set; }
+
+        public bool SoftDeleted { get; set; }  
     }
 }

@@ -50,11 +50,19 @@ namespace TamVaxti.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAttributeVM model)
+        public async Task<IActionResult> Create(AttributeVM model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            var existingAttribute = await _attributeService.FindByNameAsync(model.Name);
+            if (existingAttribute != null)
+            {
+                TempData["messageType"] = "error";
+                TempData["message"] = "Attribute with the same name exists.";
+                return View(model);  
             }
 
             var attribute = new Attributes
@@ -63,6 +71,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 Type = model.Type,
                 CreatedOn = DateTime.Now
             };
+
 
             // Save the attribute to the database
             await _attributeService.CreateAsync(attribute);
