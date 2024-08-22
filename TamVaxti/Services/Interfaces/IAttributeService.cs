@@ -15,5 +15,7 @@ namespace TamVaxti.Services.Interfaces
         Task UpdateAsync(Attributes attribute);
 
 
+        Task<Attributes> FindByNameAsync(string name);
+
     }
 }

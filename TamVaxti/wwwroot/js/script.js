@@ -223,9 +223,15 @@ function initializeCurrency() {
                 delete currency;
             }
             currency = $(this).data("currency-id");
+            $.get("/Product/SetCurrencyRate?symbol=" + currency,
+                (data) => {
+
+                    //$("#wishlist-products").html(data);
+                });
             console.log(currency);
             // Update the cookie
             Cookies.set("currency", currency, { expires: 7 });
+
             window.location.reload(true);
         });
 

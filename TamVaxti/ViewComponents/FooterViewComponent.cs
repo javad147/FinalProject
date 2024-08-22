@@ -63,6 +63,7 @@ public class FooterViewComponent : ViewComponent
         bool isSubscribed = _newsletterService.IsEmailSubscribed(user.Email);
 
         ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+        ViewBag.CurrencyRate = _companyService.GetCurrencyRate();
         ViewBag.IsSubscribed = isSubscribed;
         return await Task.FromResult(View(response));
     }

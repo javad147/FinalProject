@@ -122,12 +122,12 @@ namespace TamVaxti.Services
 
         public async Task<List<Attributes>> GetAttributes()
         {
-            return await _context.Attributes.ToListAsync();
+            return await _context.Attributes.Where(a => !a.SoftDeleted).ToListAsync();
         }
 
         public async Task<List<AttributeOption>> GetAttributeOptions()
         {
-            return await _context.AttributeOptions.ToListAsync();
+            return await _context.AttributeOptions.Where(a => !a.SoftDeleted).ToListAsync();
         }
         public int GetSkuStockSum(long Id)
         {
@@ -136,7 +136,7 @@ namespace TamVaxti.Services
 
         public async Task<SKU> GetSkuByIdAsync(long id)
         {
-            return await _context.SKUs.Where(m => m.Id == id)
+            return await _context.SKUs.Where(m => m.Id == id && !m.SoftDeleted)
                                         .Include(m => m.AttributeOptionSKUs)
                                         .Include(m => m.SkuStock)
                                         .FirstOrDefaultAsync();
@@ -144,7 +144,7 @@ namespace TamVaxti.Services
 
         public async Task<AttributeOption> GetAttributeOptionsById(long id)
         {
-            return await _context.AttributeOptions.Where(ao => ao.Id == id).FirstOrDefaultAsync();
+            return await _context.AttributeOptions.Where(ao => ao.Id == id && !ao.SoftDeleted).FirstOrDefaultAsync();
         }
         public async Task<Product> GetProductByIdAsync(int id)
         {
@@ -185,13 +185,13 @@ namespace TamVaxti.Services
         {
             return await _context.Products
                 .Where(p => !p.SoftDeleted)
-                .Include(p => p.SKUs)
+                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                 .ThenInclude(s => s.AttributeOptionSKUs)
                 .ThenInclude(aos => aos.AttributeOption)
                 .ThenInclude(ao => ao.Attribute)
-                .Include(p => p.SKUs)
+                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                 .ThenInclude(s => s.SkuStock)
-                .Include(p => p.SKUs)
+                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
                 .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
                 .OrderByDescending(p => p.Id)
                 .AsNoTracking() // Optional: Add this if you don't need tracking
@@ -256,14 +256,14 @@ namespace TamVaxti.Services
                     Rating = (int)(sku.ProductReviews.Count() > 0 ? Math.Round(sku.ProductReviews.Average(s => s.Rating)) : 0),
                     RatingCount = sku.ProductReviews.Count(),
                     Color = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
-                                    .AttributeOption.Value,
+                                    .AttributeOption.Color,
                     Size = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                     .AttributeOption.Value,
                     RelatedSku = product.SKUs.Select(s => new RelatedSkuVM
                     {
                         SkuId = s.Id,
                         Color = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
-                                    .AttributeOption.Value
+                                    .AttributeOption.Color
                     }).DistinctBy(r => r.Color).OrderBy(s => sku.Id).ToList()
                 })).ToList();
 

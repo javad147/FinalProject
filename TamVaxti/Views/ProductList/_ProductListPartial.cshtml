@@ -11,6 +11,12 @@
         transition: all 0.1s ease;
         vertical-align: middle;
     }
+    .product-wrapper-grid .descriptor {
+        display: none;
+    }
+    .list-view .descriptor {
+        display: block !important;
+    }
 </style>
 <div class="product-wrapper-grid">
     <div class="row margin-res">
@@ -66,7 +72,7 @@
                                 <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                     <h6>@product.Name</h6>
                                 </a>
-                                <p>@product.Description</p>
+                                <div class="descriptor">@Html.Raw(product.Description)</div>
                                 <h4>@ViewBag.CurrencySymbol@product.Price</h4>
                                 <ul class="color-variant">
                                     @foreach (var sku in product.RelatedSku)
@@ -77,14 +83,14 @@
                                     }
                                 </ul>
                                 @*   <ul class="color-variant">
-                        @foreach (var sku in product.RelatedSku)
-                        {
-                        var activeClass = sku.Color == product.Color ? "selected" : "";
-                        <a class="colorl-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                        <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
-                        </a>
-                        }
-                        </ul> *@
+        @foreach (var sku in product.RelatedSku)
+        {
+        var activeClass = sku.Color == product.Color ? "selected" : "";
+        <a class="colorl-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+        <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
+        </a>
+        }
+        </ul> *@
                             </div>
                         </div>
                     </div>

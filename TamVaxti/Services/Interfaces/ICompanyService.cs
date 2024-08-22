@@ -12,5 +12,9 @@ namespace TamVaxti.Services.Interfaces
         Task UpdateAsync(Company company);
         Task<List<CurrencyMaster>> GetCurrencyList();
         string GetCurrencySymbol();
+        Task<decimal> GetCurrencyRate();
+        Task GetCurrencyRateFromUrl();
+        Task SetCurrencyRate(string symbol);
+        void SetCurrencyRateCookie(string symbol);
     }
 }

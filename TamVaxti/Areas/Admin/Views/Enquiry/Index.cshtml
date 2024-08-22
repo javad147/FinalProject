@@ -211,13 +211,13 @@
                     <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
 
                     <!-- Status Radio Buttons with Margin -->
-                    <div class="ml-3 mt-3" style="margin-left: 15px;">
+                  @*  <div class="ml-3 mt-3" style="margin-left: 15px;">
                         <label class="mr-2">Status:</label>
                         <input type="radio" id="read" name="statusFilter" value="Read" @(ViewData["CurrentStatus"] == "Read" ? "checked" : "")>
                         <label for="read" class="mr-2">Read</label>
                         <input type="radio" id="unread" name="statusFilter" value="Unread" @(ViewData["CurrentStatus"] == "Unread" ? "checked" : "")>
                         <label for="unread" class="mr-2">Unread</label>
-                    </div>
+                    </div>*@
 
                     <!-- Search Button with Margin -->
                     <div class="input-group-append" style="margin-left: 15px;">
