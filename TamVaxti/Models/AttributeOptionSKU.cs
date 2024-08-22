@@ -9,8 +9,6 @@ namespace TamVaxti.Models
 
         [ForeignKey("SkuId")]
         public SKU SKU { get; set; }
-
-        [ForeignKey("AttributeOptionId")]
         public AttributeOption AttributeOption { get; set; }
 
         [NotMapped]
