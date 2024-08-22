@@ -48,13 +48,13 @@ namespace TamVaxti.Services
 
         public async Task<bool> ExistAsync(string name)
         {
-            return await _context.Categories.AnyAsync(m => m.Name == name.Trim());
+            return await _context.Categories.AnyAsync(m => m.Name == name.Trim() && !m.SoftDeleted );
         }
 
 
         public async Task<List<Category>> GetAllAsync()
         {
-            return await _context.Categories.Where(m => !m.SoftDeleted).Include(c => c.Subcategories).ToListAsync();
+            return await _context.Categories.Where(m => !m.SoftDeleted).Include(c => c.Subcategories.Where(sc => sc.IsPublished && !sc.SoftDeleted)).ToListAsync();
         }
 
         public async Task<List<CategoryFilterVM>> GetAllAsFilterAsync()

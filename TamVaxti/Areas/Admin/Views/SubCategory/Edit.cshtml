@@ -62,14 +62,14 @@
                     <span class="text-danger" asp-validation-for="Name"></span>
                 </div>
 
-                <div class="form-group">
+               @*  <div class="form-group">
                     <label class="form-control-label">Upload Image</label>
                     <input asp-for="ImageFile" type="file" class="form-control mb-2">
                     <span class="text-danger" asp-validation-for="ImageFile"></span>
-                </div>
+                </div> *@
 
 
-                @if (!string.IsNullOrEmpty(Model.SubcategoryImage))
+              @*   @if (!string.IsNullOrEmpty(Model.SubcategoryImage))
                 {
                     <div class="form-group position-relative">
                         <label class="form-control-label">Current Image</label>
@@ -86,7 +86,7 @@
                     </div>
                 }
 
-                <input type="hidden" asp-for="RemoveImage" id="RemoveImage" />
+                <input type="hidden" asp-for="RemoveImage" id="RemoveImage" /> *@
 
                 <div class="form-group">
                     <label class="form-control-label">Select Category</label>

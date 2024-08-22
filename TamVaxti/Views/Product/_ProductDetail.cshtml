@@ -54,10 +54,10 @@
                             }
                             <h6>@Model.RatingCount @ratingText</h6>
                         </div>
-                        <div class="label-section">
+                       @*  <div class="label-section">
                             <span class="badge badge-grey-color">#1 Best seller</span>
                             <span class="label-text">in fashion</span>
-                        </div>
+                        </div> *@
                         <h3 class="price-detail">@ViewBag.CurrencySymbol@Model.Price @ViewBag.CurrencyRate</h3>
                         <span class="quantity-detail">@(Model.Quantity <= 0 ? "Out Of Stock" : Model.Quantity + " Left")</span>
                         <ul class="size-variant mt-3 mb-3">

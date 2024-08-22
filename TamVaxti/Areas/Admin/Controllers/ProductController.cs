@@ -223,9 +223,11 @@ namespace TamVaxti.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductCreateVM request)
         {
+            // Retrieve attributes and options
             var Attributes = await _productService.GetAttributes();
             var AttributeOptions = await _productService.GetAttributeOptions();
             List<ProductAttributeVM> AttributeList = new List<ProductAttributeVM>();
+
             foreach (var option in Attributes)
             {
                 var res = new ProductAttributeVM
@@ -233,11 +235,11 @@ namespace TamVaxti.Areas.Admin.Controllers
                     Id = option.Id,
                     Name = option.Name,
                     AttributeOptions = AttributeOptions.Where(ao => ao.AttributeId == option.Id)
-                    .Select(ao => new SelectListItem { Value = ao.Id.ToString(), Text = ao.Value }).ToList()
+                        .Select(ao => new SelectListItem { Value = ao.Id.ToString(), Text = ao.Value }).ToList()
                 };
                 AttributeList.Add(res);
-                //request.SKUs[0].SKUAttributes.Add(new AttributeOptionSKUVM());
             }
+
             ViewBag.AttributeList = AttributeList;
             ViewBag.AttributeListJson = JsonSerializer.Serialize(AttributeList);
             ViewBag.subcategories = await _subCategoryService.GetAllBySelectedAsync();
@@ -246,94 +248,116 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);
-                Product product = new()
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
                 {
-                    Name = request.Name,
-                    Description = request.Description,
-                    CategoryId = category.CategoryId,
-                    SubcategoryId = request.SubcategoryId,
-                    BrandId = request.BrandId
-                };
-
-                if (request.MainImage != null)
-                {
-                    if (!request.MainImage.CheckFileType("image/"))
+                    // Create and add product
+                    var category = await _subCategoryService.GetByIdAsync(request.SubcategoryId);
+                    Product product = new Product
                     {
-                        ModelState.AddModelError("MainImage", "File type must be image");
-                        return View(request);
-                    }
-
-                    if (!request.MainImage.CheckFileSize(500))
-                    {
-                        ModelState.AddModelError("MainImage", "Image size must be less than 500KB");
-                        return View(request);
-                    }
-                    product.MainImage = await ImgFileActionAsync(request.MainImage, request);
-                }
-                else
-                {
-                    ModelState.AddModelError("MainImage", "Main image is required.");
-                    return View(request);
-                }
-
-                _context.Add(product); //await _productService.CreateAsync(product);
-                await _context.SaveChangesAsync();
-
-                for (int i = 0; i < request.SKUs.Count; i++)
-                {
-                    var sku = request.SKUs[i];
-                    if (sku.SkuCode == null || sku.SkuCode == "")
-                    {
-                        ModelState.AddModelError($"SKUs[{i}].SkuCode", "Code is required.");
-                        return View(request);
-                    }
-
-                    if (sku.Price <= 0)
-                    {
-                        ModelState.AddModelError($"SKUs[{i}].Price", "Price is required and must be greater than 0.");
-                        return View(request);
-                    }
-
-                    SKU skus = new SKU
-                    {
-                        ProductId = product.Id,
-                        SkuCode = sku.SkuCode,
-                        Price = sku.Price,
-                        SkuStock = new List<SkuStock> { new SkuStock { Quantity = sku.Quantity } },
-                        ImageUrl1 = (sku.ImageUrl1 != null) ? await ImgFileActionAsync(sku.ImageUrl1, request) : "",
-                        ImageUrl2 = (sku.ImageUrl2 != null) ? await ImgFileActionAsync(sku.ImageUrl2, request) : "",
-                        ImageUrl3 = (sku.ImageUrl2 != null) ? await ImgFileActionAsync(sku.ImageUrl3, request) : "",
-                        ImageUrl4 = (sku.ImageUrl3 != null) ? await ImgFileActionAsync(sku.ImageUrl4, request) : "",
-                        CreatedOn = DateTime.Now,
-                        /*AttributeOptionSKUs = sku.SKUAttributes.Select(id => new AttributeOptionSKU { AttributeOptionId = id.AttributeOptionId })
-                            .ToList()*/
+                        Name = request.Name,
+                        Description = request.Description,
+                        CategoryId = category.CategoryId,
+                        SubcategoryId = request.SubcategoryId,
+                        BrandId = request.BrandId
                     };
 
-                    _context.SKUs.Add(skus);
-                    await _context.SaveChangesAsync();
-
-                    for (int j = 0; j < sku.SKUAttributes.Count; j++)
+                    if (request.MainImage != null)
                     {
-                        if (sku.SKUAttributes[j].AttributeOptionId <= 0)
+                        if (!request.MainImage.CheckFileType("image/"))
                         {
-                            ModelState.AddModelError($"SKUs[{i}].SKUAttributes[{j}].AttributeOptionId", "Option is required.");
+                            ModelState.AddModelError("MainImage", "File type must be image");
+                            await transaction.RollbackAsync();
                             return View(request);
                         }
 
-                        AttributeOptionSKU options = new AttributeOptionSKU
+                        if (!request.MainImage.CheckFileSize(500))
                         {
-                            SkuId = skus.Id,
-                            AttributeOptionId = sku.SKUAttributes[j].AttributeOptionId
+                            ModelState.AddModelError("MainImage", "Image size must be less than 500KB");
+                            await transaction.RollbackAsync();
+                            return View(request);
+                        }
+                        product.MainImage = await ImgFileActionAsync(request.MainImage, request);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("MainImage", "Main image is required.");
+                        await transaction.RollbackAsync();
+                        return View(request);
+                    }
+
+                    _context.Add(product);
+                    await _context.SaveChangesAsync();
+
+                    // Process SKUs
+                    for (int i = 0; i < request.SKUs.Count; i++)
+                    {
+                        var sku = request.SKUs[i];
+
+                        if (string.IsNullOrEmpty(sku.SkuCode))
+                        {
+                            ModelState.AddModelError($"SKUs[{i}].SkuCode", "Code is required.");
+                            await transaction.RollbackAsync();
+                            return View(request);
+                        }
+
+                        if (sku.Price <= 0)
+                        {
+                            ModelState.AddModelError($"SKUs[{i}].Price", "Price is required and must be greater than 0.");
+                            await transaction.RollbackAsync();
+                            return View(request);
+                        }
+
+                        SKU skus = new SKU
+                        {
+                            ProductId = product.Id,
+                            SkuCode = sku.SkuCode,
+                            Price = sku.Price,
+                            SkuStock = new List<SkuStock> { new SkuStock { Quantity = sku.Quantity } },
+                            ImageUrl1 = (sku.ImageUrl1 != null) ? await ImgFileActionAsync(sku.ImageUrl1, request) : "",
+                            ImageUrl2 = (sku.ImageUrl2 != null) ? await ImgFileActionAsync(sku.ImageUrl2, request) : "",
+                            ImageUrl3 = (sku.ImageUrl3 != null) ? await ImgFileActionAsync(sku.ImageUrl3, request) : "",
+                            ImageUrl4 = (sku.ImageUrl4 != null) ? await ImgFileActionAsync(sku.ImageUrl4, request) : "",
+                            CreatedOn = DateTime.Now
                         };
 
-                        _context.AttributeOptionSKUs.Add(options);
-                    }
-                    await _context.SaveChangesAsync();
-                }
+                        _context.SKUs.Add(skus);
+                        await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                        // Process SKU attributes
+                        for (int j = 0; j < sku.SKUAttributes.Count; j++)
+                        {
+                            if (sku.SKUAttributes[j].AttributeOptionId <= 0)
+                            {
+                                ModelState.AddModelError($"SKUs[{i}].SKUAttributes[{j}].AttributeOptionId", "Option is required.");
+                                await transaction.RollbackAsync();
+                                TempData["ErrorMessage"] = $"Make sure attribute options are filled";
+                                return View(request);
+                            }
+
+                            AttributeOptionSKU options = new AttributeOptionSKU
+                            {
+                                SkuId = skus.Id,
+                                AttributeOptionId = sku.SKUAttributes[j].AttributeOptionId
+                            };
+
+                            _context.AttributeOptionSKUs.Add(options);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                    TempData["SuccessMessage"] = $"Product Saved Successfully!";
+                    await transaction.CommitAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    // Log the exception or handle it as needed
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                }
             }
+
             return View(request);
         }
 

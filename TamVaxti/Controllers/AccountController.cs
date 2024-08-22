@@ -238,7 +238,7 @@ namespace TamVaxti.Controllers
                 await EmailHelper.SendEmailAsync(model.Email, existUser.UserName, "Password Reset Request", emailBody);
 
                 TempData["SuccessMessage"] = "Password Reset Email Sent";
-                return View();
+                return RedirectToAction("SignIn", "Account");
             }
 
             return View(model);
@@ -293,7 +293,8 @@ namespace TamVaxti.Controllers
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = "Password Reset Successfully";
-                    return View();
+                    return RedirectToAction("SignIn", "Account");
+
                 }
 
                 foreach (var error in result.Errors)

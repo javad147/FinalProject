@@ -44,7 +44,7 @@ namespace TamVaxti.Services
         }
         public async Task<bool> ExistAsync(string name)
         {
-            return await _context.SubCategories.AnyAsync(m => m.Name == name.Trim());
+            return await _context.SubCategories.AnyAsync(m => m.Name == name.Trim() && !m.SoftDeleted);
         }
 
         public async Task<List<SubCategory>> GetAllAsync()
@@ -54,7 +54,7 @@ namespace TamVaxti.Services
 
         public async Task<SelectList> GetAllBySelectedAsync()
         {
-            var subCategories = await _context.SubCategories.ToListAsync();
+            var subCategories = await _context.SubCategories.Where(sc => !sc.SoftDeleted).ToListAsync();
             return new SelectList(subCategories, "Id", "Name");
         }
 
