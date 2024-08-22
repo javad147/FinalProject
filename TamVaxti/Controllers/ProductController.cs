@@ -31,11 +31,12 @@ namespace TamVaxti.Controllers
             }
             //Product product = await _productService.GetProductByIdAsync((int)id);
             Product product = await _productService.GetProductBySkuIdAsync((long)id);
-            List<ProductReview> pr = await _productService.GetPublishedProductReviewByOfProduct(product.Id);
             if (product is null)
             {
                 return NotFound();
             }
+            List<ProductReview> pr = await _productService.GetPublishedProductReviewByOfProduct(product.Id);
+
             var model = product.SKUs.Select(sku => new ProductSkuListVM
             {
                 ProductId = product.Id,
@@ -53,7 +54,7 @@ namespace TamVaxti.Controllers
                         .Where(url => !string.IsNullOrEmpty(url))
                         .ToList(),
                 Color = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
-                                                .AttributeOption.Value,
+                                                .AttributeOption.Color,
                 Size = sku.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                                 .AttributeOption.Value,
                 RelatedSizes = product.SKUs.Where(s => //s.Id != sku.Id &&
@@ -79,7 +80,7 @@ namespace TamVaxti.Controllers
                 {
                     SkuId = s.Id,
                     Color = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Color")?
-                                .AttributeOption.Value,
+                                .AttributeOption.Color,
                     /*Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                 .AttributeOption.Value*/
                 }).DistinctBy(r => r.Color).OrderBy(s => sku.Id).ToList()

@@ -26,5 +26,6 @@ namespace TamVaxti.Models
 
         [NotMapped]
         public IFormFile MainImageFile { get; set; }
+        public bool SoftDeleted { get; set; }
     }
 }
