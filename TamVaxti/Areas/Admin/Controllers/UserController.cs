@@ -28,7 +28,10 @@ namespace TamVaxti.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string searchString)
         {
             List<UserRoleVM> userRoles = new();
-            var users = await _userManager.Users.ToListAsync();
+
+            var users = await _userManager.Users
+                              .Where(u => !u.SoftDeleted)
+                              .ToListAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -331,9 +334,6 @@ namespace TamVaxti.Areas.Admin.Controllers
             return View(model);
         }
 
-
-
-
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
@@ -361,16 +361,23 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            user.SoftDeleted = true;
+
+            var result = await _userManager.UpdateAsync(user);
+
             if (result.Succeeded)
             {
                 TempData["messageType"] = "error";
-                TempData["message"] = "User Deleted Successfully.";
+                TempData["message"] = "User deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                return View();
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(user);
             }
         }
 
