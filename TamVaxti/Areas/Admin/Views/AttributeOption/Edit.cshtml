@@ -51,7 +51,7 @@
                     <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         @Html.HiddenFor(model => model.Id)
                         @Html.HiddenFor(model => model.ExistingImageUrl)
-                        @Html.HiddenFor(model => model.SelectedCategoryId)
+                       @* @Html.HiddenFor(model => model.SelectedCategoryId)*@
                         <div class="form-group">
                             <label asp-for="Value" class="control-label">Value</label>
                             <input asp-for="Value" class="form-control" />

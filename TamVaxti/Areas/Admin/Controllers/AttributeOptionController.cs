@@ -38,7 +38,8 @@ namespace TamVaxti.Areas.Admin.Controllers
             var attributes = await _context.Attributes.ToListAsync();
             var viewModel = new CreateAttributeOptionVM
             {
-                Attributes = attributes.Select(a => new SelectListItem
+                Attributes = attributes.Where(a => !a.SoftDeleted)
+                .Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
@@ -104,11 +105,12 @@ namespace TamVaxti.Areas.Admin.Controllers
         {
             var attributeOptions = await _context.AttributeOptions
                 .Include(a => a.Attribute) // Assuming Attribute contains the category information
+                .Where(a => !a.SoftDeleted)
                 .Select(a => new AttributeOptionVM
                 {
                     Id = a.Id,
                     Value = a.Value,
-                    CategoryName = a.Attribute != null ? a.Attribute.Type : null, // Use ternary operator instead of null-propagating operator
+                    CategoryName = a.Attribute != null ? a.Attribute.Name : null, // Use ternary operator instead of null-propagating operator
                 }).ToListAsync();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -131,18 +133,30 @@ namespace TamVaxti.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            AttributeOptionSKU Att = await _context.AttributeOptionSKUs.Where(Att => Att.AttributeOptionId == id).FirstOrDefaultAsync();
-            if (Att != null)
-            {
-                TempData["messageType"] = "error";
-                TempData["message"] = "Product for this Attribute Option exist please delete the Product of Attribute Option from Product menu.";
-                return RedirectToAction(nameof(Index));
-            }
+            
+            attribute.SoftDeleted = true;
+            _context.AttributeOptions.Update(attribute);
+            await _context.SaveChangesAsync();
 
-            await _attributeOptionService.DeleteAsync(attribute);
-            TempData["messageType"] = "error";
+
+            TempData["messageType"] = "success";
             TempData["message"] = "Attribute Option Deleted Successfully.";
             return RedirectToAction(nameof(Index));
+
+
+
+            //AttributeOptionSKU Att = await _context.AttributeOptionSKUs.Where(Att => Att.AttributeOptionId == id).FirstOrDefaultAsync();
+            //if (Att != null)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = "Product for this Attribute Option exist please delete the Product of Attribute Option from Product menu.";
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+            //await _attributeOptionService.DeleteAsync(attribute);
+            //TempData["messageType"] = "error";
+            //TempData["message"] = "Attribute Option Deleted Successfully.";
+            //return RedirectToAction(nameof(Index));
         }
 
 
@@ -167,7 +181,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 SelectedCategoryId = attributeOption.AttributeId,
                 Color = attributeOption.Color,
                 ExistingImageUrl = attributeOption.ImageUrl,
-                Attributes = attributes.Select(a => new SelectListItem
+                Attributes = attributes.Where(a => !a.SoftDeleted).Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name,
