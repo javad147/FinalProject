@@ -72,7 +72,7 @@
                                 <a asp-controller="Product" asp-action="Index" asp-route-id="@product.SkuId">
                                     <h6>@product.Name</h6>
                                 </a>
-                                <p>@Html.Raw(product.Description)</p>
+                                <div class="descriptor">@Html.Raw(product.Description)</div>
                                 <h4>@ViewBag.CurrencySymbol@product.Price</h4>
                                 <ul class="color-variant">
                                     @foreach (var sku in product.RelatedSku)
