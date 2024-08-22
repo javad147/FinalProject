@@ -223,8 +223,10 @@
     </div>
 </section>
 <!-- Section ends -->
+
 @section js {
     <script>
+        var currencySymbol = '@Html.Raw(ViewBag.CurrencySymbol)';
 
         $(document).ready(function () {
             $("#div-thank-you").hide();
@@ -236,7 +238,7 @@
         }
         document.getElementById('btnApplyCoupon').addEventListener('click', function () {
             var couponCode = document.getElementById('txtCouponCode').value;
-            var currencySymbol = decodeEntities('@ViewBag.CurrencySymbol');
+
             fetch('/Order/ApplyCoupon', {
                 method: 'POST',
                 headers: {
