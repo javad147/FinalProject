@@ -36,6 +36,13 @@ namespace TamVaxti.Services
             return await query.ToListAsync();
         }
 
+        public async Task<Attributes> FindByNameAsync(string name)
+        {
+            return await _context.Attributes
+                         .Where(a => !a.SoftDeleted) 
+                         .FirstOrDefaultAsync(a => a.Name == name);
+        }
+
 
         public async Task<Attributes> GetByIdAsync(int id)
         {

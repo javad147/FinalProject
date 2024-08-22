@@ -3,6 +3,12 @@
     ViewBag.PageName = "Create Attribute";
 }
 
+<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+
 <style>
     .form-group {
         margin-bottom: 15px;
@@ -17,6 +23,23 @@
         margin-top: 10px;
     }
 </style>
+
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var messageType = '@TempData["messageType"]';
+            var message = '@TempData["message"]';
+            if (messageType === "success") {
+                toastr.success(message);
+            } else if (messageType === "error") {
+                toastr.error(message);
+            }
+        });
+    </script>
+}
 
 
 <div class="container-fluid">
@@ -87,25 +110,14 @@
     </div>
 </div>
 
-@*
-@model AttributeVM
 
-@{
-    ViewBag.Title = "Create Attribute";
-}
-
-<h2>Create Attribute</h2>
-
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
-
-*@
+<script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        }
+        
+    });
+    
+  </script>
