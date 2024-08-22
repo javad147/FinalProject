@@ -1,5 +1,17 @@
 ﻿@model ProductCreateVM
-
+<style>
+    #loader {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+    }
+</style>
+<div id="loader" style="display:none; text-align:center;">
+    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+</div>
  <!-- Container-fluid starts-->
                 <div class="container-fluid">
                     <div class="page-header">
@@ -66,7 +78,10 @@
                                     <span asp-validation-for="MainImage" class="text-danger"></span>
                                 </div>
                                 <p style="color: crimson;">* Upload a photo in 800x800 resolution, under 1 MB, in .jpg, .png, or .jpeg format.</p>
-                                <h4>SKUs</h4>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4>SKUs</h4>
+                                    <button type="button" id="add-sku-btn" class="btn btn-primary">Add SKU</button>
+                                </div>
                                 <table class="table" id="skus-table">
                                     <thead>
                                         <tr>
@@ -101,19 +116,19 @@
                                                     <span asp-validation-for="@Model.SKUs[i].Quantity" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input asp-for="@Model.SKUs[i].ImageUrl1" class="form-control" accept="image/*"  />
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl1" class="form-control" accept="image/*"  onchange="loadFile(this, event, '@("ImageUrl1_" + i)')" />
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl1" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input asp-for="@Model.SKUs[i].ImageUrl2" class="form-control" accept="image/*" />
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl2" class="form-control" accept="image/*" onchange="loadFile(this, event, '@("ImageUrl2_" + i)')" />
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl2" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input asp-for="@Model.SKUs[i].ImageUrl3" class="form-control" accept="image/*" />
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl3" class="form-control" accept="image/*" onchange="loadFile(this, event, '@("ImageUrl3_" + i)')" />
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl3" class="text-danger"></span>
                                                 </td>
                                                 <td>
-                                                    <input asp-for="@Model.SKUs[i].ImageUrl4" class="form-control" accept="image/*" />
+                                                    <input asp-for="@Model.SKUs[i].ImageUrl4" class="form-control" accept="image/*" onchange="loadFile(this, event, '@("ImageUrl4_" + i)')" />
                                                     <span asp-validation-for="@Model.SKUs[i].ImageUrl4" class="text-danger"></span>
                                                 </td>
                                                 @for (int j = 0; j < ViewBag.AttributeList.Count; j++)
@@ -139,10 +154,9 @@
                                     </tbody>
                                 </table>
 
-                                <button type="button" id="add-sku-btn" class="btn btn-primary">Add SKU</button>
 
-                                <div class="form-group pull-right">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                <div class="form-group text-center" style="margin-top: 5%;">
+                                    <input type="submit" value="Create" class="btn btn-primary btn-lg" style="padding: 17px 50px;" />
                                 </div>
                             </form>
                         </div>
@@ -153,10 +167,31 @@
 @section Scripts {
     @*<partial name="_ValidationScriptsPartial" />*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.9.2/ckeditor.js"></script>
+
     <script>
         $(document).ready(function () {
             CKEDITOR.replace('ProductDescription');
+            $('form').on('submit', function() {
+                $('#loader').show();
+                $(this).find('input[type="submit"]').prop('disabled', true);
+            });
         });
+
+        function loadFile(input, event, id) {
+            const img = document.createElement('img');
+            const existingImg = document.getElementById(id);
+            if (existingImg) {
+                existingImg.src = URL.createObjectURL(event.target.files[0]);
+            }else {
+                img.id = id;  
+                img.width = 70; 
+                img.src = URL.createObjectURL(event.target.files[0]);
+                input.insertAdjacentElement('afterend', img);
+            }
+            document.getElementById(id).onload = function() {
+              URL.revokeObjectURL(document.getElementById(id).src)
+            }
+        }
 
         function showCategoryName(selectElement) {
             var subcategoryId = selectElement.value;
@@ -175,7 +210,7 @@
         document.getElementById('add-sku-btn').addEventListener('click', function () {
             var table = document.getElementById('skus-table').getElementsByTagName('tbody')[0];
             var rowCount = table.rows.length;
-            var row = table.insertRow(rowCount);
+            var row = table.insertRow(0);//table.insertRow(rowCount);
             var attributes = @Html.Raw(Json.Serialize(ViewBag.AttributeListJson));
 
             var cell1 = row.insertCell(0);
@@ -191,10 +226,10 @@
             cell1.innerHTML = '<input type="text" name="SKUs[' + rowCount + '].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />';
             cell2.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Price" class="form-control" data-val="true" data-val-required="Price is required." />';
             cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
-            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1" class="form-control" accept="image/*" />';
-            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2" class="form-control" accept="image/*" />';
-            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3" class="form-control" accept="image/*" />';
-            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4" class="form-control" accept="image/*" />';
+            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl1_' + rowCount + '\')" />';
+            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl2_' + rowCount + '\')"/>';
+            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl3_' + rowCount + '\')"/>';
+            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl4_' + rowCount + '\')"/>';
 
             var items = JSON.parse(attributes);
 
