@@ -134,6 +134,7 @@ namespace TamVaxti.Controllers
             var wishlistProducts = result.Where(p => hashproducts.Contains(p.SkuId)).ToList();
 
             ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
+            ViewBag.CurrencyRate = _companyService.GetCurrencyRate();
             // Code to add product to user's wish list
             return PartialView("_WistListProducts", wishlistProducts);
         }
@@ -170,6 +171,12 @@ namespace TamVaxti.Controllers
                 TempData["ErrorMessage"] = "Error in Product review adding.";
             }
             return RedirectToAction("Index", "Product", new { id = model.SkuId });
+        }
+
+        public async Task<dynamic> SetCurrencyRate(string symbol)
+        {
+            await _companyService.SetCurrencyRate(symbol);
+            return Json(true);
         }
     }
 }
