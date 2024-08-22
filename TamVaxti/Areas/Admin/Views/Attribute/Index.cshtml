@@ -95,16 +95,11 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
-                        Add Attribute
-                    </a>
-                </div>
-                <div class="card-header">
                     <form class="form-inline search-form" method="get" asp-action="Index">
                         <div class="input-group">
                             <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
                             <div class="input-group-append mr-2">
-                                <button type="submit" class="btn btn-primary ml-2">Search</button>
+                                <button type="submit" class="btn btn-primary ml-2" style="height: 100%;">Search</button>
                                 @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
                                 {
                                     <button type="button" class="btn btn-secondary" onclick="clearSearch()">
@@ -114,6 +109,10 @@
                             </div>
                         </div>
                     </form>
+
+                    <a type="button" class="btn btn-primary add-row mt-md-0 mt-2" asp-action="Create">
+                        Add Attribute
+                    </a>
                 </div>
 
                 <div class="card-body">

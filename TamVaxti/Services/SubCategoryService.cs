@@ -49,7 +49,7 @@ namespace TamVaxti.Services
 
         public async Task<List<SubCategory>> GetAllAsync()
         {
-            return await _context.SubCategories.ToListAsync();
+            return await _context.SubCategories.Where(sc => !sc.SoftDeleted).ToListAsync();
         }
 
         public async Task<SelectList> GetAllBySelectedAsync()

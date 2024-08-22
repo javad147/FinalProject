@@ -117,9 +117,7 @@ namespace TamVaxti.Controllers
             }
 
             await _context.SaveChangesAsync();
-
-            TempData["messageType"] = "success";
-            TempData["message"] = "User Profile Updated Successfully!";
+            TempData["SuccessMessage"] = "User Profile Updated Successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

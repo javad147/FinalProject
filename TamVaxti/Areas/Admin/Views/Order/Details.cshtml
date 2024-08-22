@@ -55,10 +55,16 @@
                                             @foreach (var item in Model.OrderProductDetails)
                                             {
                                                 <tr class="table-order">
+                                                   @* <td>
+                                                        <a href="javascript:void(0)">
+                                                            <img src="@Html.DisplayFor(modelItem => item.Product.MainImageFile)"
+                                                                 class="img-fluid blur-up lazyload" alt="not found">
+                                                        </a>
+                                                    </td>*@
                                                     <td>
                                                         <a href="javascript:void(0)">
-                                                            <img src="@Html.DisplayFor(modelItem => item.Product.ProductImages)"
-                                                                 class="img-fluid blur-up lazyload" alt="">
+                                                            <img src="@Url.Content("~/img/product/" + item.Product.MainImage)"
+                                                                 class="img-fluid blur-up lazyload" alt="not found">
                                                         </a>
                                                     </td>
                                                     <td>

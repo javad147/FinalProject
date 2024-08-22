@@ -8,13 +8,13 @@ namespace TamVaxti.ViewModels.Sliders
         [Required(ErrorMessage = "Slider Title is required.")]
         public string SliderTitle { get; set; }
 
-        [Required(ErrorMessage = "Slider Name is required.")]
+        //[Required(ErrorMessage = "Slider Name is required.")]
         public string SliderName { get; set; }
 
         [Required(ErrorMessage = "Slider Description is required.")]
         public string SliderDescription { get; set; }
 
-        [Required(ErrorMessage = "Slider Number is required.")]
+        //[Required(ErrorMessage = "Slider Number is required.")]
         public int SliderNumber { get; set; }
 
         [Required(ErrorMessage = "Image is required.")]

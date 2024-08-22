@@ -134,48 +134,67 @@ namespace TamVaxti.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id)
         {
+
             if (id is null) return BadRequest();
-
-            // agaar id --> subcateg! also and product !
-
-            SubCategory sub = await _context.SubCategories.Where(sub => sub.CategoryId == id).FirstOrDefaultAsync();
-            if(sub!= null)
-            {
-                TempData["messageType"] = "error";
-                TempData["message"] = "SubCategory for this Category exist please delete the SubCategory of Category from SubCategory menu.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            Product pro = await _context.Products.Where(pro => pro.CategoryId == id).FirstOrDefaultAsync();
-            if (pro != null)
-            {
-                TempData["messageType"] = "error";
-                TempData["message"] = "Product for this Category exist please delete the Product of Category from Product menu.";
-                return RedirectToAction(nameof(Index));
-            }
-
 
             Category category = await _context.Categories.FindAsync(id);
 
             if (category is null) return NotFound();
 
-            if (!string.IsNullOrEmpty(category.CategoryImage))
-            {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "categories");
-                var imagePath = Path.Combine(uploadsFolder, category.CategoryImage);
+           
+            category.SoftDeleted = true;
 
-                // Check if the file exists and delete it
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
-            }
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
 
-
-            await _categoryService.DeleteAsync(category);
-            TempData["messageType"] = "error";
+            TempData["messageType"] = "success";
             TempData["message"] = "Category Deleted Successfully.";
             return RedirectToAction(nameof(Index));
+
+
+
+            //if (id is null) return BadRequest();
+
+
+            //SubCategory sub = await _context.SubCategories.Where(sub => sub.CategoryId == id).FirstOrDefaultAsync();
+            //if(sub!= null)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = "SubCategory for this Category exist please delete the SubCategory of Category from SubCategory menu.";
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+            //Product pro = await _context.Products.Where(pro => pro.CategoryId == id).FirstOrDefaultAsync();
+            //if (pro != null)
+            //{
+            //    TempData["messageType"] = "error";
+            //    TempData["message"] = "Product for this Category exist please delete the Product of Category from Product menu.";
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+
+            //Category category = await _context.Categories.FindAsync(id);
+
+            //if (category is null) return NotFound();
+
+            //if (!string.IsNullOrEmpty(category.CategoryImage))
+            //{
+            //    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "categories");
+            //    var imagePath = Path.Combine(uploadsFolder, category.CategoryImage);
+
+            //    // Check if the file exists and delete it
+            //    if (System.IO.File.Exists(imagePath))
+            //    {
+            //        System.IO.File.Delete(imagePath);
+            //    }
+            //}
+
+
+            //await _categoryService.DeleteAsync(category);
+            //TempData["messageType"] = "error";
+            //TempData["message"] = "Category Deleted Successfully.";
+            //return RedirectToAction(nameof(Index));
+
         }
 
 

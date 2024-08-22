@@ -1,4 +1,6 @@
-﻿@model List<SliderVM>
+﻿@using TamVaxti.Helpers.Extensions
+
+@model List<SliderVM>
 
 <head>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -28,7 +30,7 @@
             <div class="col-lg-6">
                 <div class="page-header-left">
                     <h3>
-                        <strong>Slider Details</strong>
+                        Slider Details
                     </h3>
                 </div>
             </div>
@@ -46,71 +48,85 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
-        </div>
-        <div class="d-flex justify-content-end col-md-6">
-            <a asp-action="Create" class="btn text-white mb-3 mx-3" style="background-color : #ff4c3b">Add Slider</a>
-        </div>
-    </div>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body card-block">
-                        <table class="table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Slider Title</th>
-                                    <th>Slider Name</th>
-                                    <th>Slider Description</th>
-                                    <th>Image</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    int index = 1;
-                                    foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@index.ToString("D2")</td>
-                                            <td>@item.SliderTitle</td>
-                                            <td>@item.SliderName</td>
-                                            <td>@item.SliderDescription</td>
-                                            <td>
-                                                @if (!string.IsNullOrEmpty(item.Image))
-                                                {
-                                                    <img src="@Url.Content($"~/img/sliders/{item.Image}")" style="width: 50px; height: 50px; object-fit: cover;" />
-                                                }
-                                                else
-                                                {
-                                                    <img src="@Url.Content("~/img/default-slider.png")" style="width: 50px; height: 50px; object-fit: cover;" />
-                                                }
-                                            </td>
-                                            <td>
-                                                <a asp-action="Edit" asp-route-id="@item.Id" style="margin-right: 10px;">
-                                                    <i class="fa fa-edit" title="Edit"></i>
-                                                </a>
-                                                <form asp-action="Delete" asp-route-id="@item.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete this slider?');">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                                        <i class="fa fa-trash" title="Delete" style="color: red; transition: color 0.3s;"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        index++;
-                                    }
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <form class="form-inline search-form" method="get" asp-action="Index">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="searchString" placeholder="Search.." value="@ViewData["CurrentFilter"]">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-primary ml-2" style="height: 100%;">Search</button>
+                                @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                                {
+                                    <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                                        <i class="fa fa-times"></i>
+                                    </button>
                                 }
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="d-flex justify-content-end col-md-6">
+                        <a asp-action="Create" class="btn text-white mb-3 mx-3" style="background-color : #ff4c3b">Add Slider</a>
                     </div>
+                </div>
+                <div class="card-body card-block">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Slider Title</th>
+                                @* <th>Slider Name</th> *@
+                                <th>Slider Description</th>
+                                <th>Image</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int index = 1;
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@index.ToString("D2")</td>
+                                        <td>@Html.Raw(HtmlHelperExtensions.StripHtml(item.SliderTitle))</td>
+                                        @* <td>@item.SliderName</td>*@
+                                        <td>@Html.Raw(HtmlHelperExtensions.StripHtml(item.SliderDescription))</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.Image))
+                                            {
+                                                <img src="@Url.Content($"~/img/sliders/{item.Image}")" style="width: 50px; height: 50px; object-fit: cover;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@Url.Content("~/img/default-slider.png")" style="width: 50px; height: 50px; object-fit: cover;" />
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" style="margin-right: 10px;">
+                                                <i class="fa fa-edit" title="Edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@item.Id" class="d-inline" method="post" onsubmit="return confirm('Are you sure you want to delete this slider?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                                    <i class="fa fa-trash" title="Delete" style="color: red; transition: color 0.3s;"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function clearSearch() {
+        window.location.href = '@Url.Action("Index")';
+    }
+</script>

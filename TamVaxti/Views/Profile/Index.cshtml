@@ -1,11 +1,6 @@
 ﻿@model TamVaxti.ViewModels.Profile.UserProfileVM
 
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <style>
         .form-control, .form-control-sm {
             border-radius: 0.25rem;
@@ -31,38 +26,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .card-header {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px;
-        }
-
-            .card-header h5 {
-                margin: 0;
-                font-size: 18px;
-                font-weight: bold;
-            }
-
-        .breadcrumb {
-            background: none;
-            margin-bottom: 0;
-            padding: 0;
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-            content: ">";
-        }
-
-        .btn-solid {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
-
-            .btn-solid:hover {
-                background-color: #0056b3;
-            }
-
         .select_input select {
             height: calc(2.25rem + 2px);
         }
@@ -80,13 +43,6 @@
                 $button.prop('disabled', true);
                 $spinner.show();
             });
-
-        @if (TempData["message"] != null)
-        {
-            <text>
-                    toastr.success('@TempData["message"]');
-            </text>
-        }
                         });
     </script>
 
@@ -194,7 +150,7 @@
                             </div>
 
                             <div class="col-md-12 mt-4 text-right">
-                                <button id="updateButton" type="submit" class="btn btn-solid">
+                                <button id="updateButton" type="submit" class="btn btn-solid pull-right">
                                     <span id="buttonText" class="mr-2">Save Settings</span>
                                     <div id="spinner" class="spinner-border spinner-border-sm ml-2" role="status" style="display: none;">
                                         <span class="sr-only">Loading...</span>

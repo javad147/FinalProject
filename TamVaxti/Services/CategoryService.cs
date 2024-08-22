@@ -83,6 +83,7 @@ namespace TamVaxti.Services
         public async Task<List<CategoryVM>> GetAllOrderByDescendingAsync()
         {
             List<Category> categories = await _context.Categories
+                                                     .Where(m => !m.SoftDeleted)
                                                      .OrderByDescending(m => m.Id)
                                                      .ToListAsync();
 

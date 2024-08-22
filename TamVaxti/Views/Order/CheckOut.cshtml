@@ -82,7 +82,7 @@
                                     <ul class="qty">
                                         @foreach (var item in Model.Products)
                                         {
-                                            <li><div style="width: 55%;float: left!important;margin-bottom: 10px;">@item.Product.Name × @item.Quantity</div> <span>@ViewBag.CurrencySymbol@item.SubTotal</span></li>
+                                            <li>@item.Product.Name × @item.Quantity <span>@ViewBag.CurrencySymbol@item.SubTotal</span></li>
                                         }
                                     </ul>
                                     <ul class="sub-total">
@@ -231,6 +231,11 @@
         $(document).ready(function () {
             $("#div-thank-you").hide();
         });
+        function decodeEntities(encodedString) {
+            var textArea = document.createElement('textarea');
+            textArea.innerHTML = encodedString;
+            return textArea.value;
+        }
         document.getElementById('btnApplyCoupon').addEventListener('click', function () {
             var couponCode = document.getElementById('txtCouponCode').value;
 
@@ -249,6 +254,7 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log("currencySymbol",currencySymbol);
                     var discountType = data.discountType;
                     var discountValue = data.discountValue;
                     var discountAmount = data.discountAmount;
