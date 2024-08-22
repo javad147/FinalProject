@@ -7,5 +7,7 @@ namespace TamVaxti.Models
         public string FullName { get; set; }
         public string ProfileImageUrl { get; set; }
         public ICollection<Order> Orders { get; set; }
+
+        public bool SoftDeleted { get; set; }
     }
 }
