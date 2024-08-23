@@ -11,6 +11,8 @@ namespace TamVaxti.ViewModels.Products
         public long SkuId { get; set; }
         public string SkuCode { get; set; }
         public decimal Price { get; set; }
+        public decimal SalePrice { get; set; }
+        public int SalePer => SalePrice > 0 && SalePrice < Price ? (int)((Price - SalePrice) / Price * 100) : 0;
         public int Quantity { get; set; }
         public int Rating { get; set; }
         public int RatingCount { get; set; }

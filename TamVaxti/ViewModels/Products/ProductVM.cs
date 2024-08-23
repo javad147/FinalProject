@@ -13,6 +13,7 @@
         public double Rating { get; set; }
         public int Quantity { get; set; }
         public decimal Amount { get; set; }
+        public string SkuCodes { get; set; }
 
 
         // public decimal DiscountedPrice { get; set; }

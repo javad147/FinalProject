@@ -91,6 +91,7 @@
                                     <th>Product Image</th>
                                     <th>Product Title</th>
                                     <th>Description</th>
+                                    <th>SkuCodes</th>
                                     <th>Category</th>
                                     <th>Option</th>
                                 </tr>
@@ -109,8 +110,12 @@
 
                                         <td data-field="name">@item.Name</td>
 
-                                        <td data-field="name">@Html.Raw(HtmlHelperExtensions.StripHtml(item.Description))</td>
+                                        @*<td data-field="name">@Html.Raw(HtmlHelperExtensions.StripHtml(item.Description))</td>*@
+                                        @{ var desp = HtmlHelperExtensions.StripHtml(item.Description); }
+                                        <td data-field="name">@Html.Raw(desp.Length > 30 ? desp.Substring(0, 30) + "..." : desp)</td>
                                         @* <td data-field="name">@item.Description</td> *@
+
+                                        <td data-field="name">@item.SkuCodes</td>
 
                                         <td data-field="name">@item.Category</td>
 

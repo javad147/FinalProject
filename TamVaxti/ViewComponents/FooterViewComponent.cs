@@ -50,9 +50,11 @@ public class FooterViewComponent : ViewComponent
 
         List<Product> products = await _productService.GetAllWithSkusAsync();
         var result = _productService.GetProductSkuListVM(products);
-        var cart = basketProducts.Select(basketProduct =>
-            new BasketVM { Product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key), Quantity = basketProduct.Value, SubTotal = basketProduct.Value * result.FirstOrDefault(m => m.SkuId == basketProduct.Key)?.Price ?? 0 }).ToList();
-
+        var cart = (from basketProduct in basketProducts
+                let product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key)
+                where product != null
+                let subtotal = basketProduct.Value * (product.SalePrice > 0 ? product.SalePrice : product.Price)
+                select new BasketVM { Product = product, Quantity = basketProduct.Value, SubTotal = subtotal }).ToList();
 
         FooterVM response = new()
         {

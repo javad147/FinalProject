@@ -31,7 +31,11 @@
                             </div>
                         </div>
                         <div class="col">
-                            <h2 class="td-color">@ViewBag.CurrencySymbol@cartItem.Product.Price</h2>
+                            <h2 class="td-color">@ViewBag.CurrencySymbol@(cartItem.Product.SalePrice > 0 ? cartItem.Product.SalePrice : cartItem.Product.Price)
+                                @if(cartItem.Product.SalePrice > 0){
+                                    <del>@ViewBag.CurrencySymbol@cartItem.Product.Price</del>
+                                }
+                            </h2>
                         </div>
                         <div class="col">
                             <h2 class="td-color">
@@ -41,7 +45,11 @@
                     </div>
                 </td>
                 <td>
-                    <h2>@ViewBag.CurrencySymbol@cartItem.Product.Price</h2>
+                    <h2>@ViewBag.CurrencySymbol@(cartItem.Product.SalePrice > 0 ? cartItem.Product.SalePrice : cartItem.Product.Price)
+                        @if(cartItem.Product.SalePrice > 0){
+                            <del>@ViewBag.CurrencySymbol@cartItem.Product.Price</del>
+                        }
+                    </h2>
                 </td>
                 <td>
                     <div class="qty-box">

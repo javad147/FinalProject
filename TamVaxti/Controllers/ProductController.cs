@@ -47,6 +47,7 @@ namespace TamVaxti.Controllers
                 SkuId = sku.Id,
                 SkuCode = sku.SkuCode,
                 Price = sku.Price,
+                SalePrice = sku.SalePrice,
                 Quantity = sku.SkuStock.Sum(s => s.Quantity),
                 Rating = (int)(sku.ProductReviews.Count() > 0 ? Math.Round(sku.ProductReviews.Average(s => s.Rating)) : 0),
                 RatingCount = sku.ProductReviews.Count(),
