@@ -73,7 +73,11 @@
                                     <h6>@product.Name</h6>
                                 </a>
                                 <div class="descriptor">@Html.Raw(product.Description)</div>
-                                <h4>@ViewBag.CurrencySymbol@product.Price</h4>
+                                <h4>@ViewBag.CurrencySymbol@(product.SalePrice > 0 ? product.SalePrice : product.Price)
+                                    @if(product.SalePrice > 0){
+                                        <del>@ViewBag.CurrencySymbol@product.Price</del>
+                                    }
+                                </h4>
                                 <ul class="color-variant">
                                     @foreach (var sku in product.RelatedSku)
                                     {

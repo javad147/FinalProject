@@ -94,6 +94,7 @@
                                         <tr>
                                             <th>Code</th>
                                             <th>Price</th>
+                                            <th>Sale Price</th>
                                             <th>Quantity</th>
                                             <th>Image 1</th>
                                             <th>Image 2</th>
@@ -120,6 +121,10 @@
                                                 <td>
                                                     <input asp-for="@Model.SKUs[i].Price" class="form-control" data-val="true" data-val-required="Price is required." />
                                                     <span asp-validation-for="@Model.SKUs[i].Price" class="text-danger"></span>
+                                                </td>
+                                                <td>
+                                                    <input asp-for="@Model.SKUs[i].SalePrice" class="form-control" />
+                                                    <span asp-validation-for="@Model.SKUs[i].SalePrice" class="text-danger"></span>
                                                 </td>
                                                 <td>
                                                     <input asp-for="@Model.SKUs[i].Quantity" class="form-control" data-val="true" />
@@ -257,16 +262,18 @@
             var cell5 = row.insertCell(4);
             var cell6 = row.insertCell(5);
             var cell7 = row.insertCell(6);
+            var cell8 = row.insertCell(7);
 
-            var cellCnt = 7;
+            var cellCnt = 8;
 
             cell1.innerHTML = '<input type="text" name="SKUs[' + rowCount + '].SkuCode" class="form-control" data-val="true" data-val-required="Code is required." />';
             cell2.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Price" class="form-control" data-val="true" data-val-required="Price is required." />';
-            cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
-            cell4.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl1_' + rowCount + '\')"/>';
-            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl2_' + rowCount + '\')"/>';
-            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl3_' + rowCount + '\')"/>';
-            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl4_' + rowCount + '\')"/>';
+            cell3.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].SalePrice" class="form-control" />';
+            cell4.innerHTML = '<input type="number" name="SKUs[' + rowCount + '].Quantity" class="form-control" />';
+            cell5.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl1File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl1_' + rowCount + '\')"/>';
+            cell6.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl2File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl2_' + rowCount + '\')"/>';
+            cell7.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl3File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl3_' + rowCount + '\')"/>';
+            cell8.innerHTML = '<input type="file" name="SKUs[' + rowCount + '].ImageUrl4File" class="form-control" accept="image/*" onchange="loadFile(this, event, \'ImageUrl4_' + rowCount + '\')"/>';
 
             var items = JSON.parse(attributes);
 
@@ -285,14 +292,14 @@
                 
             });
 
-            var cell8 = row.insertCell(cellCnt);
+            var cell9 = row.insertCell(cellCnt);
 
-            cell8.innerHTML = '<a class="remove-sku-btn"><i style="color:red;" class="fa fa-close"></i></a>';
+            cell9.innerHTML = '<a class="remove-sku-btn"><i style="color:red;" class="fa fa-close"></i></a>';
 
             var removeButtons = document.getElementsByClassName('remove-sku-btn');
             for (var i = 0; i < removeButtons.length; i++) {
                 removeButtons[i].addEventListener('click', function () {
-                    if (removeButtons.length == 1) {
+                    if (table.rows.length == 1) {
                         alert("There must be at least one SKU in the product.");
                     } else {
                         var row = this.parentNode.parentNode;

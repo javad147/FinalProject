@@ -26,7 +26,10 @@
                                     <h4>@cartItem.Product.Name</h4>
                                 </a>
                                 <h4>
-                                    <span>@cartItem.Quantity x @ViewBag.CurrencySymbol @cartItem.Product.Price</span>
+                                    <span>@cartItem.Quantity x @ViewBag.CurrencySymbol@(cartItem.Product.SalePrice > 0 ? cartItem.Product.SalePrice : cartItem.Product.Price)
+                                    @if(cartItem.Product.SalePrice > 0){
+                                        <del>@ViewBag.CurrencySymbol@cartItem.Product.Price</del>
+                                    }</span>
                                 </h4>
                             </div>
                         </div>

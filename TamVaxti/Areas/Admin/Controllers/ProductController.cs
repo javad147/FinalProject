@@ -309,11 +309,19 @@ namespace TamVaxti.Areas.Admin.Controllers
                             return View(request);
                         }
 
+                        if (sku.SalePrice > sku.Price)
+                        {
+                            ModelState.AddModelError($"SKUs[{i}].SalePrice", "Sale Price must be less than or equal to Price.");
+                            await transaction.RollbackAsync();
+                            return View(request);
+                        }
+
                         SKU skus = new SKU
                         {
                             ProductId = product.Id,
                             SkuCode = sku.SkuCode,
                             Price = sku.Price,
+                            SalePrice = sku.SalePrice,
                             SkuStock = new List<SkuStock> { new SkuStock { Quantity = sku.Quantity } },
                             ImageUrl1 = (sku.ImageUrl1 != null) ? await ImgFileActionAsync(sku.ImageUrl1, request) : "",
                             ImageUrl2 = (sku.ImageUrl2 != null) ? await ImgFileActionAsync(sku.ImageUrl2, request) : "",
@@ -486,6 +494,12 @@ namespace TamVaxti.Areas.Admin.Controllers
                     return View(request);
                 }
 
+                if (sku.SalePrice > sku.Price)
+                {
+                    ModelState.AddModelError($"SKUs[{i}].SalePrice", "Sale Price must be less than or equal to Price.");
+                    return View(request);
+                }
+
                 var totalQuantity = _productService.GetSkuStockSum(request.SKUs[i].Id);
                 int finalQuantity = sku.Quantity - totalQuantity;
                 if (finalQuantity != 0)
@@ -537,7 +551,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl4).IsModified = request.SKUs[k].ImageUrl4File != null ? true : false;
             }
             await _context.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = $"Product Updated Successfully!";
             return RedirectToAction(nameof(Index));
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TamVaxti.Models;
 using TamVaxti.ViewModels.AttributeOptionSKU;
+using TamVaxti.Helpers;
 
 namespace TamVaxti.ViewModels.Products
 {
@@ -17,6 +18,10 @@ namespace TamVaxti.ViewModels.Products
         [Required]
         [Range(0.01, 10000.00, ErrorMessage = "Please enter a valid price")]
         public decimal Price { get; set; }
+
+        [Range(0.01, 10000.00, ErrorMessage = "Please enter a valid sale price")]
+        [SalePriceLessThanPriceAttribute("Price", "SalePrice", ErrorMessage = "Sale price must be less than the price.")]
+        public decimal SalePrice { get; set; }
 
         [Required]
         public int Quantity { get; set; }
