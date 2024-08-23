@@ -55,13 +55,13 @@
             <form asp-action="Edit" method="post" enctype="multipart/form-data" class="">
                 <div class="form-group">
                     <label class="form-control-label">Enter brand name</label>
-                    <input asp-for="Name" type="text" placeholder="Enter name..." class="form-control mb-2" maxlength="100">
+                    <input asp-for="Name" maxlength="20" type="text" placeholder="Enter name..." class="form-control mb-2" maxlength="100">
                     <span class="text-danger" asp-validation-for="Name"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label">Upload Image</label>
-                    <input asp-for="BrandImage" type="file" class="form-control mb-2">
+                    <input asp-for="BrandImage" type="file" class="form-control mb-2" onchange="loadImageFile(this, event, 'imagePreview')">
                     <span>Upload a photo in 125x125 resolution, under 10 kb, in .jpg, .png, .webp, or .jpeg format.</span>
                     <span class="text-danger" asp-validation-for="BrandImage"></span>
                 </div>
@@ -71,7 +71,7 @@
                     <div class="form-group position-relative">
                         <label class="form-control-label">Current Image</label>
                         <div class="d-flex align-items-center position-relative">
-                            <img src="~/img/brand/@Model.BrandImageURL" alt="@Model.Name" style="max-width: 100px; max-height: 100px;" />
+                            <img id="imagePreview" src="~/img/brand/@Model.BrandImageURL" alt="@Model.Name" style="max-width: 100px; max-height: 100px;" />
                             <span id="remove-image" class="remove-icon" onclick="removeImage()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10" stroke="red"></circle>

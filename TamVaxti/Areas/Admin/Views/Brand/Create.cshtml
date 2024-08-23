@@ -42,12 +42,12 @@
                     <form asp-action="Create" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="col-form-label pt-0">Enter brand name</label>
-                            <input asp-for="Name" type="text" placeholder="Enter name..." class="form-control  mb-2" maxlength="100">
+                            <input asp-for="Name" maxlength="20" type="text" placeholder="Enter name..." class="form-control  mb-2" maxlength="100">
                             <span class="text-danger" asp-validation-for="Name"></span>
                         </div>
                         <div class="form-group">
                             <label class="col-form-label pt-0">Upload Image</label>
-                            <input asp-for="BrandImage" type="file" class="form-control mb-2">
+                            <input asp-for="BrandImage" type="file" class="form-control mb-2" onchange="loadImageFile(this, event, 'imagePreview')">
                             <span>Upload a photo in 125x125 resolution, under 10 kb, in .jpg, .png, .webp, or .jpeg format.</span>
                             <span class="text-danger" asp-validation-for="BrandImage"></span>
                         </div>

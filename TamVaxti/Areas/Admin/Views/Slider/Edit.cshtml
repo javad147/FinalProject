@@ -86,7 +86,7 @@
                     <div class="form-group row">
                         <label asp-for="SliderTitle" class="col-xl-3 col-md-4 required-label"><strong>Slider Title</strong></label>
                         <div class="col-md-7">
-                            <textarea asp-for="SliderTitle" id="SliderTitle" class="form-control mb-2"></textarea>
+                            <textarea maxlength="20" asp-for="SliderTitle" id="SliderTitle" class="form-control mb-2"></textarea>
                             <span class="text-danger" asp-validation-for="SliderTitle"></span>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                     <div class="form-group row">
                         <label asp-for="Image" class="col-xl-3 col-md-4"><strong>Image</strong></label>
                         <div class="col-md-7">
-                            <input asp-for="Image" type="file" class="form-control form-control-sm" id="Image" />
+                            <input asp-for="Image" type="file" class="form-control form-control-sm" id="Image" onchange="loadImageFile(this, event, 'imagePreview')" />
                             <span>Upload a photo in 1920x686 resolution, under 1 MB, in .jpg, .png, .webp, or .jpeg format.</span>
                             <span asp-validation-for="Image" class="text-danger"></span>
 

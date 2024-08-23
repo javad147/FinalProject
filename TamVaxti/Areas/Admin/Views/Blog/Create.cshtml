@@ -36,7 +36,7 @@
                 <div class="form-group">
                     <label class="form-control-label">Enter blog title</label>
                     <span class="text-danger d-block" asp-validation-for="Title"></span>
-                    <input asp-for="Title" type="text" class="form-control mb-2" maxlength="100">
+                    <input asp-for="Title" maxlength="20" type="text" class="form-control mb-2" maxlength="100">
 
                     <label class="form-control-label">Enter blog description</label>
                     <span class="text-danger d-block" asp-validation-for="Description"></span>
@@ -44,7 +44,7 @@
 
                     <label class="form-control-label">Enter blog image</label>
                     <span class="text-danger d-block" asp-validation-for="ImageFile"></span>
-                    <input asp-for="ImageFile" type="file" class="form-control mb-2">
+                    <input asp-for="ImageFile" type="file" class="form-control mb-2" onchange="loadImageFile(this, event, 'imagePreview')">
                     <span>Upload a photo in 1000x596 resolution, under 1 MB, in .jpg, .png, .webp, or .jpeg format.</span>
                 </div>
                 <button type="submit" class="btn btn-primary btn-sm">

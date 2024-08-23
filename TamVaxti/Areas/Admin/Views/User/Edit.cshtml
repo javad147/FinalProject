@@ -144,7 +144,7 @@
                             <div class="form-group row">
                                 <label asp-for="ProfileImageUrl" class="col-xl-3 col-md-4"><strong>Profile Image</strong></label>
                                 <div class="col-md-7">
-                                    <input asp-for="ProfileImageUrl" type="file" class="form-control form-control-sm" id="ProfileImageUrl" />
+                                    <input asp-for="ProfileImageUrl" type="file" class="form-control form-control-sm" id="ProfileImageUrl" onchange="loadImageFile(this, event, 'imagePreview')" />
                                     <span asp-validation-for="ProfileImageUrl" class="text-danger"></span>
 
                                     <!-- Show current profile image if available -->

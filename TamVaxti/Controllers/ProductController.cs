@@ -70,6 +70,30 @@ namespace TamVaxti.Controllers
                                     Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Size")?
                                         .AttributeOption.Value
                                 }).ToList(),
+                DialSize = product.SKUs.Where(s => //s.Id != sku.Id &&
+                                          s.AttributeOptionSKUs.Any(aos =>
+                                              aos.AttributeOption.Attribute.Name == "Color" &&
+                                              aos.AttributeOption.Value == sku.AttributeOptionSKUs.FirstOrDefault(ao => ao.AttributeOption.Attribute.Name == "Color")?
+                                                  .AttributeOption.Value) &&
+                                          s.AttributeOptionSKUs.Any(aos => aos.AttributeOption.Attribute.Name == "Dial Size"))
+                                .Select(s => new RelatedSizeVM
+                                {
+                                    SkuId = s.Id,
+                                    Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Dial Size")?
+                                        .AttributeOption.Value
+                                }).ToList(),
+                Mechanism = product.SKUs.Where(s => //s.Id != sku.Id &&
+                                          s.AttributeOptionSKUs.Any(aos =>
+                                              aos.AttributeOption.Attribute.Name == "Color" &&
+                                              aos.AttributeOption.Value == sku.AttributeOptionSKUs.FirstOrDefault(ao => ao.AttributeOption.Attribute.Name == "Color")?
+                                                  .AttributeOption.Value) &&
+                                          s.AttributeOptionSKUs.Any(aos => aos.AttributeOption.Attribute.Name == "Mechanism"))
+                                .Select(s => new RelatedSizeVM
+                                {
+                                    SkuId = s.Id,
+                                    Size = s.AttributeOptionSKUs.FirstOrDefault(aos => aos.AttributeOption.Attribute.Name == "Mechanism")?
+                                        .AttributeOption.Value
+                                }).ToList(),
                 ProductReview = pr.Select(s => new ProductReviewVM
                 {
                     ReviewDescription = s.ReviewDescription,

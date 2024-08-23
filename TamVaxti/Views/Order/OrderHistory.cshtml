@@ -45,7 +45,7 @@
                             <h5>Order Number: @order.OrderNumber</h5>
                             <p>Total Amount: @ViewBag.CurrencySymbol @order.TotalAmount</p>
                             <p>Actual Delivery Date: @order.ActualDeliveryDate?.ToString("yyyy-MM-dd")</p>
-
+                            <p>Status: @order.Status</p>
                             <div class="products">
                                 @foreach (var product in order.Products)
                                 {

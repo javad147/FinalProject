@@ -19,7 +19,7 @@ namespace TamVaxti.ViewModels.Products
         [Range(0.01, 10000.00, ErrorMessage = "Please enter a valid price")]
         public decimal Price { get; set; }
 
-        [Range(0.01, 10000.00, ErrorMessage = "Please enter a valid sale price")]
+        [Range(0, 10000.00, ErrorMessage = "Please enter a valid sale price")]
         [SalePriceLessThanPriceAttribute("Price", "SalePrice", ErrorMessage = "Sale price must be less than the price.")]
         public decimal SalePrice { get; set; }
 

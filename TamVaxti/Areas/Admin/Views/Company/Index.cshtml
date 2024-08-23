@@ -44,7 +44,7 @@
                             @if (@Model != null && !string.IsNullOrEmpty(@Model.LogoUrl))
                             {
                                 <div class="profile-details text-center">
-                                    <img src="~/img/@Model.LogoUrl" alt="@Model.Name" style="background:#e8e5e5" class="img-fluid blur-up lazyloaded">
+                                    <img src="~/img/@Model.LogoUrl" alt="@Model.Name" id="imagePreview" style="background:#e8e5e5" class="img-fluid blur-up lazyloaded">
                                 </div>
                             }
 
@@ -59,7 +59,7 @@
                                 {
                                     <label class="col-form-label pt-0">Upload Company Logo (Image size 179x34)</label>
                                 }
-                                @Html.TextBoxFor(model => model.ImageFile, new { type = "file", @class = "form-control" })
+                                @Html.TextBoxFor(model => model.ImageFile, new { type = "file", @class = "form-control", onchange = "loadImageFile(this, event, 'imagePreview')" })
                                 <span class="text-danger" asp-validation-for="ImageFile"></span>
                             </div>
                             <div class="form-group">

@@ -52,7 +52,6 @@ function initializeWishlist() {
 }
 
 function initializeCart() {
-    debugger 
     // Load cart from cookies
     var cart = Cookies.getJSON("cart") || {};
 
@@ -82,7 +81,6 @@ function initializeCart() {
         function() {
             cart = Cookies.getJSON("cart") || {};
             var productId = $(this).data("sku-id");
-            debugger;
             var index = Object.keys(cart).findIndex(key => key === productId.toString());
             if (cart[productId]) {
                 cart[productId] = $(this).val();
@@ -210,7 +208,6 @@ function refreshWishListView() {
 }
 
 function initializeCurrency() {
-    debugger
     // Load currency from cookies
     var currency = Cookies.getJSON("currency") || {};
 

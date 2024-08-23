@@ -8,5 +8,7 @@ namespace TamVaxti.ViewModels.Orders
         public decimal TotalAmount { get; set; }
         public DateTime? ActualDeliveryDate { get; set; }
         public List<ProductVM> Products { get; set; }
+
+        public string Status { get; set; }
     }
 }

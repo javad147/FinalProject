@@ -55,6 +55,7 @@ public class OrderController : Controller
             OrderNumber = o.OrderNumber,
             TotalAmount = o.TotalAmount,
             ActualDeliveryDate = o.ActualDeliveryDate,
+            Status = o.DeliveryStatus
             //Products = o.OrderProductDetails.Select(op =>
             //{
             //    var product = op.Product;
@@ -83,6 +84,7 @@ public class OrderController : Controller
             mod.OrderNumber = o.OrderNumber;
             mod.TotalAmount = o.TotalAmount;
             mod.ActualDeliveryDate = o.ActualDeliveryDate;
+            mod.Status = o.DeliveryStatus;
             mod.Products = new List<ProductVM>();
             foreach (var od in o.OrderProductDetails)
             {

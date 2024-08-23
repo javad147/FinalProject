@@ -23,5 +23,7 @@ namespace TamVaxti.ViewModels.Products
         public List<RelatedSkuVM> RelatedSku { get; set; }
         public List<RelatedSizeVM> RelatedSizes { get; set; }
         public List<ProductReviewVM> ProductReview { get; set; }
+        public List<RelatedSizeVM> DialSize { get; set; }
+        public List<RelatedSizeVM> Mechanism { get; set; }
     }
 }

@@ -64,8 +64,11 @@
                             }
                         </h3>
                         <span class="quantity-detail">@(Model.Quantity <= 0 ? "Out Of Stock" : Model.Quantity + " Left")</span>
-                        <h6 class="product-title mt-3">Size</h6>
-                        <ul class="size-variant mb-3">
+                        @if (Model.RelatedSizes.Count() > 0)
+                        {
+                            <p class="mt-2">Size</p>
+                        }
+                        <ul class="size-variant mt-3 mb-3">
                             @foreach (var sku in Model.RelatedSizes)
                             {
                                 var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
@@ -74,7 +77,40 @@
                                 </a>
                             }
                         </ul>
-                        <h6 class="product-title">Color</h6>
+
+
+
+                        @if (Model.DialSize.Count() > 0)
+                        {
+                            <p>Dial Size</p>
+                        }
+                        <ul class="size-variant mt-3 mb-3">
+                            @foreach (var sku in Model.DialSize)
+                            {
+                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
+                                </a>
+                            }
+                        </ul>
+
+                        @if (Model.Mechanism.Count() > 0)
+                        {
+                            <p>Mechanism</p>
+                        }
+                        <ul class="size-variant mt-3 mb-3">
+                            @foreach (var sku in Model.Mechanism)
+                            {
+                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
+                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
+                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
+                                </a>
+                            }
+                        </ul>
+                        @if (Model.RelatedSku.Count() > 0)
+                        {
+                            <p class="mb-2">Color</p>
+                        }
                         <ul class="color-variant">
                             @foreach (var sku in Model.RelatedSku)
                             {
@@ -84,6 +120,8 @@
                                 </a>
                             }
                         </ul>
+
+                      
                         <div class="product-buttons">
                             @if (Model.Quantity <= 0)
                             {

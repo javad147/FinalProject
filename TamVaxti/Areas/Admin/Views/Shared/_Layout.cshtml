@@ -126,6 +126,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script type="text/javascript">
+        function loadImageFile(input, event, id) {
+            const containerDiv = document.createElement('div');
+            containerDiv.style.padding = '10px';
+            const img = document.createElement('img');
+            const existingImg = document.getElementById(id);
+            if (existingImg) {
+                existingImg.src = URL.createObjectURL(event.target.files[0]);
+            } else {
+                img.id = id;
+                img.width = 70;
+                img.src = URL.createObjectURL(event.target.files[0]);
+                containerDiv.appendChild(img);
+                input.insertAdjacentElement('afterend', containerDiv);
+            }
+            document.getElementById(id).onload = function () {
+                URL.revokeObjectURL(document.getElementById(id).src)
+            }
+        }
+
         $(document).ready(function () {
             var successMessage = '@TempData["SuccessMessage"]';
             var errorMessage = '@TempData["ErrorMessage"]';
