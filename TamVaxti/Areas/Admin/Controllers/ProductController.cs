@@ -551,7 +551,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 _context.Entry(request.SKUs[k]).Property(x => x.ImageUrl4).IsModified = request.SKUs[k].ImageUrl4File != null ? true : false;
             }
             await _context.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = $"Product Updated Successfully!";
             return RedirectToAction(nameof(Index));
         }
 
