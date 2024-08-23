@@ -23,8 +23,8 @@ namespace TamVaxti.Areas.Admin.Controllers
         private readonly ISubcategoryService _subcategoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public SubcategoryController(AppDbContext context, 
-                                        ISubcategoryService subcategoryService, 
+        public SubcategoryController(AppDbContext context,
+                                        ISubcategoryService subcategoryService,
                                         IWebHostEnvironment webHostEnvironment,
                                         ICategoryService categoryService)
         {
@@ -37,9 +37,9 @@ namespace TamVaxti.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
-            
+
             var subcategories = await _subcategoryService.GetAllAsync();
-            var categories = await _categoryService.GetAllAsync(); 
+            var categories = await _categoryService.GetAllAsync();
 
             var subcategoryVMs = subcategories
                 .Join(categories,
@@ -52,7 +52,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                     Name = sc.Subcategory.Name,
                     SubcategoryImage = sc.Subcategory.SubcategoryImage,
                     IsPublished = sc.Subcategory.IsPublished,
-                    CategoryName = sc.CategoryName 
+                    CategoryName = sc.CategoryName
                 })
                 .OrderByDescending(sc => sc.Id)
                 .ToList();
@@ -96,59 +96,59 @@ namespace TamVaxti.Areas.Admin.Controllers
                 Name = subcategory.Name,
                 CategoryId = subcategory.CategoryId,
                 SubcategoryImage = subcategory.SubcategoryImage,
-                CategoryName = subcategory.Category.Name 
+                CategoryName = subcategory.Category.Name
             };
 
             return View(model);
         }
 
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(SubCategoryCreateVM subcategory)
-{
-    if (!ModelState.IsValid)
-    {
-        return View(subcategory);
-    }
-
-    bool existSubcategory = await _subcategoryService.ExistAsync(subcategory.Name);
-
-    if (existSubcategory)
-    {
-        ModelState.AddModelError("Name", "This subcategory already exists");
-         ViewBag.Categories = await _context.Categories.Select(c => new { Value = c.Id, Text = c.Name }).ToListAsync();
-         return View(subcategory);
-    }
-
-    string imagePath = null;
-    if (subcategory.ImageFile != null)
-    {
-        var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img" , "subcategories");
-        var uniqueFileName = Guid.NewGuid().ToString() + "_" + subcategory.ImageFile.FileName;
-        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SubCategoryCreateVM subcategory)
         {
-            await subcategory.ImageFile.CopyToAsync(fileStream);
-        }
+            ViewBag.Categories = await _context.Categories.Select(c => new { Value = c.Id, Text = c.Name }).ToListAsync();
+            if (!ModelState.IsValid)
+            {
+                return View(subcategory);
+            }
 
-        imagePath = uniqueFileName; 
-    }
+            bool existSubcategory = await _subcategoryService.ExistAsync(subcategory.Name);
 
-    var subCategoryCreateVM = new SubCategoryCreateVM
-    {
-        Name = subcategory.Name,
-        SubcategoryImage = imagePath,
-        CategoryId = subcategory.CategoryId,
-        IsPublished = subcategory.IsPublished,
-    };
+            if (existSubcategory)
+            {
+                ModelState.AddModelError("Name", "This subcategory already exists");
+                return View(subcategory);
+            }
 
-    await _subcategoryService.CreateAsync(subCategoryCreateVM);
+            string imagePath = null;
+            if (subcategory.ImageFile != null)
+            {
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img", "subcategories");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + subcategory.ImageFile.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await subcategory.ImageFile.CopyToAsync(fileStream);
+                }
+
+                imagePath = uniqueFileName;
+            }
+
+            var subCategoryCreateVM = new SubCategoryCreateVM
+            {
+                Name = subcategory.Name,
+                SubcategoryImage = imagePath,
+                CategoryId = subcategory.CategoryId,
+                IsPublished = subcategory.IsPublished,
+            };
+
+            await _subcategoryService.CreateAsync(subCategoryCreateVM);
             TempData["messageType"] = "success";
             TempData["message"] = "SubCategory Created Successfully.";
             return RedirectToAction(nameof(Index));
-}
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -231,7 +231,7 @@ public async Task<IActionResult> Create(SubCategoryCreateVM subcategory)
                 SubcategoryImage = subcategory.SubcategoryImage,
                 CategoryId = subcategory.CategoryId,
                 IsPublished = subcategory.IsPublished,
-                Categories = categorySelectList 
+                Categories = categorySelectList
             });
 
         }
