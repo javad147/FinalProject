@@ -67,6 +67,7 @@ namespace TamVaxti.Services
                 Description = m.Description,
                 //Price = m.Price,
                 Category = m.Category.Name,
+                SkuCodes = string.Join(", ", m.SKUs.Select(p => p.SkuCode))
                 //DiscountedPrice = m.DiscountPrice
             }).ToList();
         }
