@@ -27,7 +27,11 @@
                             <p>@(product.Quantity <= 0 ? "Out Of Stock" : "in stock")</p>
                         </div>
                         <div class="col">
-                            <h2 class="td-color">@ViewBag.CurrencySymbol@product.Price</h2>
+                            <h2 class="td-color">@ViewBag.CurrencySymbol@(product.SalePrice > 0 ? product.SalePrice : product.Price)
+                                @if(product.SalePrice > 0){
+                                    <del>@ViewBag.CurrencySymbol@product.Price</del>
+                                }
+                            </h2>
                         </div>
                         <div class="col">
                             <h2 class="td-color">
@@ -42,7 +46,11 @@
                     </div>
                 </td>
                 <td>
-                    <h2>@ViewBag.CurrencySymbol@product.Price</h2>
+                    <h2>@ViewBag.CurrencySymbol@(product.SalePrice > 0 ? product.SalePrice : product.Price)
+                        @if(product.SalePrice > 0){
+                            <del>@ViewBag.CurrencySymbol@product.Price</del>
+                        }
+                    </h2>
                 </td>
                 <td>
                     <p>@(product.Quantity <= 0 ? "Out Of Stock" : "in stock")</p>

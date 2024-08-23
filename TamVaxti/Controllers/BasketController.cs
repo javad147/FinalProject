@@ -68,7 +68,7 @@ public class BasketController : Controller
         return (from basketProduct in basketProducts
             let product = result.FirstOrDefault(m => m.SkuId == basketProduct.Key)
             where product != null
-            let subtotal = basketProduct.Value * product.Price
+            let subtotal = basketProduct.Value * (product.SalePrice > 0 ? product.SalePrice : product.Price)
             select new BasketVM { Product = product, Quantity = basketProduct.Value, SubTotal = subtotal }).ToList();
     }
 }

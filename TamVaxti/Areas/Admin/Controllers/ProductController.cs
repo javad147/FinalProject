@@ -309,6 +309,13 @@ namespace TamVaxti.Areas.Admin.Controllers
                             return View(request);
                         }
 
+                        if (sku.SalePrice > sku.Price)
+                        {
+                            ModelState.AddModelError($"SKUs[{i}].SalePrice", "Sale Price must be less than or equal to Price.");
+                            await transaction.RollbackAsync();
+                            return View(request);
+                        }
+
                         SKU skus = new SKU
                         {
                             ProductId = product.Id,
@@ -484,6 +491,12 @@ namespace TamVaxti.Areas.Admin.Controllers
                 if (sku.Price <= 0)
                 {
                     ModelState.AddModelError($"SKUs[{i}].Price", "Price is required and must be greater than 0.");
+                    return View(request);
+                }
+
+                if (sku.SalePrice > sku.Price)
+                {
+                    ModelState.AddModelError($"SKUs[{i}].SalePrice", "Sale Price must be less than or equal to Price.");
                     return View(request);
                 }
 

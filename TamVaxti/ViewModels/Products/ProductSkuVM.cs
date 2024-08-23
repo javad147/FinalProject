@@ -18,7 +18,7 @@ namespace TamVaxti.ViewModels.Products
         [Range(0.01, 10000.00, ErrorMessage = "Please enter a valid price")]
         public decimal Price { get; set; }
 
-        public decimal SalePrice { get; set; } = 0m;
+        public decimal SalePrice { get; set; }
 
         [Required]
         public int Quantity { get; set; }
