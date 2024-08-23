@@ -50,7 +50,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                 Payments = o.Payments,
                 TotalAmount = o.TotalAmount,
                 DeliveryStatus = o.DeliveryStatus
-            }).ToList();
+            }).OrderByDescending(o => o.OrderId).ToList();
 
             if (!string.IsNullOrEmpty(searchString))
             {
