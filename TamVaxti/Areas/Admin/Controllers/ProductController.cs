@@ -314,6 +314,7 @@ namespace TamVaxti.Areas.Admin.Controllers
                             ProductId = product.Id,
                             SkuCode = sku.SkuCode,
                             Price = sku.Price,
+                            SalePrice = sku.SalePrice,
                             SkuStock = new List<SkuStock> { new SkuStock { Quantity = sku.Quantity } },
                             ImageUrl1 = (sku.ImageUrl1 != null) ? await ImgFileActionAsync(sku.ImageUrl1, request) : "",
                             ImageUrl2 = (sku.ImageUrl2 != null) ? await ImgFileActionAsync(sku.ImageUrl2, request) : "",

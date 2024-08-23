@@ -9,6 +9,7 @@ namespace TamVaxti.Models
         public int ProductId { get; set; }
         public string SkuCode { get; set; }
         public decimal Price { get; set; }
+        public decimal SalePrice { get; set; }
         public string ImageUrl1 { get; set; }
         public string ImageUrl2 { get; set; }
         public string ImageUrl3 { get; set; }
