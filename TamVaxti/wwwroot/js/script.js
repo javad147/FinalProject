@@ -50,6 +50,33 @@ function initializeWishlist() {
             Cookies.set("wishlist", wishlist, { expires: 7 });
         });
 }
+function productDetailCart(skuId, dictionaryAttributeOptionId) {
+    // Find keys with value 0 and concatenate them into a single string
+    const keysWithZeroValue = Object.entries(dictionaryAttributeOptionId)
+        .filter(([key, value]) => value === 0) // Filter for keys with value 0
+        .map(([key]) => key); // Extract the keys
+
+    if (keysWithZeroValue.length > 0) {
+        const keysMessage = keysWithZeroValue.join(', '); // Concatenate keys
+        toastr.error(`Please select all the required attribute options: ${keysMessage}.`, 'Missing Attributes', { "toastClass": "toast toast-error" });
+        return;
+    } else {
+        var cart = Cookies.getJSON("cart") || {};
+        var productId = skuId;//$(this).data("sku-id");
+
+        if (cart[productId]) {
+            // Increment the count of the product in the cart
+            cart[productId]++;
+        } else {
+            // Add new product to the cart with count 1
+            cart[productId] = 1;
+        }
+        notifyCart(true);
+        // Update the cookie
+        Cookies.set("cart", cart, { expires: 7 });
+        refreshCartView();
+    }
+}
 
 function initializeCart() {
     // Load cart from cookies

@@ -1,0 +1,172 @@
+﻿@model TamVaxti.ViewModels.Products.ProductMainVM
+
+<div class="col-lg-6">
+    <div class="product-slick">
+
+        @for (int i = 0; i < Model.PictureURL.Count; i++)
+
+        {
+
+            var image = Model.PictureURL[i];
+            <div>
+                <img src="/img/product/@image" alt=""
+                     class="img-fluid blur-up lazyload img-zoom-cls-@i">
+            </div>
+        }
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-12 p-0">
+            <div class="slider-nav">
+
+                @foreach (var image in Model.PictureURL)
+
+                {
+                    <div>
+                        <img src="/img/product/@image" alt=""
+                             class="img-fluid blur-up lazyload">
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-6 rtl-text">
+    <div class="product-right">
+        <h2>@Model.Name</h2>
+
+        <div class="rating-section">
+            <div class="rating">
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    var ratingClass = i <= Model.Ratings ? "fa-star" : "fa-star-o";
+                    var colrClass = i <= Model.Ratings ? "#ffa200" : "#ddd";
+                    <i class="fa @ratingClass" style="color: @colrClass" data-rating="@i"></i>
+                }
+            </div>
+            @{
+                var ratingText = @Model.RatingCount > 1 ? "ratings" : "rating";
+            }
+            <h6>@Model.RatingCount @ratingText</h6>
+        </div>
+
+        <div class="mb-3">
+            <h3 class="price-detail">
+                @Model.CurrencySymbol@Model.Price
+            </h3>
+            <span class="quantity-detail">
+                @(Model.Quantity <= 0 ? "Out Of Stock" : Model.Quantity + " Left")
+            </span>
+        </div>
+
+        @foreach (var pr in Model.ProductVariation)
+
+        {
+            <h4>@pr.Attribute</h4>
+
+            @if (pr.AttributeType == "Color")
+
+            {
+
+                var attributeName = pr.Attribute;
+                <ul class="color-variant">
+                    @foreach (var option in pr.Options)
+
+                    {
+
+                        var activeClass = option.IsSelected ? "selected" : "";
+                        <a class="color-li @activeClass" href="#" onclick="addOrUpdate('@Html.Raw(pr.Attribute)',@Html.Raw(option.AttributeOptionId),true);event.preventDefault();">
+                            <!--<li class="color-circle activeClass" style="background-color:sku.Color" data-sku-id="sku.SkuId"></li>-->
+                        <li class="color-circle" style="background-color:@option.ColorCode"></li>
+                        </a>
+                    }
+                </ul>
+            }
+
+            else
+
+            {
+                <ul class="size-variant mt-3 mb-3">
+                    @foreach (var option in pr.Options)
+
+                    {
+
+                        var activeClass = option.IsSelected ? "selected" : "";
+
+                        @if (option.Enabled)
+
+                        {
+                            @if (option.IsSelected)
+
+                            {
+                                <a href="#" onclick="addOrUpdate('@Html.Raw(pr.Attribute)', 0, false); event.preventDefault();">
+                                <li class="size-li @activeClass">@option.AttributeOption</li>
+                                </a>
+                            }
+
+                            else
+
+                            {
+
+                                <a href="#" onclick="addOrUpdate('@Html.Raw(pr.Attribute)',@Html.Raw(option.AttributeOptionId), false); event.preventDefault();">
+                                <li class="size-li">@option.AttributeOption</li>
+                                </a>
+                            }
+                        }
+
+
+                        else
+
+                        {
+                            <li class="size-li disabled">@option.AttributeOption</li>
+                        }
+
+                    }
+                </ul>
+            }
+        }
+
+        <div class="product-buttons">
+            @if (Model.Quantity <= 0)
+            {
+                <button class="btn btn-solid hover-solid" disabled>
+                    <i class="ti-shopping-cart"></i> add to cart
+                </button>
+            }
+            else
+            {
+                <a href="javascript:void(0)" onclick="addtoCart('@Html.Raw(Model.SkuId)');event.preventDefault();" id="productDetailCart" data-product-id="@Model.Id" data-sku-id="@Model.SkuId"
+                   class="btn btn-solid hover-solid btn-animation">
+                    @*add-to-cart*@
+                    <i class="ti-shopping-cart"></i> add to cart
+                </a>
+            }
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="javascript:void(0)" class="btn btn-solid add-to-wishlist" data-product-id="@Model.Id" data-sku-id="@Model.SkuId">
+                    <i class="ti-heart" aria-hidden="true"></i> wishlist
+                </a>
+            }
+        </div>
+
+        <div class="border-product">
+            <h6 class="product-title">shipping info</h6>
+            <ul class="shipping-info">
+                <li>100% Original Products</li>
+                <li>Pay on delivery is available</li>
+                <li>Easy 30 days returns and exchanges</li>
+            </ul>
+        </div>
+
+        <div class="border-product">
+            <h6 class="product-title">100% secure payment</h6>
+            <img src="/assets/images/payment.png" class="img-fluid mt-1" alt="">
+        </div>
+    </div>
+</div>

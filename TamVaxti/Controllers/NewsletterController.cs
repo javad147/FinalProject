@@ -56,7 +56,7 @@ namespace TamVaxti.Controllers
             };
             string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/subscribe.html", verifyemail);
 
-            await EmailHelper.SendEmailAsync(email, "Dear Subscriber", "Thanks for Joining Our Newsletter", emailBody);
+            await EmailHelper.SendEmailAsync(email, "Dear Subscriber", "Thanks for Joining Our Newsletter", emailBody, "subscribe.jpg");
 
 
             TempData["SuccessMessage"] = "Thank you for subscribing!";

@@ -10,7 +10,7 @@
 <section>
     <div class="collection-wrapper">
         <div class="container">
-            <div class="row">
+            <div class="row" id="loadProductVariant">
                 <div class="col-lg-6">
                     <div class="product-slick">
                         @for (int i = 0; i < Model.ImageUrls.ToList().Count; i++)
@@ -64,63 +64,34 @@
                             }
                         </h3>
                         <span class="quantity-detail">@(Model.Quantity <= 0 ? "Out Of Stock" : Model.Quantity + " Left")</span>
-                        @if (Model.RelatedSizes.Count() > 0)
+                      
+                        @foreach (var pr in Model.ProductVariation)
                         {
-                            <p class="mt-2">Size</p>
-                        }
-                        <ul class="size-variant mt-3 mb-3">
-                            @foreach (var sku in Model.RelatedSizes)
+                            <h4>@pr.Attribute</h4>
+                            @if (pr.AttributeType == "Color")
                             {
-                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
-                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
-                                </a>
+                                <ul class="color-variant">
+                                    @foreach (var option in pr.Options)
+                                    {
+                                    //var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
+                                        // <a class="color-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId>
+                                        <a class="color-li" href="#" onclick="addOrUpdate('@Html.Raw(pr.Attribute)',@Html.Raw(option.AttributeOptionId),true); return false;">
+                                            <!--<li class="color-circle activeClass" style="background-color:sku.Color" data-sku-id="sku.SkuId"></li>-->
+                                        <li class="color-circle" style="background-color:@option.ColorCode"></li>
+                                        </a>
+                                    }
+                                </ul>
                             }
-                        </ul>
-
-
-
-                        @if (Model.DialSize.Count() > 0)
-                        {
-                            <p>Dial Size</p>
-                        }
-                        <ul class="size-variant mt-3 mb-3">
-                            @foreach (var sku in Model.DialSize)
+                            else
                             {
-                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
-                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
-                                </a>
+                                <ul class="size-variant mt-3 mb-3">
+                                    @foreach (var option in pr.Options)
+                                    {
+                                        <li class="size-li">@option.AttributeOption</li>
+                                    }
+                                </ul>
                             }
-                        </ul>
-
-                        @if (Model.Mechanism.Count() > 0)
-                        {
-                            <p>Mechanism</p>
                         }
-                        <ul class="size-variant mt-3 mb-3">
-                            @foreach (var sku in Model.Mechanism)
-                            {
-                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
-                                <a asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                <li class="size-li @activeClass" data-sku-id="@sku.SkuId">@sku.Size</li>
-                                </a>
-                            }
-                        </ul>
-                        @if (Model.RelatedSku.Count() > 0)
-                        {
-                            <p class="mb-2">Color</p>
-                        }
-                        <ul class="color-variant">
-                            @foreach (var sku in Model.RelatedSku)
-                            {
-                                var activeClass = sku.SkuId == Model.SkuId ? "selected" : "";
-                                <a class="color-li @activeClass" asp-controller="Product" asp-action="Index" asp-route-id="@sku.SkuId">
-                                <li class="color-circle @activeClass" style="background-color:@sku.Color" data-sku-id="@sku.SkuId"></li>
-                                </a>
-                            }
-                        </ul>
-
                       
                         <div class="product-buttons">
                             @if (Model.Quantity <= 0)
@@ -278,6 +249,63 @@
 <!-- product-tab ends -->
 
 <script>
+    var attributeOptionDictionary = {};
+
+    function addOrUpdate(key, value, clearAll = false) {
+        if (clearAll) {
+            attributeOptionDictionary = {};
+            InitializeDictionary();
+        }
+        attributeOptionDictionary[key] = value;
+        GetVariation();
+    }
+    function InitializeDictionary() {
+        //var variation = @Html.Raw(Model.ProductVariation); // Correctly handle server-side data
+        var variation = @Html.Raw(Json.Serialize(@Model.ProductVariation));
+
+        variation.$values.forEach(function (item) {
+            // Assuming `addOrUpdate` is a function to handle the attribute and its options
+            attributeOptionDictionary[item.attribute] = 0;
+        });
+    }
+    // Function to call the server-side method
+    function fetchProductByVariation(productId, attributeOptionIds) {
+        $.ajax({
+            url: '@Url.Action("GetProductByVariation", "Product")',
+            type: 'GET',
+            data: {
+                productId: productId,
+                attributeOptionIds: attributeOptionIds
+            },
+            success: function (data) {
+                // Handle the response here
+                console.log(data); // Example: log the data to console
+                // Update your UI with the data
+                updateUIWithProductVariations(data);
+            },
+            error: function (xhr, status, error) {
+                // Handle errors here
+                console.error('An error occurred:', status, error);
+            }
+        });
+    }
+
+    function GetVariation() {
+        debugger;
+        var productId = @Html.Raw(Json.Serialize(@Model.ProductId));;
+        var attributeOptionIds = Object.values(attributeOptionDictionary).join(', ');
+
+        fetchProductByVariation(productId, attributeOptionIds);
+    }
+
+    // Function to update UI
+    function updateUIWithProductVariations(data) {
+        $('#loadProductVariant').html(data);
+    }
+
+    function addtoCart(skuId) {
+        productDetailCart(skuId, attributeOptionDictionary);
+    }
     document.getElementById('add-review-btn').addEventListener('click', function (event) {
         var ratingValue = document.querySelector('.rating-value').value;
         if (!ratingValue) {
@@ -302,7 +330,10 @@
                 });
             });
         });
+        InitializeDictionary();
     });
+
+
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -346,6 +377,12 @@
         color: black;
     }
 
+    .size-li.disabled {
+        background: #f8f2f2;
+        border-color: rgb(237 229 229 / 30%);
+        color: #b5a8a8;
+        cursor: not-allowed;
+    }
     .size-li {
         border: solid 2px #dbdada;
         padding: 5px 10px;
@@ -369,9 +406,9 @@
         display: inline-block;
         border: solid 2px black;
         border-radius: 100%;
-        height: 39px;
-        width: 39px;
-        padding: 3px;
+        height: 38px;
+        width: 38px;
+        padding: 2px;
         margin-right: 5px;
         -webkit-transition: all 0.1s ease;
         transition: all 0.1s ease;

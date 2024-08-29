@@ -25,5 +25,6 @@ namespace TamVaxti.ViewModels.Products
         public List<ProductReviewVM> ProductReview { get; set; }
         public List<RelatedSizeVM> DialSize { get; set; }
         public List<RelatedSizeVM> Mechanism { get; set; }
+        public List<ProductVariationVM> ProductVariation { get; set; }
     }
 }

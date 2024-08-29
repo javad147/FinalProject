@@ -21,7 +21,7 @@
                             <li class="mobile-wishlist">
                                 <i data-feather="tools"></i>
                                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                                    Go To Admin
+                                    <i class="fa fa-home fa-lg" aria-hidden="true"></i>
                                 </a>
                             </li>
                         }
@@ -30,15 +30,13 @@
                             <li class="mobile-wishlist">
                                 <a asp-controller="Product" asp-action="Wishlist">
                                     <i class="fa fa-heart" aria-hidden="true"></i>
-                                    Wishlist
+                                    
                                 </a>
                             </li>
 
                         }
                         <li class="onhover-dropdown mobile-account">
                             <i class="fa fa-user" aria-hidden="true"></i>
-                            My
-                            Account
                             <ul class="onhover-show-div">
                                 @if (!User.Identity.IsAuthenticated)
                                 {

@@ -122,7 +122,7 @@ namespace TamVaxti.Controllers
             };
             string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/emailverify.html", verifyemail);
 
-            await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody);
+            await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody, "verify.jpg");
             TempData["SuccessMessage"] = "Registration successful. Please check your email to confirm your account.";
 
             return View();
@@ -235,7 +235,7 @@ namespace TamVaxti.Controllers
 
                 string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/forgotpassword.html", forgotPassword);
 
-                await EmailHelper.SendEmailAsync(model.Email, existUser.UserName, "Password Reset Request", emailBody);
+                await EmailHelper.SendEmailAsync(model.Email, existUser.UserName, "Password Reset Request", emailBody, "resetpasswords.jpg");
 
                 TempData["SuccessMessage"] = "Password Reset Email Sent";
                 return RedirectToAction("SignIn", "Account");
@@ -340,7 +340,7 @@ namespace TamVaxti.Controllers
                 };
                 string emailBody = GetEmailBodyFromFile($"{Directory.GetCurrentDirectory()}/wwwroot/emailtemplate/welcome.html", verifyemail);
 
-                await EmailHelper.SendEmailAsync(user.Email, user.UserName, "Email Confirmed", emailBody);
+                await EmailHelper.SendEmailAsync(user.Email, user.UserName, "Email Confirmed", emailBody, "welcome.jpg");
 
                 TempData["SuccessMessage"] = "Email confirmed successfully. You can now log in.";
                 return RedirectToAction("SignIn", "Account");

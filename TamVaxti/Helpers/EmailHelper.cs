@@ -22,7 +22,7 @@ namespace TamVaxti.Helpers
             Username = configuration["EmailSettings:Username"];
             Password = configuration["EmailSettings:Password"];
         }
-        public static Task SendEmailAsync(string recipientEmail, string recipientName, string subject, string message)
+        public static Task SendEmailAsync(string recipientEmail, string recipientName, string subject, string message,string bannerImage)
         {
 
             var fromAddress = new MailAddress(SenderEmail, SenderName);
@@ -52,7 +52,7 @@ namespace TamVaxti.Helpers
                 msg.Subject = sub;
                 AlternateView htmlView = AlternateView.CreateAlternateViewFromString(body, null, "text/html");
 
-                var imageBytes = System.IO.File.ReadAllBytes($"{Directory.GetCurrentDirectory()}/wwwroot/img/emailbanner/forgotpassword.jpeg");
+                var imageBytes = System.IO.File.ReadAllBytes($"{Directory.GetCurrentDirectory()}/wwwroot/assets/images/{bannerImage}");
                 LinkedResource inlineImage = new LinkedResource(new MemoryStream(imageBytes), "image/jpeg");
                 inlineImage.ContentId = "InlineImageId";
                 htmlView.LinkedResources.Add(inlineImage);
