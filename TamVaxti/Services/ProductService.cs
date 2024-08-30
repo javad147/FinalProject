@@ -250,6 +250,7 @@ namespace TamVaxti.Services
                     MainImage = !string.IsNullOrEmpty(sku.ImageUrl1) ? sku.ImageUrl1 : !string.IsNullOrEmpty(sku.ImageUrl2) ? sku.ImageUrl2
                                 : !string.IsNullOrEmpty(sku.ImageUrl3) ? sku.ImageUrl3 : !string.IsNullOrEmpty(sku.ImageUrl4) ? sku.ImageUrl4 : product.MainImage,
                     CategoryId = product.CategoryId,
+                    SubcategoryId = product.SubcategoryId,
                     SkuId = sku.Id,
                     SkuCode = sku.SkuCode,
                     Price = sku.Price,

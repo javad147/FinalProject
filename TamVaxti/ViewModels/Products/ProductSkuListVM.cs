@@ -17,6 +17,7 @@ namespace TamVaxti.ViewModels.Products
         public int Rating { get; set; }
         public int RatingCount { get; set; }
         public int CategoryId { get; set; }
+        public int SubcategoryId { get; set; }
         public List<string> ImageUrls { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }

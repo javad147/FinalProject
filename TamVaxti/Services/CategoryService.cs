@@ -54,12 +54,33 @@ namespace TamVaxti.Services
 
         public async Task<List<Category>> GetAllAsync()
         {
-            return await _context.Categories.Where(m => !m.SoftDeleted).Include(c => c.Subcategories.Where(sc => sc.IsPublished && !sc.SoftDeleted)).ToListAsync();
+            var categories = await _context.Categories
+     .Where(c => !c.SoftDeleted)
+     .Include(c => c.Subcategories)
+     .ToListAsync();
+
+            var filteredCategories = categories
+                .Select(c => new
+                {
+                    Category = c,
+                    Subcategories = c.Subcategories
+                        .Where(sc => sc.IsPublished && !sc.SoftDeleted)
+                        .ToList()
+                })
+                .Where(c => c.Subcategories.Any())
+                .Select(c =>
+                {
+                    c.Category.Subcategories = c.Subcategories;
+                    return c.Category;
+                })
+                .ToList();
+
+            return filteredCategories;
         }
 
         public async Task<List<CategoryFilterVM>> GetAllAsFilterAsync()
         {
-            return await _context.Categories.Where(m => !m.SoftDeleted).Include(c => c.Subcategories).Select(x=> new CategoryFilterVM()
+            return await _context.Categories.Where(m => !m.SoftDeleted && _context.Products.Any(p => p.CategoryId == m.Id && !p.SoftDeleted)).Include(c => c.Subcategories).Select(x=> new CategoryFilterVM()
             {
                 Id = x.Id,
                 Name = x.Name,

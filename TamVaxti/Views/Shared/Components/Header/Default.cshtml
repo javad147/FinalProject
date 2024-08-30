@@ -147,7 +147,7 @@
                                                             @foreach (var subCategory in category.Subcategories)
                                                             {
                                                                 <li>
-                                                                    <a asp-controller="ProductList" asp-action="Index" asp-route-categoryId="@category.Id"> @subCategory.Name</a>
+                                                                    <a asp-controller="ProductList" asp-action="Index" asp-route-subCategoryId="@subCategory.Id" asp-route-categoryId="@category.Id"> @subCategory.Name</a>
                                                                 </li>
                                                             }
 

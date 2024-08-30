@@ -23,7 +23,7 @@ namespace TamVaxti.Controllers
             _companyService = companyService;
         }
 
-        public async Task<IActionResult> Index(int? categoryId, string sortOrder, int? pageNumber)
+        public async Task<IActionResult> Index(int? categoryId, string sortOrder, int? pageNumber, int? subCategoryId)
         {
             int pageSize = 10;
             int pageIndex = pageNumber ?? 1;
@@ -44,7 +44,11 @@ namespace TamVaxti.Controllers
             List<Product> productList = await _productService.GetAllWithSkusAsync();
             var products = _productService.GetProductSkuListVM(productList);
 
-            if (categoryId is not null)
+            if (categoryId is not null && subCategoryId is not null)
+            {
+                products = products.Where(p => p.CategoryId == categoryId && p.SubcategoryId == subCategoryId).ToList();
+            }
+            else if (categoryId is not null)
             {
                 products = products.Where(p => p.CategoryId == categoryId).ToList();
             }
