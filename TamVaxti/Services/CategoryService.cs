@@ -51,7 +51,11 @@ namespace TamVaxti.Services
             return await _context.Categories.AnyAsync(m => m.Name == name.Trim() && !m.SoftDeleted );
         }
 
-
+        public async Task<List<Category>> GetCategoryForSubCategories()
+        {
+            var categories = await _context.Categories.Where(c => !c.SoftDeleted).ToListAsync();
+            return categories;
+        }
         public async Task<List<Category>> GetAllAsync()
         {
             var categories = await _context.Categories

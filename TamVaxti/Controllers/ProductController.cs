@@ -121,6 +121,7 @@ namespace TamVaxti.Controllers
 
             var groupedData = productVariations
             .GroupBy(p => new { p.AttributeId, p.Attribute, p.AttributeType })
+            .OrderBy(g => g.Key.AttributeId)
             .Select(g => new ProductVariationVM
             {
                 Attribute = g.Key.Attribute,

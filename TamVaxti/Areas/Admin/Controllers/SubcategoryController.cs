@@ -39,7 +39,7 @@ namespace TamVaxti.Areas.Admin.Controllers
         {
 
             var subcategories = await _subcategoryService.GetAllAsync();
-            var categories = await _categoryService.GetAllAsync();
+            var categories = await _context.Categories.ToListAsync();
 
             var subcategoryVMs = subcategories
                 .Join(categories,
@@ -71,7 +71,7 @@ namespace TamVaxti.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var categories = await _categoryService.GetAllAsync();
+            var categories = await _categoryService.GetCategoryForSubCategories();
             ViewBag.Categories = categories.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
@@ -216,7 +216,7 @@ namespace TamVaxti.Areas.Admin.Controllers
 
             if (subcategory is null) return NotFound();
 
-            IEnumerable<Category> categories = await _context.Categories.ToListAsync();
+            var categories = await _categoryService.GetCategoryForSubCategories();
 
             List<SelectListItem> categorySelectList = categories.Select(c => new SelectListItem
             {

@@ -17,5 +17,6 @@ namespace TamVaxti.Services.Interfaces
         Task EditAsync(Category category,CategoryEditVM categoryEdit);
         Task<SelectList> GetAllBySelectedAsync();
         Task<List<CategoryFilterVM>> GetAllAsFilterAsync();
+        Task<List<Category>> GetCategoryForSubCategories();
     }
 }

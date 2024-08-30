@@ -184,19 +184,89 @@ namespace TamVaxti.Services
 
         public async Task<List<Product>> GetAllWithSkusAsync()
         {
-            return await _context.Products
+            var products = await _context.Products
                 .Where(p => !p.SoftDeleted)
-                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                .ThenInclude(s => s.AttributeOptionSKUs)
-                .ThenInclude(aos => aos.AttributeOption)
-                .ThenInclude(ao => ao.Attribute)
-                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                .ThenInclude(s => s.SkuStock)
-                .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
-                .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
+                .Include(p => p.SKUs)
+                    .ThenInclude(s => s.AttributeOptionSKUs)
+                        .ThenInclude(aos => aos.AttributeOption)
+                            .ThenInclude(ao => ao.Attribute)
+                .Include(p => p.SKUs)
+                    .ThenInclude(s => s.SkuStock)
+                .Include(p => p.SKUs)
+                    .ThenInclude(s => s.ProductReviews)
                 .OrderByDescending(p => p.Id)
-                .AsNoTracking() // Optional: Add this if you don't need tracking
+                .AsNoTracking()
                 .ToListAsync();
+
+            var filteredProducts = products
+                .Select(p => new Product
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    MainImage = p.MainImage,
+                    Price = p.Price,
+                    CategoryId = p.CategoryId,
+                    SubcategoryId = p.SubcategoryId,
+                    BrandId = p.BrandId,
+                    SoftDeleted = p.SoftDeleted,
+                    SKUs = p.SKUs
+                        .Where(s => !s.SoftDeleted)
+                        .Select(s => new SKU
+                        {
+                            Id = s.Id,
+                            SkuCode = s.SkuCode,
+                            Price = s.Price,
+                            SalePrice = s.SalePrice,
+                            ImageUrl1 = s.ImageUrl1,
+                            ImageUrl2 = s.ImageUrl2,
+                            ImageUrl3 = s.ImageUrl3,
+                            ImageUrl4 = s.ImageUrl4,
+                            SoftDeleted = s.SoftDeleted,
+                            AttributeOptionSKUs = s.AttributeOptionSKUs
+                                .Where(aos => !aos.AttributeOption.SoftDeleted)
+                                .Select(aos => new AttributeOptionSKU
+                                {
+                                    AttributeOptionId = aos.AttributeOptionId,
+                                    SkuId = aos.SkuId,
+                                    // Include other properties as needed
+                                    AttributeOption = new AttributeOption
+                                    {
+                                        Id = aos.AttributeOption.Id,
+                                        AttributeId = aos.AttributeOption.AttributeId,
+                                        Value = aos.AttributeOption.Value,
+                                        Color = aos.AttributeOption.Color,
+                                        // Include other properties as needed
+                                        Attribute = new Attributes
+                                        {
+                                            Id = aos.AttributeOption.Attribute.Id,
+                                            Name = aos.AttributeOption.Attribute.Name
+                                        }
+                                    }
+                                })
+                                .ToList(),
+                            SkuStock = s.SkuStock
+                                .ToList(),
+                            ProductReviews = s.ProductReviews
+                                .Where(r => r.Status) // Assuming 'Status' is a boolean
+                                .ToList()
+                        })
+                        .ToList()
+                }).ToList();
+            return filteredProducts;
+            //return await _context.Products
+            //    .Where(p => !p.SoftDeleted)
+            //    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //    .ThenInclude(s => s.AttributeOptionSKUs)
+            //    .ThenInclude(aos => aos.AttributeOption)
+            //    .ThenInclude(ao => ao.Attribute)
+            //    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //    .ThenInclude(s => s.SkuStock)
+            //    .Include(p => p.SKUs.Where(s => !s.SoftDeleted))
+            //    .ThenInclude(s => s.ProductReviews.Where(r => r.Status))
+            //    .OrderByDescending(p => p.Id)
+            //    .AsNoTracking() // Optional: Add this if you don't need tracking
+            //    .ToListAsync();
 
             //return await _context.Products.Where(m => !m.SoftDeleted)
             //                        .Include(p => p.SKUs.Where(s => !s.SoftDeleted))

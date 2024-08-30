@@ -279,7 +279,6 @@
             },
             success: function (data) {
                 // Handle the response here
-                console.log(data); // Example: log the data to console
                 // Update your UI with the data
                 updateUIWithProductVariations(data);
             },
@@ -291,7 +290,6 @@
     }
 
     function GetVariation() {
-        debugger;
         var productId = @Html.Raw(Json.Serialize(@Model.ProductId));;
         var attributeOptionIds = Object.values(attributeOptionDictionary).join(', ');
 
@@ -301,6 +299,23 @@
     // Function to update UI
     function updateUIWithProductVariations(data) {
         $('#loadProductVariant').html(data);
+
+        $('.product-slick').slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: true,
+            fade: true,
+            asNavFor: '.slider-nav'
+        });
+        $('.slider-nav').slick({
+            vertical: false,
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            asNavFor: '.product-slick',
+            arrows: false,
+            dots: false,
+            focusOnSelect: true
+        });
     }
 
     function addtoCart(skuId) {
