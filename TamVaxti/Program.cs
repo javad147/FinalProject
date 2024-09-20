@@ -1,13 +1,12 @@
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TamVaxti.Data;
+using TamVaxti.Helpers;
+using TamVaxti.Middleware;
 using TamVaxti.Models;
 using TamVaxti.Services;
 using TamVaxti.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using TamVaxti.Middleware;
-using TamVaxti.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +28,14 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
                                                      .AddDefaultTokenProviders();
+// Add Antiforgery services
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
 
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.WebRootPath, "data-protection-keys")));
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/SignIn"; // Set your login URL here
@@ -76,18 +82,26 @@ app.UseMiddleware<UnAuthorizedRedirect>();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler(
+          new ExceptionHandlerOptions()
+          {
+              AllowStatusCode404Response = true, // important!
+              ExceptionHandlingPath = "/Account/Error"
+          }
+      );
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //app.UseHsts();
 }
 
 
+// Middleware order
+//app.UseHttpsRedirection(); // Ensure HTTPS for all requests
+app.UseStaticFiles();      // Serve static files
+app.UseRouting();          // Setup routing
+app.UseAuthentication();   // Authenticate users
+app.UseAuthorization();    // Authorize users
 
-app.UseAuthentication();
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseAuthorization();
+
 
 
 

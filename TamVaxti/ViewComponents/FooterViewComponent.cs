@@ -62,7 +62,16 @@ public class FooterViewComponent : ViewComponent
             Cart = cart
         };
 
-        bool isSubscribed = _newsletterService.IsEmailSubscribed(user.Email);
+        bool isSubscribed = false;
+        try
+        {
+            isSubscribed = _newsletterService.IsEmailSubscribed(user.Email);
+        }
+        catch(Exception)
+        {
+            isSubscribed = false;
+        }
+      
 
         ViewBag.CurrencySymbol = _companyService.GetCurrencySymbol();
         ViewBag.CurrencyRate = _companyService.GetCurrencyRate();

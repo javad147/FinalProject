@@ -381,6 +381,7 @@
 
     $('.slide-6').slick({
         dots: false,
+        autoplay:true,
         infinite: true,
         speed: 300,
         slidesToShow: 6,
@@ -413,7 +414,8 @@
             breakpoint: 480,
             settings: {
                 slidesToShow: 2,
-                slidesToScroll: 2
+                slidesToScroll: 2,
+                infinite: true
             }
         }
 

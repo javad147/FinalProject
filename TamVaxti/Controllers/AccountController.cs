@@ -125,7 +125,8 @@ namespace TamVaxti.Controllers
             await EmailHelper.SendEmailAsync(request.Email, request.UserName, "Confirm your email", emailBody, "verify.jpg");
             TempData["SuccessMessage"] = "Registration successful. Please check your email to confirm your account.";
 
-            return View();
+            //return View();
+            return RedirectToAction("SignIn", "Account");
         }
 
 
@@ -202,6 +203,12 @@ namespace TamVaxti.Controllers
 
         [HttpGet]
         public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Error()
         {
             return View();
         }
